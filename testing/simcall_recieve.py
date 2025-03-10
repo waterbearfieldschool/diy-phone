@@ -6,7 +6,6 @@ import framebufferio
 import sharpdisplay
 import busio
 import digitalio
-import gc
 #import supervisor
 from audiocore import RawSample
 import array
@@ -22,11 +21,8 @@ sendee=sendee_list[sendee_index]
 
 check_message_interval = 60 # in seconds
 
-history_length = 6 #number of messages to show
 #messages_in = []
 #messages_out = []
-
-max_msg_width = 45
 
 try:
     from audioio import AudioOut
@@ -53,7 +49,6 @@ spi = board.SPI()
 chip_select_pin = board.D10
 
 framebuffer = sharpdisplay.SharpMemoryFramebuffer(spi, chip_select_pin, width=400, height=240)
-#framebuffer = sharpdisplay.SharpMemoryFramebuffer(spi, chip_select_pin, width=144, height=168)
 
 display = framebufferio.FramebufferDisplay(framebuffer)
 
@@ -85,21 +80,6 @@ text_group.append(label7)
 display.root_group=text_group
 #display.show(text_group)
 
-#i2c = busio.I2C(board.SCL, board.SDA)
-
-#while not i2c.try_lock():
-#    pass
- 
-#cardkb = i2c.scan()[0]  # should return 95
-#i2c_devices = i2c.scan()
-#print(i2c_devices)
-#cardkb=i2c_devices[0]
-#if cardkb != 95:
-#    print("!!! Check I2C config: " + str(i2c))
-#    print("!!! CardKB not found. I2C device", cardkb,
-#          "found instead.")
-#    exit(1)
- 
 ESC = chr(27)
 NUL = '\x00'
 CR = "\r"
@@ -121,30 +101,11 @@ msg_display_index=0
 
 message_lines = 12
 
-#messages=[]
-messages_out=[]
-messages_in=[]
-
-inbox_size = 0
+messages=[]
 
 audio_alert = False
 
 def show_messages():
-    gc.collect()
-    start_mem = gc.mem_free()
-    
-    #clear messages
-    #messages.clear()
-   
-    #combine lists
-    messages=messages_in+messages_out
-    
-    print("sort")
-    messages.sort(key=lambda x: x[1])
-            
-    print("prune")
-    del messages[:-history_length]
-            
     # highlight is the last message
     #messages_in=messages_in[-3:]
     #messages_out=messages_out[-3:]
@@ -155,33 +116,28 @@ def show_messages():
     #messages_out.clear()
     
     #messages=sorted(messages,key=lambda x: x[1],reverse=True)
+    sorted_messages=sorted(messages,key=lambda x: x[1])
+    pruned_messages=messages[-5:]
     
-    #sorted_messages=sorted(messages,key=lambda x: x[1])
-    #pruned_messages=messages[-5:]
-    
-    #print(pruned_messages)
+    print(pruned_messages)
     #print("sorted list:",shorter_messages)
     #print("\n\nlen(shorter_messages)=",len(shorter_messages))
     
     #highlight=len(messages)-1
     outstr=''
-    if len(messages)>0:
-        for i in range(0,len(messages)):
-            dt=messages[i][1]
+    if len(pruned_messages)>0:
+        for i in range(0,len(pruned_messages)):
+            dt=pruned_messages[i][1]
             timestring=f'{dt.hour:02}:{dt.minute:02}'
             #messages.append([sendtime.timestamp,sendtime,MY_NUMBER,number,message])
-            if(messages[i][2]==MY_NUMBER): # message is from me; so, show recipient
-                outstr=outstr+timestring+" | Me -> "+str(messages[i][3])+" : "+messages[i][4]+'\n'
+            if(pruned_messages[i][2]==MY_NUMBER): # message is from me; so, show recipient
+                outstr=outstr+timestring+" | Me -> "+str(pruned_messages[i][3])+" : "+pruned_messages[i][4]+'\n'
             else: # message is from someone else; i'm the recipient
-                outstr=outstr+timestring+" | "+str(messages[i][2])+" : "+messages[i][4]+'\n'
+                outstr=outstr+timestring+" | "+str(pruned_messages[i][2])+" : "+pruned_messages[i][4]+'\n'
             #outstr=pruned_messages[i][1]+" | "+pruned_messages[i][2]+" > "+pruned_messages[i][3]+'\n'+outstr
             #outstr="<"+str(i)+"> "+pruned_messages[i]+'\n'+outstr
         label2.text=outstr
         
-    gc.collect()
-    end_mem = gc.mem_free()
-    print( "Point 2 Available memory: {} bytes".format(end_mem) )
-    print( "Code section 1-2 used {} bytes".format(start_mem - end_mem) )
     
 def delete_all_messages():
     label7.text="deleting all stored sms messages..."
@@ -291,13 +247,6 @@ def get_network_status():
         #label7.text=""
     
 def get_messages():
-
-    #audio_alert = False
-    
-    #inbox_size_original = inbox_size
-    gc.collect()
-    messages_in.clear()
-    
     label7.text='(checking messages...)'
     print("checking messages")
     time.sleep(.2)
@@ -322,10 +271,7 @@ def get_messages():
         # prune if too many messages
         delete_messages(25,10,res)
         
-        
-        
         #messages_in.clear()
-        #message_num=0
         for r in res:
             header=r[0].split(',')
             sim_num=header[0].split(':')[1]
@@ -356,13 +302,13 @@ def get_messages():
             i=0
             result_index=-1
             for number in numbers:
-                #print(sender,number)
+                print(sender,number)
                 if (int(sender)==int(number)):
                     result_index=i
-                    #print("match!")
+                    print("match!")
                 i=i+1
             if (result_index>-1):
-                #print("result_index=",result_index)
+                print("result_index=",result_index)
                 sender_name=sendee_list[result_index][0]
             else:
                 sender_name=sender
@@ -372,38 +318,18 @@ def get_messages():
             
             msg = r[1]
             #print(sim_num," -- ",msg)
+            messages.append(["0",sendtime,sender_name,sender,msg])
             
+            print("messages:",messages)
             
-            print("append")
-            #add line breaks
-            print("msg=",msg)
-            print("len(msg)=",len(msg))
-
-            print("chunks:")
-            res=[msg[y-max_msg_width:y] for y in range(max_msg_width, len(msg)+max_msg_width,max_msg_width)]
-            print(res)
+            messages.sort(key=lambda x: x[1])
             
-            msg=""
-            msg=res[0]
-            i=1
-            while i < len(res):
-                msg=msg+"\n "+res[i]
-                i=i+1
-                
-            messages_in.append(["0",sendtime,sender_name,sender,msg])
-            
-            #print("messages:",messages)
-            
-            
-            
-            #messages=messages[-5:]
-            
-            #print("messages sorted:",messages)
+            print("messages sorted:",messages)
             #sorted_messages=sorted(messages,key=lambda x: x[1])
             #pruned_messages=messages[-5:]   
-            #play_alert(.1)
-            #audio_alert=True
-            #print("audio_alert=",audio_alert)
+            play_alert(.1)
+            audio_alert=True
+            print("audio_alert=",audio_alert)
             #messages.append([sendtime.timestamp,sendtime.isoformat(),sender_name,msg])
             #messages.append(sendtime.isoformat() +" | "+sender_name+" > "+msg)
             #messages.append(sender+"> "+msg)
@@ -411,12 +337,6 @@ def get_messages():
             #
             #label1.text='> '+instr
         label7.text=''
-        
-        inbox_size=len(messages_in)
-        
-        #if (inbox_size > inbox_size_original):
-            #audio_alert=True
-        
         show_messages()
     else:
         #audio_alert=False
@@ -458,7 +378,6 @@ def answer_call():
           
 def make_call(recipient):
     
-    label7.text="calling: "+recipient
     try:
     
         uart.write(bytes('AT+CNUM\r',"ascii")) # switch to headphones
@@ -495,9 +414,6 @@ def make_call(recipient):
         
 def send_message(recipient,message):
     #label1.text='> (checking messages...)'
-    
-    label7.text='> sending message ...'
-    
     uart.write(bytes('AT+CFUN=1\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting)
@@ -534,41 +450,31 @@ def send_message(recipient,message):
         i=0
         result_index=-1
         for number in numbers:
-            #print(recipient,number)
+            print(recipient,number)
             if (int(recipient)==int(number)):
                 result_index=i
-                #print("match!")
+                print("match!")
             i=i+1
         if (result_index>-1):
-            #print("result_index=",result_index)
+            print("result_index=",result_index)
             recipient_name=sendee_list[result_index][0]
         else:
             recipient_name=recipient
             
         
         
-        messages_out.append(["0",sendtime,MY_NUMBER,recipient_name,message])
-        
-        #print("sort")
-        #messages_out.sort(key=lambda x: x[1])
-            
-        print("prune")
-        del messages_out[:-(history_length-1)]
-        
+        messages.append(["0",sendtime,MY_NUMBER,recipient_name,message])
         #msg_display_index=len(messages_in)+len(messages_out)-1
         show_messages()
-        label7.text='> (message sent!)'
+        label1.text='> (message sent!)'
         #time.sleep(1)
-        label1.text="> "
+        #label1.text='> '
     
     else:
         print("send failed")
-        label7.text='send failed.'
-        uart.write(bytes('AT\r',"ascii"))
-        data=uart.read(uart.in_waiting)
-        print(data)
-        time.sleep(1)
-        label7.text=''
+        label1.text='> (send failed)'
+        #time.sleep(1)
+        #label1.text='> '
     
     #messages.append(data.strip())
     
@@ -588,11 +494,12 @@ time.sleep(2)
 label7.text="Ready."
 get_network_status()
 get_network_time()
-get_messages()
+
 #delete_all_message()
 
-
 while True:
+
+    
 
     data=uart.read(uart.in_waiting)
     #print("data=",data)decode()
@@ -612,7 +519,6 @@ while True:
                 #print(data.split(":"))
                 #print(data.split("\r\n"))
                 #print(data.strip().split(":"))
-                play_alert(.1)
                 get_messages()
         except:
             print("couldn't decode uart")
@@ -626,69 +532,10 @@ while True:
         get_network_status()
         get_network_time()
         get_messages()
-        #print("audio_alert=",audio_alert)
-        #if(audio_alert):
-            #play_alert(.1)
+        print("audio_alert=",audio_alert)
+        if(audio_alert):
+            play_alert(.1)
         starttime=time.monotonic()
         
     
-    #i2c.readfrom_into(cardkb,b)
-    if (b == LEFT):
-        print("left!")
-        #sendee_index=(sendee_index+1)%len(sendee_list)
-        #sendee=sendee_list[sendee_index]
-        #label0.text="TO: "+str(sendee)
-        #get_network_status()
-        #get_network_time()
-        delete_all_messages()
-        continue
-    if (b == RIGHT):
-        print("right!")
-        get_network_status()
-        get_network_time()
-        get_messages()
-        #make_call(sendee[1])
-        continue
-    if (b == ESC):
-        audio_alert=False
-        print("audio alert off")
-        continue
-    if (b == UP):
-        #answer_call()
-        make_call(sendee[1])
-        continue
-    if (b == DOWN):
-        hangup()
-        continue
-    if (b == TAB):
-        print("tab!")
-        sendee_index=(sendee_index+1)%len(sendee_list)
-        sendee=sendee_list[sendee_index]
-        label0.text="TO: "+str(sendee)
-        continue
-        
-    if (b == BACK) and len(instr)>0:
-        print("DELETE")
-        instr=instr[:-1]
-        print("instr=",instr)
-        label1.text='> '+instr
-        #del instr[-1]
     
-    c=b.decode()
-    
-    if (c != ESC and c != NUL and c !=LEFT and c!=BACK):
-        if (c == CR):
-            print('\nsending:',instr)
-            label7.text='> (sending message ...)'
-            send_message(sendee[1],instr.strip())
-            #messages.append("me: "+instr.strip())
-            #get_messages()
-            instr=''
-        else:
-            #print("back in!")
-            print(c, end='')
-            instr=instr+c
-            label1.text='> '+instr
- 
-# be nice, clean up
-i2c.unlock()

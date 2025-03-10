@@ -11,7 +11,7 @@ displayio.release_displays()
 
 bus = board.SPI()
 
-chip_select_pin = board.D6
+chip_select_pin = board.D10
 # Select JUST ONE of the following lines:
 # For the 400x240 display (can only be operated at 2MHz)
 framebuffer = sharpdisplay.SharpMemoryFramebuffer(bus, chip_select_pin, 400, 240)
@@ -27,6 +27,7 @@ from terminalio import FONT
 label = Label(font=FONT, text="booting...", x=10, y=10, scale=2, line_spacing=1.2)
 display.root_group = label
 
+time.sleep(3)
 
 uart = busio.UART(board.TX, board.RX, baudrate=115200,timeout=0)
 
@@ -35,7 +36,7 @@ while True:
     # signal strength
     uart.write(bytes('AT+CSQ\r',"ascii"))
     #uart.write(bytes('AT\r',"ascii"))
-    time.sleep(.2)
+    time.sleep(1)
     data=uart.read(uart.in_waiting).decode()
     print(data)
     label.text=str(data)
