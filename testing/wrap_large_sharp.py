@@ -14,6 +14,13 @@ import math
 from adafruit_datetime import datetime, timedelta
 from __future__ import annotations
 
+from adafruit_debouncer import Debouncer
+
+pin = digitalio.DigitalInOut(board.D9)
+pin.direction = digitalio.Direction.INPUT
+pin.pull = digitalio.Pull.UP
+switch = Debouncer(pin)
+
 sendee_list = [["Don",16512524765],["Emilie",16463278220],["David",15304929688],["Liz",16174299144],["me",17819189114]]
 
 sendee_index=0
@@ -192,7 +199,8 @@ def delete_all_messages():
     label7.text="all stored sms messages deleted"
     #time.sleep(1)
     #label7.text=""
-    #messages_in.clear()
+    messages_in.clear()
+    get_messages()
     #messages_out.clear()
     
 def delete_messages(limit,prune,res):
@@ -594,6 +602,13 @@ get_messages()
 
 while True:
 
+    switch.update()
+    #print(switch.value)
+    
+    if switch.value==False:
+        delete_all_messages()
+        time.sleep(2)
+        
     data=uart.read(uart.in_waiting)
     #print("data=",data)decode()
     if len(data)>0:
