@@ -416,7 +416,7 @@ def make_call(recipient):
         print(data)
         
         uart.write(bytes('ATD+'+str(recipient)+';\r',"ascii")) # set volume to 2
-        time.sleep(.2)
+        time.sleep(2)
         data=uart.read(uart.in_waiting).decode()
         print(data)
 
