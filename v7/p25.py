@@ -269,7 +269,7 @@ def load_sms_from_sd(force_reload=False):
     try:
         import os
         files = os.listdir("/sd")
-        print(f"Found {len(files)} files on SD card")
+        pass
     except:
         pass  # Manual scan fallback
         # Manual file discovery for CircuitPython
@@ -281,8 +281,8 @@ def load_sms_from_sd(force_reload=False):
             for minute in range(0, 60, 5):  # Check every 5 minutes
                 time_patterns.append(f"{hour:02d}{minute:02d}")
         
-        for date in base_patterns:
-            for time in time_patterns[:50]:  # Limit to avoid too many checks
+        for date in base_patterns[:3]:  # Only check last 3 days
+            for time in time_patterns[:20]:  # Reduce to 20 checks
                 filename = f"sms_{date}_{time}*.txt"
                 try:
                     # Try to open the file to see if it exists
@@ -318,10 +318,10 @@ def load_sms_from_sd(force_reload=False):
                 
     # Sort by filename (which includes timestamp) - most recent first
     sms_list.sort(key=lambda x: x['filename'], reverse=True)
-    print(f"Total SMS loaded: {len(sms_list)}")
     
-    if len(sms_list) == 0:
-        pass  # No SMS files found
+    # Limit to 20 most recent messages to save memory
+    if len(sms_list) > 20:
+        sms_list = sms_list[:20]
     
     return sms_list
 
@@ -576,20 +576,20 @@ def network_status():
     uart.write(bytes('AT+CSQ\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
 
 def get_messages():
     status_area.text='(checking messages...)'
-    print("checking messages")
+    pass
     uart.write(bytes('AT+CMGF=1\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting)
-    print(data)
+    pass
     
     uart.write(bytes('AT+CMGL=\"ALL\"\r',"ascii"))
     time.sleep(.3)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     # Parse and store new SMS messages
     lines = data.split('\r\n')
@@ -612,6 +612,8 @@ def get_messages():
     
     # Refresh inbox display after loading messages
     if current_view == "inbox":
+        import gc
+        gc.collect()  # Force garbage collection
         display_inbox()
 
 # Global variables for inbox navigation  
@@ -728,6 +730,8 @@ def format_content_preview(content, max_length=15):
 
 def display_inbox():
     global selected_message_index, inbox_scroll_offset
+    import gc
+    gc.collect()  # Clear memory before display operations
     hide_all_views()
     
     # Reset title to INBOX and normalize text scales
@@ -735,9 +739,7 @@ def display_inbox():
     compose_title.scale = 1
     compose_content.scale = 1
     
-    print("Displaying inbox...")
     sms_list = load_sms_from_sd()
-    print(f"SMS list has {len(sms_list)} messages")
     
     if not sms_list:
         msg_lines[0].text = "No messages"
@@ -767,15 +769,15 @@ def display_inbox():
             
             # Format: "NAME     TIME     CONTENT..."
             # Use fixed width columns: 10 chars name, 11 chars time, rest content
-            sender_col = (sender[:10] + " " * 10)[:10]  # Pad and truncate to 10 chars
-            time_col = (timestamp[:11] + " " * 11)[:11]  # Pad and truncate to 11 chars
+            sender_col = sender[:10]  # Pad and truncate to 10 chars
+            time_col = timestamp[:8]  # Pad and truncate to 11 chars
             
             # Highlight selected message
             if msg_idx == selected_message_index:
-                line.text = f">{sender_col} {time_col} {content}"
+                line.text = ">" + sender_col + " " + time_col + " " + content
                 line.color = 0x00FF00  # Green for selected
             else:
-                line.text = f" {sender_col} {time_col} {content}"
+                line.text = " " + sender_col + " " + time_col + " " + content
                 line.color = 0xFFFF00  # Yellow for normal
         else:
             line.text = ""
@@ -817,15 +819,15 @@ def refresh_inbox_highlighting():
             
             # Format: "NAME     TIME     CONTENT..."
             # Use fixed width columns: 10 chars name, 11 chars time, rest content
-            sender_col = (sender[:10] + " " * 10)[:10]  # Pad and truncate to 10 chars
-            time_col = (timestamp[:11] + " " * 11)[:11]  # Pad and truncate to 11 chars
+            sender_col = sender[:10]  # Pad and truncate to 10 chars
+            time_col = timestamp[:8]  # Pad and truncate to 11 chars
             
             # Highlight selected message
             if msg_idx == selected_message_index:
-                line.text = f">{sender_col} {time_col} {content}"
+                line.text = ">" + sender_col + " " + time_col + " " + content
                 line.color = 0x00FF00  # Green for selected
             else:
-                line.text = f" {sender_col} {time_col} {content}"
+                line.text = " " + sender_col + " " + time_col + " " + content
                 line.color = 0xFFFF00  # Yellow for normal
         else:
             line.text = ""
@@ -1576,18 +1578,18 @@ def send_message(recipient,message):
     uart.write(bytes('AT+CFUN=1\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting)
-    print(data)
+    pass
     #messages.append(data.strip())
     uart.write(bytes('AT+CMGF=1\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting)
     #messages.append(data.strip())
-    print(data)
+    pass
     uart.write(bytes('AT+CMGS=\"+'+str(recipient)+'\"\r',"ascii"))
     time.sleep(.5)
     data=uart.read(uart.in_waiting)
     #messages.append(data.strip())
-    print(data)
+    pass
     uart.write(bytes(message+'\x1a',"ascii"))
     time.sleep(2)
     data=uart.read(uart.in_waiting)
@@ -1600,27 +1602,27 @@ def make_call(recipient):
     uart.write(bytes('AT+CNUM\r',"ascii")) # switch to headphones
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('AT+CSDVC=1\r',"ascii")) # switch to headphones
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('AT+CLVL=?\r',"ascii")) # query volume range
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('AT+CLVL=5\r',"ascii")) # set volume to 2
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('ATD+'+str(recipient)+';\r',"ascii")) # set volume to 2
     time.sleep(2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
 
 # display startup msgs
@@ -1633,11 +1635,18 @@ load_address_book()
 current_view = "inbox"
 display_inbox()
 
+# enable caller id
+uart.write(bytes('AT+CLIP=1\r',"ascii")) # set volume to 2
+time.sleep(.2)
+data=uart.read(uart.in_waiting).decode()
+
 while True:
 
     # Read complete lines from UART
     uart_lines = read_uart_lines()
+    
     for line in uart_lines:
+        print(uart_lines)
         pass  # UART line received
         
         # Check for call status updates first

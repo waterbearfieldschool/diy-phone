@@ -269,7 +269,7 @@ def load_sms_from_sd(force_reload=False):
     try:
         import os
         files = os.listdir("/sd")
-        print(f"Found {len(files)} files on SD card")
+        pass
     except:
         pass  # Manual scan fallback
         # Manual file discovery for CircuitPython
@@ -281,8 +281,8 @@ def load_sms_from_sd(force_reload=False):
             for minute in range(0, 60, 5):  # Check every 5 minutes
                 time_patterns.append(f"{hour:02d}{minute:02d}")
         
-        for date in base_patterns:
-            for time in time_patterns[:50]:  # Limit to avoid too many checks
+        for date in base_patterns[:3]:  # Only check last 3 days
+            for time in time_patterns[:20]:  # Reduce to 20 checks
                 filename = f"sms_{date}_{time}*.txt"
                 try:
                     # Try to open the file to see if it exists
@@ -318,10 +318,10 @@ def load_sms_from_sd(force_reload=False):
                 
     # Sort by filename (which includes timestamp) - most recent first
     sms_list.sort(key=lambda x: x['filename'], reverse=True)
-    print(f"Total SMS loaded: {len(sms_list)}")
     
-    if len(sms_list) == 0:
-        pass  # No SMS files found
+    # Limit to 20 most recent messages to save memory
+    if len(sms_list) > 20:
+        sms_list = sms_list[:20]
     
     return sms_list
 
@@ -576,20 +576,20 @@ def network_status():
     uart.write(bytes('AT+CSQ\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
 
 def get_messages():
     status_area.text='(checking messages...)'
-    print("checking messages")
+    pass
     uart.write(bytes('AT+CMGF=1\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting)
-    print(data)
+    pass
     
     uart.write(bytes('AT+CMGL=\"ALL\"\r',"ascii"))
     time.sleep(.3)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     # Parse and store new SMS messages
     lines = data.split('\r\n')
@@ -612,6 +612,8 @@ def get_messages():
     
     # Refresh inbox display after loading messages
     if current_view == "inbox":
+        import gc
+        gc.collect()  # Force garbage collection
         display_inbox()
 
 # Global variables for inbox navigation  
@@ -639,6 +641,9 @@ call_next_update = 0  # Next time to update display (1 second intervals)
 # Incoming call variables
 incoming_call_active = False
 incoming_call_answered = False
+incoming_caller_number = None
+last_clip_caller_id = None  # Store caller ID from most recent +CLIP
+ring_detected_time = 0  # Time when first RING was detected
 
 # Thread view variables
 thread_messages = []
@@ -728,6 +733,8 @@ def format_content_preview(content, max_length=15):
 
 def display_inbox():
     global selected_message_index, inbox_scroll_offset
+    import gc
+    gc.collect()  # Clear memory before display operations
     hide_all_views()
     
     # Reset title to INBOX and normalize text scales
@@ -735,9 +742,7 @@ def display_inbox():
     compose_title.scale = 1
     compose_content.scale = 1
     
-    print("Displaying inbox...")
     sms_list = load_sms_from_sd()
-    print(f"SMS list has {len(sms_list)} messages")
     
     if not sms_list:
         msg_lines[0].text = "No messages"
@@ -767,15 +772,15 @@ def display_inbox():
             
             # Format: "NAME     TIME     CONTENT..."
             # Use fixed width columns: 10 chars name, 11 chars time, rest content
-            sender_col = (sender[:10] + " " * 10)[:10]  # Pad and truncate to 10 chars
-            time_col = (timestamp[:11] + " " * 11)[:11]  # Pad and truncate to 11 chars
+            sender_col = sender[:10]  # Pad and truncate to 10 chars
+            time_col = timestamp[:8]  # Pad and truncate to 11 chars
             
             # Highlight selected message
             if msg_idx == selected_message_index:
-                line.text = f">{sender_col} {time_col} {content}"
+                line.text = ">" + sender_col + " " + time_col + " " + content
                 line.color = 0x00FF00  # Green for selected
             else:
-                line.text = f" {sender_col} {time_col} {content}"
+                line.text = " " + sender_col + " " + time_col + " " + content
                 line.color = 0xFFFF00  # Yellow for normal
         else:
             line.text = ""
@@ -817,15 +822,15 @@ def refresh_inbox_highlighting():
             
             # Format: "NAME     TIME     CONTENT..."
             # Use fixed width columns: 10 chars name, 11 chars time, rest content
-            sender_col = (sender[:10] + " " * 10)[:10]  # Pad and truncate to 10 chars
-            time_col = (timestamp[:11] + " " * 11)[:11]  # Pad and truncate to 11 chars
+            sender_col = sender[:10]  # Pad and truncate to 10 chars
+            time_col = timestamp[:8]  # Pad and truncate to 11 chars
             
             # Highlight selected message
             if msg_idx == selected_message_index:
-                line.text = f">{sender_col} {time_col} {content}"
+                line.text = ">" + sender_col + " " + time_col + " " + content
                 line.color = 0x00FF00  # Green for selected
             else:
-                line.text = f" {sender_col} {time_col} {content}"
+                line.text = " " + sender_col + " " + time_col + " " + content
                 line.color = 0xFFFF00  # Yellow for normal
         else:
             line.text = ""
@@ -1400,12 +1405,70 @@ def update_call_status_display():
         status_area.text = "Call failed"
         info_area.text = "Returning to inbox in a moment..."
 
-def handle_incoming_call():
+def parse_caller_id(clip_line):
+    """Parse +CLIP response to extract caller number"""
+    try:
+        print("Parsing CLIP line: " + clip_line)
+        # Parse: +CLIP: "+16512524765",145,"",0,,0
+        if '+CLIP:' in clip_line:
+            parts = clip_line.split(',')
+            print("CLIP parts: " + str(len(parts)))
+            if len(parts) >= 1:
+                # Extract the phone number (first part after +CLIP:)
+                phone_part = parts[0].split(':')[1].strip()
+                print("Phone part: " + phone_part)
+                # Remove quotes
+                phone_number = phone_part.strip('"').strip("'")
+                print("Parsed phone number: " + phone_number)
+                return phone_number
+    except Exception as e:
+        print("Error parsing CLIP: " + str(e))
+    return None
+
+def lookup_contact_by_number(phone_number):
+    """Look up contact name by phone number in address book"""
+    if not phone_number:
+        print("No phone number to lookup")
+        return None
+    
+    print("Looking up number: " + phone_number)
+    # Clean the phone number for comparison (remove +1, spaces, etc.)
+    clean_number = phone_number.replace('+1', '').replace(' ', '').replace('(', '').replace(')', '').replace('-', '')
+    print("Cleaned number: " + clean_number)
+    
+    for contact in address_book:
+        # Convert contact number to string first, then clean it
+        contact_number_str = str(contact[1])
+        contact_number = contact_number_str.replace('+1', '').replace(' ', '').replace('(', '').replace(')', '').replace('-', '')
+        print("Checking against contact: " + contact[0] + " - " + contact_number)
+        if clean_number.endswith(contact_number[-10:]) or contact_number.endswith(clean_number[-10:]):
+            print("Found match: " + contact[0])
+            return contact[0]  # Return contact name
+    
+    print("No contact match found")
+    return None
+
+def handle_incoming_call(caller_number=None):
     """Handle incoming call display"""
     global current_view, incoming_call_active, call_contact_name
     current_view = "incoming_call"
     incoming_call_active = True
-    call_contact_name = "Unknown Caller"  # We could detect caller ID later
+    
+    print("Handle incoming call with number: " + str(caller_number))
+    
+    # Look up caller in address book
+    if caller_number:
+        contact_name = lookup_contact_by_number(caller_number)
+        if contact_name:
+            call_contact_name = contact_name
+            print("Using contact name: " + contact_name)
+        else:
+            call_contact_name = caller_number
+            print("Using phone number: " + caller_number)
+    else:
+        call_contact_name = "Unknown Caller"
+        print("No caller number provided, using Unknown Caller")
+    
     hide_all_views()
     
     # Set main title to CALL
@@ -1447,7 +1510,7 @@ def answer_incoming_call():
 
 def reject_incoming_call():
     """Reject the incoming call"""
-    global incoming_call_active, current_view
+    global incoming_call_active, current_view, incoming_caller_number, last_clip_caller_id, ring_detected_time
     
     pass  # Rejecting incoming call
     
@@ -1457,19 +1520,38 @@ def reject_incoming_call():
     
     # Return to inbox
     incoming_call_active = False
+    incoming_caller_number = None  # Reset caller number
+    last_clip_caller_id = None  # Reset stored caller ID
+    ring_detected_time = 0  # Reset ring timer
     display_inbox()
 
 def process_call_uart_line(line):
     """Process UART lines related to call status"""
     global call_in_progress, call_status, call_start_time, call_end_countdown, call_duration_counter, call_connect_time, call_next_update
-    global incoming_call_active
+    global incoming_call_active, incoming_caller_number, last_clip_caller_id, ring_detected_time
     
     line_upper = line.upper().strip()
     
     # Check for incoming call (RING)
     if "RING" in line_upper and not call_in_progress and not incoming_call_active:
-        handle_incoming_call()
-        return True
+        import time
+        current_time = time.time()
+        
+        if ring_detected_time == 0:
+            # First RING detected - start waiting for +CLIP
+            ring_detected_time = current_time
+            print("First RING detected, waiting for +CLIP...")
+            return True
+        elif current_time - ring_detected_time > 0.5:  # Wait 500ms for +CLIP
+            # Waited long enough, process the call now
+            print("RING timeout, using caller ID: " + str(last_clip_caller_id))
+            handle_incoming_call(last_clip_caller_id)
+            ring_detected_time = 0  # Reset
+            return True
+        else:
+            # Still waiting for +CLIP
+            print("RING detected, still waiting for +CLIP...")
+            return True
     
     if not call_in_progress:
         return False  # Not monitoring a call
@@ -1486,9 +1568,11 @@ def process_call_uart_line(line):
         return True
         
     elif "VOICE CALL: END" in line_upper:
-        global incoming_call_answered
+        global incoming_call_answered, incoming_caller_number, last_clip_caller_id
         call_status = "ended"
         incoming_call_answered = False  # Reset incoming call flag
+        incoming_caller_number = None  # Reset caller number
+        last_clip_caller_id = None  # Reset stored caller ID
         # Extract call duration if available
         if ":" in line and len(line.split(":")) > 2:
             try:
@@ -1503,9 +1587,11 @@ def process_call_uart_line(line):
         
     elif "NO CARRIER" in line_upper:
         if call_status != "ended":  # If we haven't already processed VOICE CALL: END
-            global incoming_call_answered
+            global incoming_call_answered, incoming_caller_number, last_clip_caller_id
             call_status = "ended"
             incoming_call_answered = False  # Reset incoming call flag
+            incoming_caller_number = None  # Reset caller number
+            last_clip_caller_id = None  # Reset stored caller ID
             update_call_status_display()
             call_end_countdown = 100  # Show for 10 seconds
         pass  # No carrier detected
@@ -1522,7 +1608,7 @@ def process_call_uart_line(line):
 
 def end_call_monitoring():
     """End call monitoring and return to inbox"""
-    global call_in_progress, call_status, call_end_countdown, incoming_call_answered
+    global call_in_progress, call_status, call_end_countdown, incoming_call_answered, incoming_caller_number, last_clip_caller_id, ring_detected_time
     
     # Send hangup command to actually end the call
     uart.write(bytes('AT+CHUP\r',"ascii"))
@@ -1532,6 +1618,9 @@ def end_call_monitoring():
     call_status = ""
     call_end_countdown = 0
     incoming_call_answered = False
+    incoming_caller_number = None  # Reset caller number
+    last_clip_caller_id = None  # Reset stored caller ID
+    ring_detected_time = 0  # Reset ring timer
     back_to_inbox()
 
 def start_call_screen():
@@ -1576,18 +1665,18 @@ def send_message(recipient,message):
     uart.write(bytes('AT+CFUN=1\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting)
-    print(data)
+    pass
     #messages.append(data.strip())
     uart.write(bytes('AT+CMGF=1\r',"ascii"))
     time.sleep(.2)
     data=uart.read(uart.in_waiting)
     #messages.append(data.strip())
-    print(data)
+    pass
     uart.write(bytes('AT+CMGS=\"+'+str(recipient)+'\"\r',"ascii"))
     time.sleep(.5)
     data=uart.read(uart.in_waiting)
     #messages.append(data.strip())
-    print(data)
+    pass
     uart.write(bytes(message+'\x1a',"ascii"))
     time.sleep(2)
     data=uart.read(uart.in_waiting)
@@ -1600,27 +1689,27 @@ def make_call(recipient):
     uart.write(bytes('AT+CNUM\r',"ascii")) # switch to headphones
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('AT+CSDVC=1\r',"ascii")) # switch to headphones
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('AT+CLVL=?\r',"ascii")) # query volume range
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('AT+CLVL=5\r',"ascii")) # set volume to 2
     time.sleep(.2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
     uart.write(bytes('ATD+'+str(recipient)+';\r',"ascii")) # set volume to 2
     time.sleep(2)
     data=uart.read(uart.in_waiting).decode()
-    print(data)
+    pass
     
 
 # display startup msgs
@@ -1633,11 +1722,31 @@ load_address_book()
 current_view = "inbox"
 display_inbox()
 
+# enable caller id
+uart.write(bytes('AT+CLIP=1\r',"ascii")) # set volume to 2
+time.sleep(.2)
+data=uart.read(uart.in_waiting).decode()
+
 while True:
 
     # Read complete lines from UART
     uart_lines = read_uart_lines()
+    
+    # First pass: collect any +CLIP caller ID information
     for line in uart_lines:
+        if '+CLIP:' in line.upper():
+            last_clip_caller_id = parse_caller_id(line)
+            print("Stored caller ID: " + str(last_clip_caller_id))
+            
+            # If we're waiting for +CLIP after RING, trigger call now
+            if ring_detected_time > 0 and not incoming_call_active:
+                print("Got +CLIP while waiting, triggering call now")
+                handle_incoming_call(last_clip_caller_id)
+                ring_detected_time = 0  # Reset
+    
+    # Second pass: process all other lines including RING
+    for line in uart_lines:
+        print(uart_lines)
         pass  # UART line received
         
         # Check for call status updates first
