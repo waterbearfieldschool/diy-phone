@@ -1,12 +1,13 @@
 /**************************************************************************
-  DIY Phone v23 - SMS Inbox with Unique Contacts and Text Wrapping
-  Features: Display + SIM7600 + SD card SMS storage + I2C keyboard control + Address book name lookup + Full timestamps + Auto SMS deletion + Message threads
-  Tests triggered by keyboard: 1=Signal, 2=AT Test, 3=SMS Check, 4=SD Test, 5=SMS Read, 6=Network, 7=Delete One-by-One, 8=Delete Bulk
+  DIY Phone v23 - Dual-Pane Inbox/Thread UI
+  Features: Display + SIM7600 + SD card SMS storage + I2C keyboard control + Address book name lookup + Full timestamps + Auto SMS deletion + Dual-pane interface
   
   v23 Changes: 
-  - Move message canvas down by 3 pixels
-  - Show only latest message per unique contact in inbox
-  - Enable text wrapping for inbox message content
+  - Dual-pane UI: Top half = inbox list, Bottom half = thread view
+  - Tab to switch between inbox/thread panes
+  - Text input for replying to messages
+  - Thread filtering by contact/phone number
+  - Efficient inbox navigation and message composition
  **************************************************************************/
 
 #include <Arduino.h>
@@ -66,23 +67,47 @@ int addressBookCount = 0;
 SMSInboxEntry smsInbox[50];
 int smsInboxCount = 0;
 int inboxScrollOffset = 0;
-int inboxSelectedIndex = 0;  // Currently selected inbox entry (relative to scroll offset)
-int messageScrollOffset = 0;       // Scroll position in message canvas
+
+// v23 UI State - Dual-Pane Interface
+enum ActivePane {
+  PANE_INBOX = 0,
+  PANE_THREAD = 1
+};
+
+struct ThreadEntry {
+  String sender;
+  String senderDisplayName;
+  String time;
+  String content;
+  bool isOutgoing; // true if sent by us, false if received
+};
+
+// UI state variables
+ActivePane currentPane = PANE_INBOX;
+int selectedInboxIndex = 0;          // Which inbox message is highlighted
+String selectedContactPhone = "";     // Phone number of selected contact
+ThreadEntry threadMessages[30];       // Messages in current thread
+int threadMessageCount = 0;
+int threadScrollOffset = 0;           // For scrolling thread view
+String inputBuffer = "";              // Text being typed for reply
+
+// Layout constants for dual-pane UI
+#define INBOX_PANE_Y 0
+#define INBOX_PANE_HEIGHT 120
+#define THREAD_PANE_Y 120  
+#define THREAD_PANE_HEIGHT 120
+#define INPUT_LINE_HEIGHT 12
+#define PANE_BORDER_WIDTH 2
 
 // Function declarations
 void updateStatus(const char *text, uint16_t color);
 void updateInbox();
-void updateMessages();
-void updateSeparator();
-void loadMessagesForContact(const String& senderNumber);
-void loadAllMessagesForContact(const String& senderNumber);
 void readUARTLines();
 void handleKeyboard();
 String getKeyName(uint8_t keyCode);
 void runTest(int testNumber);
 bool loadSMSInbox();
 void sortSMSByTime();
-void filterToUniqueContacts();
 void handleNewSMSNotification(int smsIndex);
 void addNewSMSToInbox(const String& filename);
 bool deleteAllSMSIndividually();
@@ -91,16 +116,36 @@ bool loadAddressBook();
 String lookupContactName(const String& phoneNumber);
 unsigned long parseTimestamp(const String& timestamp);
 int compareSMSByTime(const void* a, const void* b);
-String formatDateWithoutYear(const String& timestamp);
 
-// Canvas objects
-GFXcanvas16 inbox_canvas(320, 100);  // Inbox canvas - height for 10 lines (10 pixels each)
-GFXcanvas16 message_canvas(320, 95);  // Message canvas - reduced by 3 more pixels (240-inboxY-100-12-3 = 95)
+// Memory monitoring functions
+void updateMemoryDisplay();
+uint32_t getFreeMemory();
+void logMemoryUsage(const char* location);
 
+// v23 Dual-Pane UI functions
+void drawInboxPane();
+void drawThreadPane();
+void drawPaneBorder(ActivePane pane);
+void loadThreadForContact(const String& phoneNumber);
+void handleKeyboardV23();
+void switchPane();
+void scrollInboxSelection(int direction);
+void scrollThread(int direction);
+void addCharToInput(char c);
+void sendReplyMessage();
+void addMessageToThread(const String& content, bool isOutgoing);
+
+// Canvas objects - REMOVED for v22 to save 4KB RAM and improve performance
+//GFXcanvas16 inbox_canvas(320, 100);  // Inbox canvas - height for 10 lines (10 pixels each)
+//GFXcanvas1 inbox_canvas(320, 100);   // Removed - now using direct TFT calls
 #define statusY 10
 #define inboxY 30
-#define separatorY 130  // inboxY + 100 = 130
-#define messageY 145    // separatorY + 12 + 3 = 145
+#define memoryDisplayX 240  // Position memory display on right side
+#define memoryDisplayY 10
+
+// Memory tracking variables
+uint32_t lastMemoryCheck = 0;
+const uint32_t MEMORY_CHECK_INTERVAL = 5000; // Check every 5 seconds
 
 void setup(void) {
   Serial.begin(115200);
@@ -207,7 +252,7 @@ void setup(void) {
     Serial.println("[DEBUG] Testing SD card write...");
     FsFile testFile = sd.open("test.txt", O_WRITE | O_CREAT);
     if (testFile) {
-      testFile.println("DIY Phone v19 Test");
+      testFile.println("DIY Phone v23 Test");
       testFile.close();
       Serial.println("[DEBUG] SD card test file created successfully");
       updateStatus("SD test OK", ST77XX_GREEN);
@@ -267,20 +312,24 @@ void setup(void) {
   loadSMSInbox();
   Serial.println("[DEBUG] Sorting SMS...");
   sortSMSByTime();  // Sort by time with newest first
-  Serial.println("[DEBUG] Filtering to unique contacts...");
-  filterToUniqueContacts();  // Keep only latest message per contact
-  Serial.println("[DEBUG] Updating inbox display...");
+  Serial.println("[DEBUG] Initializing v23 dual-pane interface...");
+  
+  // Initialize UI state - select first message and load its thread
   if (smsInboxCount > 0) {
-    updateInbox();
-  } else {
-    Serial.println("[DEBUG] No SMS messages found, skipping inbox update");
-    // Clear both canvases
-    inbox_canvas.fillScreen(0x0000);
-    message_canvas.fillScreen(0x0000);
-    tft.drawRGBBitmap(0, inboxY, inbox_canvas.getBuffer(), inbox_canvas.width(), inbox_canvas.height());
-    tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
+    selectedInboxIndex = 0;
+    loadThreadForContact(smsInbox[0].sender);
   }
+  
+  // Draw dual-pane interface
+  drawInboxPane();
+  drawThreadPane();
+  drawPaneBorder(currentPane);
+  
   Serial.println("[DEBUG] Setup complete!");
+  
+  // Initial memory display and logging
+  logMemoryUsage("Setup complete");
+  updateMemoryDisplay();
   
   updateStatus("Ready - Press 1-8", ST77XX_CYAN);
   Serial.println("===============================================");
@@ -301,14 +350,22 @@ void loop() {
   // Monitor UART from SIM7600
   readUARTLines();
   
-  // Monitor keyboard
-  handleKeyboard();
+  // Monitor keyboard (v23 dual-pane version)
+  handleKeyboardV23();
+  
+  // Update memory display periodically
+  uint32_t currentTime = millis();
+  if (currentTime - lastMemoryCheck >= MEMORY_CHECK_INTERVAL) {
+    updateMemoryDisplay();
+    lastMemoryCheck = currentTime;
+  }
   
   delay(10);  // Small delay for stability
 }
 
 bool loadAddressBook() {
   Serial.println("=== Loading Address Book ===");
+  logMemoryUsage("Before loading address book");
   
   addressBookCount = 0;
   
@@ -368,6 +425,7 @@ bool loadAddressBook() {
   Serial.print("Loaded ");
   Serial.print(addressBookCount);
   Serial.println(" contacts");
+  logMemoryUsage("After loading address book");
   
   return addressBookCount > 0;
 }
@@ -489,10 +547,10 @@ unsigned long parseTimestamp(const String& timestamp) {
 
 bool loadSMSInbox() {
   Serial.println("=== Loading SMS Inbox from SD Card ===");
+  logMemoryUsage("Before loading SMS inbox");
   
   smsInboxCount = 0;
   inboxScrollOffset = 0;  // Reset scroll position
-  inboxSelectedIndex = 0; // Reset selection to top
   
   FsFile root = sd.open("/");
   FsFile file;
@@ -533,7 +591,8 @@ bool loadSMSInbox() {
         
         smsInbox[smsInboxCount].time = lines[1];
         smsInbox[smsInboxCount].time.replace("Time: ", "");
-        smsInbox[smsInboxCount].fullTime = formatDateWithoutYear(smsInbox[smsInboxCount].time);
+        smsInbox[smsInboxCount].fullTime = smsInbox[smsInboxCount].time; // Keep full time
+        smsInbox[smsInboxCount].fullTime.replace(",", " "); // Replace comma with space
         
         smsInbox[smsInboxCount].content = lines[3];
         smsInbox[smsInboxCount].content.replace("Content: ", "");
@@ -564,6 +623,7 @@ bool loadSMSInbox() {
   
   Serial.print("Total SMS loaded into inbox: ");
   Serial.println(smsInboxCount);
+  logMemoryUsage("After loading SMS inbox");
   return smsInboxCount > 0;
 }
 
@@ -582,147 +642,47 @@ void sortSMSByTime() {
   Serial.println("SMS inbox sorted by timestamp (newest first)");
 }
 
-void filterToUniqueContacts() {
-  if (smsInboxCount == 0) return;
-  
-  Serial.println("Filtering SMS inbox to unique contacts...");
-  
-  // Create a temporary array to hold unique contacts
-  SMSInboxEntry uniqueContacts[50];
-  int uniqueCount = 0;
-  
-  // Go through sorted messages and keep only the latest from each contact
-  for (int i = 0; i < smsInboxCount && uniqueCount < 50; i++) {
-    // Check if we've already seen this contact
-    bool alreadySeen = false;
-    for (int j = 0; j < uniqueCount; j++) {
-      if (uniqueContacts[j].sender == smsInbox[i].sender) {
-        alreadySeen = true;
-        break;
-      }
-    }
-    
-    // If this is a new contact, add it to unique list
-    if (!alreadySeen) {
-      uniqueContacts[uniqueCount] = smsInbox[i];
-      uniqueCount++;
-      Serial.print("Added unique contact: ");
-      Serial.print(smsInbox[i].senderDisplayName);
-      Serial.print(" (");
-      Serial.print(smsInbox[i].sender);
-      Serial.println(")");
-    }
-  }
-  
-  // Copy unique contacts back to main inbox array
-  for (int i = 0; i < uniqueCount; i++) {
-    smsInbox[i] = uniqueContacts[i];
-  }
-  
-  smsInboxCount = uniqueCount;
-  Serial.print("Filtered to ");
-  Serial.print(uniqueCount);
-  Serial.println(" unique contacts");
-}
-
 void updateInbox() {
-  // Clear inbox canvas
-  inbox_canvas.fillScreen(0x0000);
-  inbox_canvas.setTextSize(1);
-  inbox_canvas.setTextColor(ST77XX_WHITE);
-  inbox_canvas.setTextWrap(false); // Disable wrapping for fixed format
+  // Clear the inbox display area
+  tft.fillRect(0, inboxY, 320, 100, ST77XX_BLACK);
   
-  // Show up to 10 contacts with compact format (10 pixels per line)
-  int maxEntries = min(10, smsInboxCount - inboxScrollOffset);
+  // Set text properties for direct TFT drawing
+  tft.setTextSize(1);
+  tft.setTextColor(ST77XX_WHITE);
   
-  for (int i = 0; i < maxEntries && (i + inboxScrollOffset) < smsInboxCount; i++) {
+  // Draw 10 SMS entries starting from scroll offset
+  for (int i = 0; i < 10 && (i + inboxScrollOffset) < smsInboxCount; i++) {
     int smsIndex = i + inboxScrollOffset;
-    int yPos = i * 10;  // 10 pixels per line
+    int yPos = inboxY + (i * 10);  // Absolute Y position on display
     
-    // Check if this entry is selected
-    bool isSelected = (i == inboxSelectedIndex);
-    
-    // Set background color for selected item
-    if (isSelected) {
-      inbox_canvas.fillRect(0, yPos, 320, 10, ST77XX_BLUE);
-      inbox_canvas.setTextColor(ST77XX_WHITE);
-    } else {
-      inbox_canvas.setTextColor(ST77XX_WHITE);
-    }
-    
-    // Format: "From(10)  Date Time  Message..."
+    // Format: "Name/Number | Full Time | Content"
     String displayLine = "";
     
-    // Sender name (first 10 chars)
-    String shortSender = smsInbox[smsIndex].senderDisplayName;
-    if (shortSender.length() > 10) {
-      shortSender = shortSender.substring(0, 10);
-    } else {
-      // Pad to 10 chars
-      while (shortSender.length() < 10) {
-        shortSender += " ";
-      }
-    }
+    // Sender name or number (first 12 chars)
+    String shortSender = smsInbox[smsIndex].senderDisplayName.substring(0, 12);
     displayLine += shortSender;
     
-    // Two spaces
-    displayLine += "  ";
-    
-    // Date & time (up to 11 chars: "12/27 17:48")
-    String datetime = smsInbox[smsIndex].fullTime;
-    if (datetime.length() > 11) {
-      datetime = datetime.substring(0, 11);
-    } else {
-      // Pad to 11 chars for alignment
-      while (datetime.length() < 11) {
-        datetime += " ";
-      }
+    // Pad to column position
+    while (displayLine.length() < 14) {
+      displayLine += " ";
     }
-    displayLine += datetime;
     
-    // Two spaces
-    displayLine += "  ";
+    // Full time (abbreviated to fit)
+    String shortTime = smsInbox[smsIndex].fullTime.substring(0, 14);  // Show more of timestamp
+    displayLine += shortTime;
     
-    // Message content (remaining space to edge of screen)
-    String content = smsInbox[smsIndex].content;
-    int remainingSpace = 53 - displayLine.length(); // Characters that fit on 320px width
-    if (content.length() > remainingSpace) {
-      content = content.substring(0, remainingSpace); // Truncate, don't wrap
+    // Pad to content column
+    while (displayLine.length() < 30) {
+      displayLine += " ";
     }
-    displayLine += content;
     
-    // Draw the line
-    inbox_canvas.setCursor(0, yPos);
-    inbox_canvas.print(displayLine);
-  }
-  
-  // Update display with inbox canvas
-  tft.drawRGBBitmap(0, inboxY, inbox_canvas.getBuffer(), inbox_canvas.width(), inbox_canvas.height());
-  
-  // Update separator line with sender name
-  updateSeparator();
-  
-  // Reset message scroll when contact changes
-  messageScrollOffset = 0;
-  
-  // Show "Loading..." message immediately, then load thread
-  message_canvas.fillScreen(0x0000);
-  message_canvas.setTextSize(1);
-  message_canvas.setTextColor(ST77XX_WHITE);
-  message_canvas.setCursor(0, 0);
-  
-  if (smsInboxCount > 0 && (inboxSelectedIndex + inboxScrollOffset) < smsInboxCount) {
-    int selectedSMSIndex = inboxSelectedIndex + inboxScrollOffset;
-    message_canvas.print("Loading messages for: ");
-    message_canvas.println(smsInbox[selectedSMSIndex].senderDisplayName);
-    message_canvas.println("Please wait...");
-    tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
+    // Content (remaining space, no wrapping)
+    String shortContent = smsInbox[smsIndex].content.substring(0, 20);
+    displayLine += shortContent;
     
-    // Now load the actual messages
-    updateMessages();
-  } else {
-    message_canvas.print("No contact selected");
-    tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
+    // Draw the line directly to TFT (no canvas buffer)
+    tft.setCursor(0, yPos);
+    tft.print(displayLine);
   }
   
   Serial.print("Inbox display updated - showing messages ");
@@ -730,277 +690,7 @@ void updateInbox() {
   Serial.print(" to ");
   Serial.print(min(inboxScrollOffset + 10, smsInboxCount));
   Serial.print(" of ");
-  Serial.print(smsInboxCount);
-  Serial.print(" (selected: ");
-  Serial.print(inboxSelectedIndex);
-  Serial.println(")");
-}
-
-void updateSeparator() {
-  // Get the currently selected contact's display name
-  String senderName = "No Messages";
-  if (smsInboxCount > 0 && inboxSelectedIndex < 10 && 
-      (inboxSelectedIndex + inboxScrollOffset) < smsInboxCount) {
-    int selectedSMSIndex = inboxSelectedIndex + inboxScrollOffset;
-    senderName = smsInbox[selectedSMSIndex].senderDisplayName;
-  }
-  
-  // Draw yellow horizontal line
-  tft.fillRect(0, separatorY, 320, 12, ST77XX_YELLOW);
-  
-  // Calculate text position to center the name
-  tft.setTextSize(1);
-  tft.setTextColor(ST77XX_BLACK);
-  
-  // Estimate text width (roughly 6 pixels per character for size 1 font)
-  int textWidth = senderName.length() * 6;
-  int textX = (320 - textWidth) / 2;
-  
-  tft.setCursor(textX, separatorY + 2); // +2 for vertical centering
-  tft.print(senderName);
-}
-
-// Message thread data
-struct MessageEntry {
-  String sender;
-  String timestamp;
-  String content;
-  String fullTime;
-};
-MessageEntry messageThread[20];  // Show up to 20 messages in thread
-int messageThreadCount = 0;
-
-void updateMessages() {
-  // Get the currently selected contact's number
-  if (smsInboxCount == 0 || inboxSelectedIndex >= 10 || 
-      (inboxSelectedIndex + inboxScrollOffset) >= smsInboxCount) {
-    // No messages or invalid selection - clear message canvas
-    message_canvas.fillScreen(0x0000);
-    tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
-    Serial.println("updateMessages: No messages or invalid selection");
-    return;
-  }
-  
-  Serial.print("updateMessages: Processing contact selection - index: ");
-  Serial.print(inboxSelectedIndex);
-  Serial.print(", offset: ");
-  Serial.print(inboxScrollOffset);
-  Serial.print(", total: ");
   Serial.println(smsInboxCount);
-  
-  int selectedSMSIndex = inboxSelectedIndex + inboxScrollOffset;
-  String selectedSender = smsInbox[selectedSMSIndex].sender;
-  
-  // Safety check - don't process empty sender
-  if (selectedSender.length() == 0) {
-    Serial.println("updateMessages: Empty sender, clearing canvas");
-    message_canvas.fillScreen(0x0000);
-    tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
-    return;
-  }
-  
-  // Load ALL messages for this contact
-  loadAllMessagesForContact(selectedSender);
-  
-  // Clear message canvas
-  message_canvas.fillScreen(0x0000);
-  message_canvas.setTextSize(1);
-  message_canvas.setTextColor(ST77XX_WHITE);
-  message_canvas.setTextWrap(false);
-  
-  // Calculate total display height needed for all messages
-  int totalHeight = 0;
-  for (int i = 0; i < messageThreadCount; i++) {
-    String messageText = messageThread[i].fullTime + ": " + messageThread[i].content;
-    int linesNeeded = (messageText.length() + 52) / 53; // Round up division
-    totalHeight += linesNeeded * 8 + 2; // 8px per line + 2px spacing
-  }
-  
-  // Calculate starting Y position for bottom-aligned display
-  int canvasHeight = 95;
-  int startY = max(0, canvasHeight - totalHeight + messageScrollOffset);
-  
-  // Draw messages from oldest to newest (bottom-up)
-  int yPos = startY;
-  
-  for (int i = 0; i < messageThreadCount; i++) {
-    // Check if this message would be visible
-    if (yPos >= canvasHeight) break;
-    
-    // Display message with time and content
-    String messageText = messageThread[i].fullTime + ": " + messageThread[i].content;
-    
-    // Manual text wrapping
-    int charsPerLine = 53;
-    int lineHeight = 8;
-    
-    for (int pos = 0; pos < (int)messageText.length() && yPos < canvasHeight; pos += charsPerLine) {
-      if (yPos >= 0) { // Only draw if within visible area
-        String line = messageText.substring(pos, min(pos + charsPerLine, (int)messageText.length()));
-        message_canvas.setCursor(0, yPos);
-        message_canvas.setTextColor(ST77XX_WHITE);
-        message_canvas.print(line);
-      }
-      yPos += lineHeight;
-    }
-    
-    yPos += 2; // Add small spacing between messages
-  }
-  
-  // Update display with message canvas
-  tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
-  
-  Serial.print("Message thread updated for: ");
-  Serial.print(selectedSender);
-  Serial.print(" (");
-  Serial.print(messageThreadCount);
-  Serial.println(" messages)");
-}
-
-void loadMessagesForContact(const String& senderNumber) {
-  messageThreadCount = 0;
-  
-  // Go through all SMS messages and find ones from this sender
-  for (int i = 0; i < smsInboxCount && messageThreadCount < 20; i++) {
-    if (smsInbox[i].sender == senderNumber) {
-      messageThread[messageThreadCount].sender = smsInbox[i].sender;
-      messageThread[messageThreadCount].timestamp = smsInbox[i].time;
-      messageThread[messageThreadCount].content = smsInbox[i].content;
-      messageThread[messageThreadCount].fullTime = smsInbox[i].fullTime;
-      messageThreadCount++;
-    }
-  }
-  
-  Serial.print("Loaded ");
-  Serial.print(messageThreadCount);
-  Serial.print(" messages for contact: ");
-  Serial.println(senderNumber);
-}
-
-void loadAllMessagesForContact(const String& senderNumber) {
-  messageThreadCount = 0;
-  
-  Serial.print("loadAllMessagesForContact: Starting for contact: ");
-  Serial.println(senderNumber);
-  
-  // Clear message canvas and show initial message
-  message_canvas.fillScreen(0x0000);
-  message_canvas.setTextSize(1);
-  message_canvas.setTextColor(ST77XX_WHITE);
-  message_canvas.setCursor(0, 0);
-  message_canvas.print("Searching for messages...");
-  tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
-  
-  // Search through all SMS files on SD card
-  FsFile root = sd.open("/");
-  if (!root) {
-    Serial.println("loadAllMessagesForContact: ERROR - Could not open root directory");
-    return;
-  }
-  
-  FsFile file;
-  int totalCount = 0;
-  int yPos = 10; // Start below "Searching..." text
-  
-  Serial.println("loadAllMessagesForContact: Starting file iteration...");
-  int fileCount = 0;
-  
-  while (file.openNext(&root, O_RDONLY) && totalCount < 20) { // Limit to 20 for display
-    fileCount++;
-    
-    char filename[64];
-    file.getName(filename, sizeof(filename));
-    
-    // Check if this is an SMS file (starts with "sms_")
-    if (strncmp(filename, "sms_", 4) == 0) {
-      // Parse SMS file content
-      String lines[4];
-      int lineCount = 0;
-      
-      // Read up to 4 lines from the file
-      while (file.available() && lineCount < 4) {
-        String line = "";
-        while (file.available()) {
-          char c = file.read();
-          if (c == '\n' || c == '\r') {
-            break;
-          }
-          line += c;
-        }
-        if (line.length() > 0) {
-          lines[lineCount] = line;
-          lineCount++;
-        }
-      }
-      
-      // Parse the lines if we have enough data
-      if (lineCount >= 4) {
-        String fileSender = lines[0];
-        fileSender.replace("From: ", "");
-        
-        // Check if this message is from our target contact
-        if (fileSender == senderNumber) {
-          String fileTime = lines[1];
-          fileTime.replace("Time: ", "");
-          
-          String fileContent = lines[3];
-          fileContent.replace("Content: ", "");
-          
-          // Store this message
-          messageThread[totalCount].sender = fileSender;
-          messageThread[totalCount].timestamp = fileTime;
-          messageThread[totalCount].content = fileContent;
-          messageThread[totalCount].fullTime = formatDateWithoutYear(fileTime);
-          
-          // Display this message immediately as we find it
-          if (yPos < 85) { // Make sure we don't overflow canvas
-            message_canvas.setCursor(0, yPos);
-            message_canvas.setTextColor(ST77XX_CYAN);
-            String shortTime = messageThread[totalCount].fullTime.substring(0, 11);
-            message_canvas.print(shortTime);
-            message_canvas.setTextColor(ST77XX_WHITE);
-            message_canvas.print(": ");
-            
-            // Truncate message if too long for one line
-            String shortContent = fileContent.substring(0, 35);
-            if (fileContent.length() > 35) shortContent += "...";
-            message_canvas.println(shortContent);
-            
-            // Update display in real-time
-            tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
-            
-            yPos += 9; // Move to next line
-          }
-          
-          totalCount++;
-          Serial.print("Found message ");
-          Serial.print(totalCount);
-          Serial.print(": ");
-          Serial.println(fileContent.substring(0, 20) + "...");
-        }
-      }
-    }
-    file.close();
-  }
-  root.close();
-  
-  messageThreadCount = totalCount;
-  
-  Serial.print("Loaded ");
-  Serial.print(messageThreadCount);
-  Serial.print(" total messages for contact: ");
-  Serial.println(senderNumber);
-  
-  // Clear canvas and show final sorted result
-  message_canvas.fillScreen(0x0000);
-  message_canvas.setCursor(0, 0);
-  message_canvas.print("Found ");
-  message_canvas.print(messageThreadCount);
-  message_canvas.println(" messages");
-  if (messageThreadCount > 0) {
-    message_canvas.println("(Sorted chronologically)");
-  }
-  tft.drawRGBBitmap(0, messageY, message_canvas.getBuffer(), message_canvas.width(), message_canvas.height());
 }
 
 void readUARTLines() {
@@ -1037,6 +727,7 @@ void handleNewSMSNotification(int smsIndex) {
   Serial.print("=== Handling new SMS at index ");
   Serial.print(smsIndex);
   Serial.println(" ===");
+  logMemoryUsage("Before handling new SMS");
   
   updateStatus("New SMS received", ST77XX_YELLOW);
   
@@ -1079,6 +770,8 @@ void handleNewSMSNotification(int smsIndex) {
     Serial.println("⚠️ Failed to parse new SMS");
     updateStatus("SMS parse failed", ST77XX_YELLOW);
   }
+  
+  logMemoryUsage("After handling new SMS");
 }
 
 void addNewSMSToInbox(const String& filename) {
@@ -1124,7 +817,8 @@ void addNewSMSToInbox(const String& filename) {
       
       smsInbox[0].time = lines[1];
       smsInbox[0].time.replace("Time: ", "");
-      smsInbox[0].fullTime = formatDateWithoutYear(smsInbox[0].time);
+      smsInbox[0].fullTime = smsInbox[0].time; // Keep full time
+      smsInbox[0].fullTime.replace(",", " "); // Replace comma with space
       
       smsInbox[0].content = lines[3];
       smsInbox[0].content.replace("Content: ", "");
@@ -1137,23 +831,21 @@ void addNewSMSToInbox(const String& filename) {
       // Look up contact name
       smsInbox[0].senderDisplayName = lookupContactName(smsInbox[0].sender);
       
-      // Reset scroll and selection to top to show the new message
+      // Reset scroll to top to show the new message
       inboxScrollOffset = 0;
-      inboxSelectedIndex = 0;
       
-      // Re-sort to maintain chronological order and filter to unique contacts
+      // Re-sort to maintain chronological order
       sortSMSByTime();
-      filterToUniqueContacts();
       
       // Update the display
-      updateInbox();
+      drawInboxPane();
       
       Serial.println("New SMS added to inbox with contact lookup");
     }
   }
 }
 
-void handleKeyboard() {
+void handleKeyboardV23() {
   Wire.requestFrom(KEYBOARD_ADDR, 1);
   
   if (Wire.available()) {
@@ -1164,45 +856,54 @@ void handleKeyboard() {
       char printableChar = (keyData >= 32 && keyData <= 126) ? (char)keyData : '?';
       Serial.println("[KEYBOARD] Key pressed: 0x" + String(keyData, HEX) + " (" + keyName + ") char: '" + String(printableChar) + "'");
       
-      // Check for number keys 1-8 to trigger tests
-      if (keyData >= '1' && keyData <= '8') {
+      // Tab key switches between panes
+      if (keyData == 0x09) { // TAB
+        switchPane();
+      }
+      // Up/Down arrows - behavior depends on active pane
+      else if (keyData == 0xB5) { // UP arrow
+        if (currentPane == PANE_INBOX) {
+          scrollInboxSelection(-1);
+        } else {
+          scrollThread(-1);
+        }
+      }
+      else if (keyData == 0xB6) { // DOWN arrow
+        if (currentPane == PANE_INBOX) {
+          scrollInboxSelection(1);
+        } else {
+          scrollThread(1);
+        }
+      }
+      // Enter key - different actions per pane
+      else if (keyData == 0x0D) { // ENTER
+        if (currentPane == PANE_INBOX) {
+          // Select inbox item and load its thread
+          if (selectedInboxIndex < smsInboxCount) {
+            loadThreadForContact(smsInbox[selectedInboxIndex].sender);
+            drawThreadPane();
+          }
+        } else {
+          // Send message in thread pane
+          sendReplyMessage();
+        }
+      }
+      // Backspace in thread pane
+      else if (keyData == 0x08 && currentPane == PANE_THREAD) { // BACKSPACE
+        if (inputBuffer.length() > 0) {
+          inputBuffer = inputBuffer.substring(0, inputBuffer.length() - 1);
+          drawThreadPane(); // Refresh to show updated input
+        }
+      }
+      // Alphanumeric characters for typing in thread pane
+      else if (currentPane == PANE_THREAD && keyData >= 32 && keyData <= 126) {
+        addCharToInput((char)keyData);
+      }
+      // Number keys 1-8 still trigger tests (legacy feature)
+      else if (keyData >= '1' && keyData <= '8') {
         int testNumber = keyData - '0';
         Serial.println("[KEYBOARD] Running test " + String(testNumber));
         runTest(testNumber);
-      }
-      // Check for down arrow to move selection down
-      else if (keyData == 0xB6) { // DOWN arrow
-        if ((inboxSelectedIndex + inboxScrollOffset + 1) < smsInboxCount) {
-          if (inboxSelectedIndex < 9) {
-            // Selection can move down within visible area (10 entries: 0-9)
-            inboxSelectedIndex++;
-          } else {
-            // Need to scroll down to show next message
-            inboxScrollOffset++;
-          }
-          updateInbox();
-          Serial.print("Inbox selection moved down - index: ");
-          Serial.print(inboxSelectedIndex);
-          Serial.print(", offset: ");
-          Serial.println(inboxScrollOffset);
-        }
-      }
-      // Check for up arrow to move selection up  
-      else if (keyData == 0xB5) { // UP arrow
-        if ((inboxSelectedIndex + inboxScrollOffset) > 0) {
-          if (inboxSelectedIndex > 0) {
-            // Selection can move up within visible area
-            inboxSelectedIndex--;
-          } else {
-            // Need to scroll up to show previous message
-            inboxScrollOffset--;
-          }
-          updateInbox();
-          Serial.print("Inbox selection moved up - index: ");
-          Serial.print(inboxSelectedIndex);
-          Serial.print(", offset: ");
-          Serial.println(inboxScrollOffset);
-        }
       }
     }
   }
@@ -1242,6 +943,7 @@ void runTest(int testNumber) {
       {
         updateStatus("SMS Check", ST77XX_YELLOW);
         Serial.println("=== Running SMS Check & Store Test ===");
+        logMemoryUsage("Before SMS check");
         
         // Count SMS files before checking
         int smsBefore = 0;
@@ -1281,13 +983,13 @@ void runTest(int testNumber) {
           updateStatus("Refreshing inbox", ST77XX_CYAN);
           loadSMSInbox();
           sortSMSByTime();
-          filterToUniqueContacts();
-          updateInbox();
+          drawInboxPane();
           updateStatus("Inbox updated", ST77XX_GREEN);
         } else {
           Serial.println("No new SMS messages");
           updateStatus("No new SMS", ST77XX_YELLOW);
         }
+        logMemoryUsage("After SMS check");
       }
       break;
       
@@ -1334,17 +1036,18 @@ void runTest(int testNumber) {
       {
         updateStatus("Refreshing SMS", ST77XX_CYAN);
         Serial.println("=== Refreshing SMS Inbox ===");
+        logMemoryUsage("Before refreshing SMS inbox");
         
         if (loadSMSInbox()) {
           sortSMSByTime();
-          filterToUniqueContacts();
-          updateInbox();
+          drawInboxPane();
           char smsCountText[32];
           snprintf(smsCountText, sizeof(smsCountText), "%d SMS loaded", smsInboxCount);
           updateStatus(smsCountText, ST77XX_GREEN);
         } else {
           updateStatus("No SMS found", ST77XX_YELLOW);
         }
+        logMemoryUsage("After refreshing SMS inbox");
       }
       break;
       
@@ -1506,39 +1209,161 @@ bool deleteAllSMSWithStorageSelection() {
   }
 }
 
-String formatDateWithoutYear(const String& timestamp) {
-  // Input format: "25/12/27,17:48:42-32" or "25/12/27 17:48:42-32"
-  // Output format: "12/27 17:48" (month/day hour:minute)
+uint32_t getFreeMemory() {
+  // For nRF52840, use a simple stack pointer estimation
+  // This gives an approximate free memory value
+  char stack_dummy = 0;
+  return (uint32_t)&stack_dummy - 0x20000000;  // nRF52840 RAM starts at 0x20000000
+}
+
+void logMemoryUsage(const char* location) {
+  uint32_t freeMemory = getFreeMemory();
+  Serial.print("[MEMORY] ");
+  Serial.print(location);
+  Serial.print(": ");
+  Serial.print(freeMemory);
+  Serial.println(" bytes free");
+}
+
+void updateMemoryDisplay() {
+  uint32_t freeMemory = getFreeMemory();
   
-  String result = timestamp;
-  result.replace(",", " "); // Replace comma with space
+  // nRF52840 has 256KB RAM total
+  const uint32_t TOTAL_RAM = 256 * 1024;
+  uint32_t usedMemory = TOTAL_RAM - freeMemory;
+  uint8_t percentUsed = (usedMemory * 100) / TOTAL_RAM;
   
-  // Find the date part and time part
-  int spacePos = result.indexOf(' ');
-  if (spacePos == -1) return timestamp; // Return original if can't parse
+  // Clear memory display area (80x20 pixels)
+  tft.fillRect(memoryDisplayX, memoryDisplayY, 80, 20, ST77XX_BLACK);
   
-  String datePart = result.substring(0, spacePos);
-  String timePart = result.substring(spacePos + 1);
-  
-  // Parse date: "25/12/27" -> skip year, take "12/27"
-  int firstSlash = datePart.indexOf('/');
-  if (firstSlash == -1) return timestamp; // Return original if can't parse
-  
-  String monthDay = datePart.substring(firstSlash + 1); // "12/27"
-  
-  // Parse time: "17:48:42-32" -> take "17:48"
-  int colonPos = timePart.indexOf(':');
-  if (colonPos == -1) return timestamp; // Return original if can't parse
-  
-  int secondColon = timePart.indexOf(':', colonPos + 1);
-  String hourMin;
-  if (secondColon != -1) {
-    hourMin = timePart.substring(0, secondColon); // "17:48"
+  // Format memory display on one line: "RAM:196K 76%" (showing used memory and % used)
+  char memText[16];
+  if (usedMemory > 1024) {
+    snprintf(memText, sizeof(memText), "RAM:%luK %u%%", usedMemory / 1024, percentUsed);
   } else {
-    hourMin = timePart; // Use whole time if no second colon
+    snprintf(memText, sizeof(memText), "RAM:%lu %u%%", usedMemory, percentUsed);
   }
   
-  return monthDay + " " + hourMin;
+  // Choose color based on percentage used
+  uint16_t color = ST77XX_GREEN;
+  if (percentUsed > 80) {       // More than 80% used = RED
+    color = ST77XX_RED;
+  } else if (percentUsed > 60) { // More than 60% used = YELLOW
+    color = ST77XX_YELLOW;
+  }
+  
+  // Draw memory text on single line
+  tft.setCursor(memoryDisplayX, memoryDisplayY);
+  tft.setTextColor(color);
+  tft.setTextSize(1);
+  tft.print(memText);
+}
+
+// Smooth scrolling functions for v22
+void drawSMSLine(int smsIndex, int yPos) {
+  // Check if SMS index is valid
+  if (smsIndex < 0 || smsIndex >= smsInboxCount) {
+    // Clear the line if no SMS to display
+    tft.fillRect(0, yPos, 320, 10, ST77XX_BLACK);
+    return;
+  }
+  
+  // Clear the line first
+  tft.fillRect(0, yPos, 320, 10, ST77XX_BLACK);
+  
+  // Format: "Name/Number | Full Time | Content"
+  String displayLine = "";
+  
+  // Sender name or number (first 12 chars)
+  String shortSender = smsInbox[smsIndex].senderDisplayName.substring(0, 12);
+  displayLine += shortSender;
+  
+  // Pad to column position
+  while (displayLine.length() < 14) {
+    displayLine += " ";
+  }
+  
+  // Full time (abbreviated to fit)
+  String shortTime = smsInbox[smsIndex].fullTime.substring(0, 14);
+  displayLine += shortTime;
+  
+  // Pad to content column
+  while (displayLine.length() < 30) {
+    displayLine += " ";
+  }
+  
+  // Content (remaining space, no wrapping)
+  String shortContent = smsInbox[smsIndex].content.substring(0, 20);
+  displayLine += shortContent;
+  
+  // Draw the line directly to TFT
+  tft.setCursor(0, yPos);
+  tft.setTextColor(ST77XX_WHITE);
+  tft.setTextSize(1);
+  tft.print(displayLine);
+}
+
+void scrollInboxDown() {
+  if (inboxScrollOffset >= smsInboxCount - 10) {
+    return; // Can't scroll further down
+  }
+  
+  inboxScrollOffset++;
+  
+  // Shift existing lines up by clearing top line and drawing new bottom line
+  for (int i = 0; i < 9; i++) {
+    int sourceLine = inboxScrollOffset + i + 1;
+    int targetY = inboxY + (i * 10);
+    drawSMSLine(sourceLine, targetY);
+  }
+  
+  // Draw new bottom line
+  int newBottomIndex = inboxScrollOffset + 9;
+  drawSMSLine(newBottomIndex, inboxY + 90);
+  
+  Serial.print("Smooth scrolled down to offset ");
+  Serial.println(inboxScrollOffset);
+}
+
+void scrollInboxUp() {
+  if (inboxScrollOffset <= 0) {
+    return; // Can't scroll further up
+  }
+  
+  inboxScrollOffset--;
+  
+  // Shift existing lines down by clearing bottom line and drawing new top line
+  for (int i = 9; i > 0; i--) {
+    int sourceLine = inboxScrollOffset + i - 1;
+    int targetY = inboxY + (i * 10);
+    drawSMSLine(sourceLine, targetY);
+  }
+  
+  // Draw new top line
+  drawSMSLine(inboxScrollOffset, inboxY);
+  
+  Serial.print("Smooth scrolled up to offset ");
+  Serial.println(inboxScrollOffset);
+}
+
+void updateInboxSmooth() {
+  // Full redraw for initial display or major updates
+  // Clear the entire inbox area
+  tft.fillRect(0, inboxY, 320, 100, ST77XX_BLACK);
+  
+  // Draw all 10 lines
+  for (int i = 0; i < 10; i++) {
+    int smsIndex = i + inboxScrollOffset;
+    int yPos = inboxY + (i * 10);
+    drawSMSLine(smsIndex, yPos);
+  }
+  
+  Serial.print("Inbox redrawn - showing messages ");
+  Serial.print(inboxScrollOffset + 1);
+  Serial.print(" to ");
+  Serial.print(min(inboxScrollOffset + 10, smsInboxCount));
+  Serial.print(" of ");
+  Serial.println(smsInboxCount);
 }
 
 void updateStatus(const char *text, uint16_t color) {
@@ -1550,4 +1375,295 @@ void updateStatus(const char *text, uint16_t color) {
   tft.setTextColor(color);
   tft.setTextSize(1);
   tft.print(text);
+}
+
+// v23 Dual-Pane UI Implementation
+
+void drawInboxPane() {
+  // Clear inbox pane area
+  tft.fillRect(0, INBOX_PANE_Y, 320, INBOX_PANE_HEIGHT, ST77XX_BLACK);
+  
+  // Draw header
+  tft.setCursor(5, INBOX_PANE_Y + 5);
+  tft.setTextColor(ST77XX_CYAN);
+  tft.setTextSize(1);
+  tft.print("INBOX");
+  
+  // Show message count
+  tft.setCursor(250, INBOX_PANE_Y + 5);
+  tft.print(String(smsInboxCount) + " msgs");
+  
+  // Draw messages (10 pixels per line, starting at Y+15)
+  int maxLines = (INBOX_PANE_HEIGHT - 20) / 10; // Reserve space for header
+  tft.setTextColor(ST77XX_WHITE);
+  
+  for (int i = 0; i < maxLines && (i + inboxScrollOffset) < smsInboxCount; i++) {
+    int smsIndex = i + inboxScrollOffset;
+    int yPos = INBOX_PANE_Y + 15 + (i * 10);
+    
+    // Highlight selected line
+    if (smsIndex == selectedInboxIndex) {
+      tft.fillRect(2, yPos - 1, 316, 10, ST77XX_BLUE);
+      tft.setTextColor(ST77XX_WHITE);
+    } else {
+      tft.setTextColor(ST77XX_WHITE);
+    }
+    
+    // Format: "Name | Time | Content preview"
+    String line = smsInbox[smsIndex].senderDisplayName.substring(0, 10);
+    line += " | ";
+    line += smsInbox[smsIndex].time.substring(0, 8); // Short time
+    line += " | ";
+    line += smsInbox[smsIndex].content.substring(0, 25);
+    
+    tft.setCursor(5, yPos);
+    tft.print(line);
+  }
+}
+
+void drawThreadPane() {
+  // Clear thread pane area
+  tft.fillRect(0, THREAD_PANE_Y, 320, THREAD_PANE_HEIGHT, ST77XX_BLACK);
+  
+  // Draw header with contact name
+  tft.setCursor(5, THREAD_PANE_Y + 5);
+  tft.setTextColor(ST77XX_YELLOW);
+  tft.setTextSize(1);
+  if (selectedContactPhone.length() > 0) {
+    String contactName = lookupContactName(selectedContactPhone);
+    tft.print("THREAD: " + contactName.substring(0, 20));
+  } else {
+    tft.print("THREAD: (no selection)");
+  }
+  
+  // Draw thread messages
+  int threadDisplayHeight = THREAD_PANE_HEIGHT - INPUT_LINE_HEIGHT - 20; // Reserve for header and input
+  int maxThreadLines = threadDisplayHeight / 10;
+  
+  tft.setTextSize(1);
+  for (int i = 0; i < maxThreadLines && (i + threadScrollOffset) < threadMessageCount; i++) {
+    int threadIndex = i + threadScrollOffset;
+    int yPos = THREAD_PANE_Y + 15 + (i * 10);
+    
+    ThreadEntry& msg = threadMessages[threadIndex];
+    
+    // Different colors for sent vs received
+    if (msg.isOutgoing) {
+      tft.setTextColor(ST77XX_GREEN); // Our messages in green
+      tft.setCursor(50, yPos); // Indent outgoing messages
+      tft.print("> " + msg.content.substring(0, 35));
+    } else {
+      tft.setTextColor(ST77XX_WHITE); // Received messages in white
+      tft.setCursor(5, yPos);
+      tft.print(msg.content.substring(0, 40));
+    }
+  }
+  
+  // Draw input line at bottom
+  int inputY = THREAD_PANE_Y + THREAD_PANE_HEIGHT - INPUT_LINE_HEIGHT;
+  tft.setTextColor(ST77XX_CYAN);
+  tft.setCursor(5, inputY);
+  tft.print("> " + inputBuffer);
+}
+
+void drawPaneBorder(ActivePane pane) {
+  // Remove old borders
+  tft.drawRect(0, INBOX_PANE_Y, 320, INBOX_PANE_HEIGHT, ST77XX_BLACK);
+  tft.drawRect(0, THREAD_PANE_Y, 320, THREAD_PANE_HEIGHT, ST77XX_BLACK);
+  
+  // Draw border around active pane
+  uint16_t borderColor = ST77XX_RED;
+  if (pane == PANE_INBOX) {
+    tft.drawRect(0, INBOX_PANE_Y, 320, INBOX_PANE_HEIGHT, borderColor);
+  } else {
+    tft.drawRect(0, THREAD_PANE_Y, 320, THREAD_PANE_HEIGHT, borderColor);
+  }
+}
+
+void loadThreadForContact(const String& phoneNumber) {
+  Serial.print("Loading thread for contact: ");
+  Serial.println(phoneNumber);
+  
+  threadMessageCount = 0;
+  threadScrollOffset = 0;
+  selectedContactPhone = phoneNumber;
+  
+  // Clean the phone number for comparison
+  String cleanTargetNumber = phoneNumber;
+  cleanTargetNumber.replace(" ", "");
+  cleanTargetNumber.replace("-", "");
+  cleanTargetNumber.replace("(", "");
+  cleanTargetNumber.replace(")", "");
+  cleanTargetNumber.replace("+", "");
+  
+  // Search through all SMS messages for this contact
+  for (int i = 0; i < smsInboxCount; i++) {
+    String cleanSenderNumber = smsInbox[i].sender;
+    cleanSenderNumber.replace(" ", "");
+    cleanSenderNumber.replace("-", "");
+    cleanSenderNumber.replace("(", "");
+    cleanSenderNumber.replace(")", "");
+    cleanSenderNumber.replace("+", "");
+    
+    // Check for match (exact or partial)
+    bool isMatch = false;
+    if (cleanTargetNumber.equals(cleanSenderNumber)) {
+      isMatch = true;
+    } else if (cleanTargetNumber.length() > 10 && cleanSenderNumber.length() == 10) {
+      if (cleanTargetNumber.endsWith(cleanSenderNumber)) isMatch = true;
+    } else if (cleanTargetNumber.length() == 10 && cleanSenderNumber.length() > 10) {
+      if (cleanSenderNumber.endsWith(cleanTargetNumber)) isMatch = true;
+    }
+    
+    if (isMatch && threadMessageCount < 30) {
+      threadMessages[threadMessageCount].sender = smsInbox[i].sender;
+      threadMessages[threadMessageCount].senderDisplayName = smsInbox[i].senderDisplayName;
+      threadMessages[threadMessageCount].time = smsInbox[i].time;
+      threadMessages[threadMessageCount].content = smsInbox[i].content;
+      threadMessages[threadMessageCount].isOutgoing = false; // All loaded messages are received
+      threadMessageCount++;
+    }
+  }
+  
+  // Sort thread messages by time (oldest first for chat-like display)
+  for (int i = 0; i < threadMessageCount - 1; i++) {
+    for (int j = 0; j < threadMessageCount - i - 1; j++) {
+      unsigned long time1 = parseTimestamp(threadMessages[j].time);
+      unsigned long time2 = parseTimestamp(threadMessages[j + 1].time);
+      if (time1 > time2) {
+        ThreadEntry temp = threadMessages[j];
+        threadMessages[j] = threadMessages[j + 1];
+        threadMessages[j + 1] = temp;
+      }
+    }
+  }
+  
+  // Auto-scroll to bottom to show latest messages
+  if (threadMessageCount > 10) { // If more than 10 messages
+    threadScrollOffset = threadMessageCount - 10;
+  }
+  
+  Serial.print("Loaded ");
+  Serial.print(threadMessageCount);
+  Serial.println(" messages for thread");
+}
+
+// Supporting functions for v23 UI
+
+void switchPane() {
+  if (currentPane == PANE_INBOX) {
+    currentPane = PANE_THREAD;
+    Serial.println("Switched to THREAD pane");
+  } else {
+    currentPane = PANE_INBOX;
+    Serial.println("Switched to INBOX pane");
+  }
+  drawPaneBorder(currentPane);
+}
+
+void scrollInboxSelection(int direction) {
+  selectedInboxIndex += direction;
+  
+  // Bounds checking
+  if (selectedInboxIndex < 0) {
+    selectedInboxIndex = 0;
+  } else if (selectedInboxIndex >= smsInboxCount) {
+    selectedInboxIndex = smsInboxCount - 1;
+  }
+  
+  // Auto-scroll view if selection is outside visible area
+  int maxVisibleLines = (INBOX_PANE_HEIGHT - 20) / 10;
+  if (selectedInboxIndex < inboxScrollOffset) {
+    inboxScrollOffset = selectedInboxIndex;
+  } else if (selectedInboxIndex >= inboxScrollOffset + maxVisibleLines) {
+    inboxScrollOffset = selectedInboxIndex - maxVisibleLines + 1;
+  }
+  
+  drawInboxPane();
+  Serial.print("Inbox selection: ");
+  Serial.println(selectedInboxIndex);
+}
+
+void scrollThread(int direction) {
+  threadScrollOffset += direction;
+  
+  // Bounds checking
+  int maxVisibleLines = (THREAD_PANE_HEIGHT - INPUT_LINE_HEIGHT - 20) / 10;
+  if (threadScrollOffset < 0) {
+    threadScrollOffset = 0;
+  } else if (threadScrollOffset > threadMessageCount - maxVisibleLines) {
+    threadScrollOffset = max(0, threadMessageCount - maxVisibleLines);
+  }
+  
+  drawThreadPane();
+  Serial.print("Thread scroll offset: ");
+  Serial.println(threadScrollOffset);
+}
+
+void addCharToInput(char c) {
+  if (inputBuffer.length() < 100) { // Limit input length
+    inputBuffer += c;
+    drawThreadPane(); // Refresh to show new character
+    
+    // Auto-scroll thread to bottom when typing
+    int maxVisibleLines = (THREAD_PANE_HEIGHT - INPUT_LINE_HEIGHT - 20) / 10;
+    if (threadMessageCount > maxVisibleLines) {
+      threadScrollOffset = threadMessageCount - maxVisibleLines;
+      drawThreadPane();
+    }
+  }
+}
+
+void sendReplyMessage() {
+  if (inputBuffer.length() == 0 || selectedContactPhone.length() == 0) {
+    Serial.println("Cannot send: empty message or no contact selected");
+    return;
+  }
+  
+  Serial.print("Sending SMS to ");
+  Serial.print(selectedContactPhone);
+  Serial.print(": ");
+  Serial.println(inputBuffer);
+  
+  // Send via SIM7600 (implement actual sending)
+  if (cellular.sendSMS(selectedContactPhone.c_str(), inputBuffer.c_str())) {
+    Serial.println("SMS sent successfully");
+    
+    // Add to thread as outgoing message
+    addMessageToThread(inputBuffer, true);
+    
+    // Clear input buffer
+    inputBuffer = "";
+    
+    updateStatus("SMS sent", ST77XX_GREEN);
+  } else {
+    Serial.println("SMS sending failed");
+    updateStatus("SMS failed", ST77XX_RED);
+  }
+  
+  drawThreadPane(); // Refresh display
+}
+
+void addMessageToThread(const String& content, bool isOutgoing) {
+  if (threadMessageCount >= 30) {
+    // Remove oldest message to make room
+    for (int i = 0; i < threadMessageCount - 1; i++) {
+      threadMessages[i] = threadMessages[i + 1];
+    }
+    threadMessageCount--;
+  }
+  
+  // Add new message
+  threadMessages[threadMessageCount].sender = isOutgoing ? "Me" : selectedContactPhone;
+  threadMessages[threadMessageCount].senderDisplayName = isOutgoing ? "Me" : lookupContactName(selectedContactPhone);
+  threadMessages[threadMessageCount].time = "now"; // Could format current time
+  threadMessages[threadMessageCount].content = content;
+  threadMessages[threadMessageCount].isOutgoing = isOutgoing;
+  threadMessageCount++;
+  
+  // Auto-scroll to show new message
+  int maxVisibleLines = (THREAD_PANE_HEIGHT - INPUT_LINE_HEIGHT - 20) / 10;
+  if (threadMessageCount > maxVisibleLines) {
+    threadScrollOffset = threadMessageCount - maxVisibleLines;
+  }
 }
