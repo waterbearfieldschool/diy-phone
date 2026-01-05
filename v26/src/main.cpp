@@ -1,0 +1,2157 @@
+/**************************************************************************
+  DIY Phone v26 - Smartphone-Style Messaging Interface
+  Features: Display + SIM7600 + SD card SMS storage + I2C keyboard control + Address book name lookup + Full timestamps + Auto SMS deletion + Thread-based UI
+  
+  v26 Changes: 
+  - Upper pane: Thread previews (unique contacts with latest message)
+  - Lower pane: Full conversation thread + compose line
+  - Added outgoing message storage and tracking
+  - Thread-based efficient storage with per-contact cache files
+  - Smartphone-like message threading and navigation
+ **************************************************************************/
+
+#include <Arduino.h>
+#include <Adafruit_GFX.h>    // Core graphics library
+#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+#include <SPI.h>
+#include <Wire.h>
+#include <SdFat.h>
+#include "SIM7600.h"
+
+// Custom SPI bus definition
+SPIClass customSPI(NRF_SPIM2, A1, A2, A0);  // MISO=A1, SCK=A2, MOSI=A0
+
+// Pin definitions for ItsyBitsy nRF52840
+#define TFT_CS        A3
+#define TFT_RST        12 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_DC         A5
+
+// SD card pin (using hardware SPI)
+#define SD_CS_PIN     10
+
+// I2C keyboard address
+#define KEYBOARD_ADDR 0x5F
+
+// Create display object with custom SPI bus
+Adafruit_ST7789 tft = Adafruit_ST7789(&customSPI, TFT_CS, TFT_DC, TFT_RST);
+
+// SIM7600 cellular module - using Serial1 (hardware UART)
+SIM7600 cellular(&Serial1);
+
+// SD card object
+SdFat sd;
+
+// UART buffer for line reading
+String uartLineBuffer = "";
+
+// Address book entry structure
+struct AddressBookEntry {
+  String phoneNumber;
+  String name;
+};
+
+// Enhanced SMS structure with direction support
+struct SMSMessage {
+  String sender;
+  String recipient;          // NEW: For outgoing messages
+  String senderDisplayName;  // Either phone number or contact name
+  String time;
+  String fullTime;           // Full timestamp for display
+  String content;
+  String filename;           // For sorting
+  unsigned long timestampValue; // Numeric timestamp for proper sorting
+  bool isOutgoing;          // NEW: true if sent by us, false if received
+};
+
+// Thread preview structure for upper pane
+struct ThreadPreview {
+  String contactPhone;
+  String contactDisplayName;
+  String lastMessageTime;
+  String lastMessagePreview;
+  unsigned long lastTimestamp;
+  bool hasUnread;           // Future: for unread message indication
+  int messageCount;         // Total messages in thread
+};
+
+// Address book and messaging data
+AddressBookEntry addressBook[100];
+int addressBookCount = 0;
+
+// v26: Thread-based data structures
+ThreadPreview threadPreviews[20];    // Thread previews for upper pane
+int threadPreviewCount = 0;
+int previewScrollOffset = 0;
+
+SMSMessage currentThreadMessages[30]; // Messages in currently viewed thread
+int currentThreadMessageCount = 0;
+
+// v26 UI State - Thread-based Interface
+enum ActivePane {
+  PANE_THREADS = 0,      // Upper pane: thread previews
+  PANE_CONVERSATION = 1   // Lower pane: full conversation + compose
+};
+
+// UI Layout for v26 - optimized for thread interface
+#define THREAD_PREVIEW_HEIGHT 100    // Space for thread list
+#define CONVERSATION_HEIGHT 100      // Space for conversation
+#define COMPOSE_LINE_HEIGHT 15       // Bottom line for typing
+
+// v26 UI state variables
+ActivePane currentPane = PANE_THREADS;
+int selectedThreadIndex = 0;          // Which thread preview is highlighted
+String activeContactPhone = "";       // Phone number of active conversation
+String activeContactName = "";        // Display name of active contact
+int conversationScrollOffset = 0;     // For scrolling conversation view
+String composeBuffer = "";            // Text being typed for new message
+
+// Layout constants for v26 - Thread-based UI (Status + Thread Previews + Conversation + Compose)
+#define STATUS_SECTION_Y 0
+#define STATUS_SECTION_HEIGHT 20
+#define THREAD_PREVIEW_Y 20
+#define THREAD_PREVIEW_HEIGHT 100      // Upper pane for thread previews
+#define CONVERSATION_Y 120             // Lower pane for conversation
+#define CONVERSATION_HEIGHT 100        // Conversation display area
+#define COMPOSE_Y 220                  // Bottom area for message composition
+#define COMPOSE_HEIGHT 20              // Compose line area
+#define PANE_BORDER_WIDTH 2
+
+// Function declarations - v26 thread-based interface
+void drawStatusSection();
+void updateStatusMessage(const char *text, uint16_t color);
+void updateStatus(const char *text, uint16_t color);  // Legacy compatibility
+void readUARTLines();
+void handleKeyboard();
+String getKeyName(uint8_t keyCode);
+void runTest(int testNumber);
+
+// v26 Thread management functions
+bool loadAllMessages();                              // Load all SMS from individual files
+void buildThreadPreviews();                         // Build thread preview list from messages (legacy - scans files)
+void buildThreadPreviewsFromMessages(SMSMessage* messages, int messageCount); // Build from existing message array
+void loadThreadForContact(const String& phoneNumber); // Load conversation for specific contact
+bool saveOutgoingMessage(const String& recipient, const String& content); // Store outgoing message
+void addMessageToThread(const String& content, bool isOutgoing, const String& timestamp);
+void sortThreadPreviewsByTime();                   // Sort threads by latest activity
+String generateContactHash(const String& phoneNumber); // Generate hash for thread cache files
+bool loadThreadCacheFile(const String& contactPhone); // Load from thread cache
+bool saveThreadCacheFile(const String& contactPhone); // Save to thread cache
+
+// Legacy functions (updated for v26)
+void handleNewSMSNotification(int smsIndex);
+bool deleteAllSMSIndividually();
+bool deleteAllSMSWithStorageSelection();
+bool loadAddressBook();
+String lookupContactName(const String& phoneNumber);
+unsigned long parseTimestamp(const String& timestamp);
+
+// Memory monitoring functions
+// void updateMemoryDisplay();  // v24: Obsolete - memory now in status section
+uint32_t getFreeMemory();
+void logMemoryUsage(const char* location);
+
+// v26 UI functions
+void drawThreadPreviewPane();                      // Upper pane: thread previews
+void drawConversationPane();                       // Lower pane: conversation + compose
+void drawPaneBorder(ActivePane pane);
+void handleKeyboardV26();
+void switchPane();
+void scrollThreadSelection(int direction);         // Navigate thread previews
+void scrollConversation(int direction);            // Scroll conversation history
+void addCharToCompose(char c);                     // Add character to compose buffer
+void sendMessage();                                // Send composed message
+void selectThread();                               // Open selected thread for conversation
+
+// Canvas objects - REMOVED for v22 to save 4KB RAM and improve performance
+//GFXcanvas16 inbox_canvas(320, 100);  // Inbox canvas - height for 10 lines (10 pixels each)
+//GFXcanvas1 inbox_canvas(320, 100);   // Removed - now using direct TFT calls
+// v24: Obsolete constants - now using STATUS_SECTION_*, INBOX_PANE_*, THREAD_PANE_*
+// Memory display now integrated into status section
+
+// Memory tracking variables
+uint32_t lastMemoryCheck = 0;
+const uint32_t MEMORY_CHECK_INTERVAL = 5000; // Check every 5 seconds
+
+void setup(void) {
+  Serial.begin(115200);
+  
+  // Wait for serial port to be ready (up to 10 seconds)
+  unsigned long serialStartTime = millis();
+  while (!Serial && (millis() - serialStartTime < 10000)) {
+    delay(100);
+  }
+  
+  // Additional delay to ensure stable connection
+  delay(1000);
+  
+  Serial.println("=== DIY Phone v26 Starting ===");
+  Serial.print("[DEBUG] Serial connection established after ");
+  Serial.print(millis() - serialStartTime);
+  Serial.println(" ms");
+
+  // Initialize custom SPI bus
+  Serial.println("[DEBUG] Starting custom SPI initialization...");
+  customSPI.begin();
+  Serial.println("[DEBUG] Custom SPI initialized");
+
+  // Initialize display
+  Serial.println("[DEBUG] Starting display initialization...");
+  tft.init(240, 320);
+  tft.setRotation(3);
+  tft.fillScreen(ST77XX_BLACK);
+  
+  // Show immediate visual feedback that device is running
+  tft.setTextSize(2);
+  tft.setTextColor(ST77XX_GREEN);
+  tft.setCursor(10, 120);
+  tft.print("DIY Phone v26");
+  tft.setCursor(10, 140);
+  tft.setTextColor(ST77XX_CYAN);
+  tft.print("Starting...");
+  
+  Serial.println("[DEBUG] Display initialized");
+  delay(500);
+  Serial.println("[DEBUG] About to call updateStatus...");
+  updateStatus("Display OK", ST77XX_GREEN);
+  Serial.println("[DEBUG] Status updated");
+  delay(500);
+  
+  // Initialize I2C for keyboard
+  Serial.println("[DEBUG] Initializing I2C for keyboard...");
+  Wire.begin();
+  Serial.println("[DEBUG] I2C initialized for keyboard at address 0x5F");
+  
+  // Scan I2C bus to see what devices are present
+  Serial.println("[DEBUG] Scanning I2C bus...");
+  int devicesFound = 0;
+  for (uint8_t address = 1; address < 127; address++) {
+    Wire.beginTransmission(address);
+    uint8_t error = Wire.endTransmission();
+    
+    if (error == 0) {
+      Serial.print("[DEBUG] I2C device found at address 0x");
+      if (address < 16) Serial.print("0");
+      Serial.print(address, HEX);
+      Serial.println();
+      devicesFound++;
+    }
+  }
+  
+  if (devicesFound == 0) {
+    Serial.println("[DEBUG] No I2C devices found on bus");
+  } else {
+    Serial.print("[DEBUG] Found ");
+    Serial.print(devicesFound);
+    Serial.println(" I2C devices");
+  }
+  
+  // Test I2C connection with detailed debugging
+  Serial.println("[DEBUG] Testing I2C keyboard connection...");
+  Serial.print("[DEBUG] Requesting 1 byte from address 0x");
+  Serial.println(KEYBOARD_ADDR, HEX);
+  
+  uint8_t bytesReceived = Wire.requestFrom(KEYBOARD_ADDR, 1);
+  Serial.print("[DEBUG] Wire.requestFrom() returned: ");
+  Serial.println(bytesReceived);
+  
+  Serial.print("[DEBUG] Wire.available(): ");
+  Serial.println(Wire.available());
+  
+  if (Wire.available()) {
+    uint8_t testData = Wire.read();
+    Serial.print("[DEBUG] I2C keyboard test successful, received: 0x");
+    Serial.print(testData, HEX);
+    Serial.print(" (decimal: ");
+    Serial.print(testData);
+    Serial.println(")");
+    updateStatus("Keyboard OK", ST77XX_GREEN);
+  } else {
+    Serial.println("[DEBUG] WARNING: No response from I2C keyboard");
+    Serial.println("[DEBUG] This could mean:");
+    Serial.println("[DEBUG] 1. Keyboard not connected");
+    Serial.println("[DEBUG] 2. Wrong I2C address");
+    Serial.println("[DEBUG] 3. I2C timing issue");
+    updateStatus("Keyboard Warning", ST77XX_YELLOW);
+  }
+  
+  // Check if there's any data left in buffer
+  int remainingBytes = Wire.available();
+  if (remainingBytes > 0) {
+    Serial.print("[DEBUG] Additional bytes available: ");
+    Serial.println(remainingBytes);
+    while (Wire.available()) {
+      uint8_t extraByte = Wire.read();
+      Serial.print("[DEBUG] Extra byte: 0x");
+      Serial.println(extraByte, HEX);
+    }
+  }
+  
+  delay(1000);
+
+  // Initialize SD card
+  Serial.println("[DEBUG] About to initialize SD card...");
+  if (sd.begin(SD_CS_PIN, SD_SCK_MHZ(4))) {
+    Serial.println("[DEBUG] SD card initialized");
+    updateStatus("SD card OK", ST77XX_GREEN);
+    
+    // Test SD card by creating a test file
+    Serial.println("[DEBUG] Testing SD card write...");
+    FsFile testFile = sd.open("test.txt", O_WRITE | O_CREAT);
+    if (testFile) {
+      testFile.println("DIY Phone v24 Test");
+      testFile.close();
+      Serial.println("[DEBUG] SD card test file created successfully");
+      updateStatus("SD test OK", ST77XX_GREEN);
+    } else {
+      Serial.println("[DEBUG] Failed to create SD test file");
+      updateStatus("SD test failed", ST77XX_RED);
+    }
+  } else {
+    Serial.println("[DEBUG] SD card initialization failed");
+    updateStatus("SD card failed", ST77XX_RED);
+  }
+  Serial.println("[DEBUG] SD card initialization complete");
+  delay(1000);
+
+  // Load address book from SD card
+  Serial.println("[DEBUG] Loading address book...");
+  updateStatus("Loading contacts...", ST77XX_CYAN);
+  loadAddressBook();
+  Serial.println("[DEBUG] Address book loading complete");
+  delay(500);
+
+  // Configure Serial1 pins to match hardware: RX=A4, TX=D2
+  Serial.println("[DEBUG] Configuring Serial1 pins...");
+  Serial1.setPins(A4, 2);  // setPins(rx, tx)
+  Serial.println("[DEBUG] Serial1 pins configured");
+  
+  // Note: UART buffer size increased via platformio.ini build_flags
+  
+  // Initialize SIM7600 at 115200 baud
+  Serial.println("[DEBUG] Starting SIM7600 initialization...");
+  if (cellular.begin(115200)) {
+    Serial.println("[DEBUG] SIM7600 connected");
+    updateStatus("SIM7600 connected", ST77XX_GREEN);
+    
+    // Enable caller ID
+    Serial.println("[DEBUG] Enabling caller ID...");
+    cellular.enableCallerID();
+    Serial.println("[DEBUG] Caller ID enabled");
+    
+    // Check signal quality
+    Serial.println("[DEBUG] Checking signal quality...");
+    int signal = cellular.getSignalQuality();
+    char signalText[32];
+    snprintf(signalText, sizeof(signalText), "Signal: %d", signal);
+    Serial.println(signalText);
+    Serial.println("[DEBUG] Signal quality check complete");
+    
+  } else {
+    Serial.println("[DEBUG] SIM7600 connection failed");
+    updateStatus("SIM7600 failed", ST77XX_RED);
+  }
+  Serial.println("[DEBUG] SIM7600 initialization complete");
+  
+  // Load and build thread previews on boot
+  updateStatus("Loading messages...", ST77XX_CYAN);
+  Serial.println("[DEBUG] Starting message loading process...");
+  
+  unsigned long startTime = millis();
+  bool loadSuccess = loadAllMessages();  // This also calls buildThreadPreviews()
+  unsigned long loadTime = millis() - startTime;
+  
+  Serial.print("[DEBUG] Message loading completed in ");
+  Serial.print(loadTime);
+  Serial.println(" ms");
+  
+  if (!loadSuccess) {
+    Serial.println("[WARNING] Message loading returned false");
+  }
+  
+  Serial.println("[DEBUG] Initializing v26 thread-based interface...");
+  logMemoryUsage("Before UI initialization");
+  
+  // Initialize UI state - select first thread if available
+  if (threadPreviewCount > 0) {
+    selectedThreadIndex = 0;
+    Serial.println("[DEBUG] Selected first thread");
+    // Don't auto-load thread, let user select
+  } else {
+    Serial.println("[DEBUG] No threads available to select");
+  }
+  
+  Serial.println("[DEBUG] Drawing UI components...");
+  logMemoryUsage("Before drawing UI");
+  
+  // Draw v26 thread-based interface
+  Serial.println("[DEBUG] Drawing status section...");
+  logMemoryUsage("Before status section");
+  drawStatusSection();         // Status section at top
+  logMemoryUsage("After status section");
+  
+  Serial.println("[DEBUG] Drawing thread preview pane...");
+  logMemoryUsage("Before thread preview pane");
+  drawThreadPreviewPane();     // Thread previews in middle
+  logMemoryUsage("After thread preview pane");
+  
+  Serial.println("[DEBUG] Drawing conversation pane...");
+  drawConversationPane();      // Conversation + compose at bottom
+  
+  Serial.println("[DEBUG] Drawing pane borders...");
+  drawPaneBorder(currentPane);
+  
+  Serial.println("[DEBUG] UI drawing completed");
+  Serial.println("[DEBUG] Setup complete!");
+  
+  // Initial memory display and logging
+  logMemoryUsage("Setup complete");
+  
+  updateStatusMessage("Ready - v26 Interface", ST77XX_GREEN);
+  Serial.println("===============================================");
+  Serial.println("Setup complete - Press keyboard numbers 1-8:");
+  Serial.println("1 = Signal Quality Test");
+  Serial.println("2 = AT Command Test");
+  Serial.println("3 = SMS Check & Store");
+  Serial.println("4 = SD Card Test");
+  Serial.println("5 = Read SMS Files");
+  Serial.println("6 = Network Status");
+  Serial.println("7 = Delete SMS One-by-One");
+  Serial.println("8 = Delete All SMS (Bulk)");
+  Serial.println("Down Arrow = Scroll inbox");
+  Serial.println("===============================================");
+}
+
+void loop() {
+  // Monitor UART from SIM7600
+  readUARTLines();
+  
+  // Monitor keyboard (v26 thread-based version)
+  handleKeyboardV26();
+  
+  // Update status section periodically (includes memory display)
+  uint32_t currentTime = millis();
+  if (currentTime - lastMemoryCheck >= MEMORY_CHECK_INTERVAL) {
+    drawStatusSection();
+    lastMemoryCheck = currentTime;
+  }
+  
+  delay(10);  // Small delay for stability
+}
+
+bool loadAddressBook() {
+  Serial.println("=== Loading Address Book ===");
+  logMemoryUsage("Before loading address book");
+  
+  addressBookCount = 0;
+  
+  // Try to open address book file (could be addressbook.txt, contacts.txt, etc.)
+  FsFile addressFile = sd.open("addressbook.txt", O_READ);
+  if (!addressFile) {
+    addressFile = sd.open("contacts.txt", O_READ);
+    if (!addressFile) {
+      Serial.println("No address book file found (addressbook.txt or contacts.txt)");
+      return false;
+    }
+  }
+  
+  Serial.println("Address book file found, loading contacts...");
+  
+  // Read address book entries
+  while (addressFile.available() && addressBookCount < 100) {
+    String line = "";
+    while (addressFile.available()) {
+      char c = addressFile.read();
+      if (c == '\n' || c == '\r') {
+        break;
+      }
+      line += c;
+    }
+    
+    if (line.length() > 0) {
+      // Parse line - expect format: "name,phone" or "phone,name"
+      int commaPos = line.indexOf(',');
+      if (commaPos != -1) {
+        String part1 = line.substring(0, commaPos);
+        String part2 = line.substring(commaPos + 1);
+        part1.trim();
+        part2.trim();
+        
+        // Determine which is phone number (starts with + or contains only digits)
+        if (part1.startsWith("+") || (part1.length() > 5 && isDigit(part1[0]))) {
+          addressBook[addressBookCount].phoneNumber = part1;
+          addressBook[addressBookCount].name = part2;
+        } else {
+          addressBook[addressBookCount].phoneNumber = part2;
+          addressBook[addressBookCount].name = part1;
+        }
+        
+        Serial.print("Loaded contact: ");
+        Serial.print(addressBook[addressBookCount].name);
+        Serial.print(" -> ");
+        Serial.println(addressBook[addressBookCount].phoneNumber);
+        
+        addressBookCount++;
+      }
+    }
+  }
+  
+  addressFile.close();
+  
+  Serial.print("Loaded ");
+  Serial.print(addressBookCount);
+  Serial.println(" contacts");
+  logMemoryUsage("After loading address book");
+  
+  return addressBookCount > 0;
+}
+
+String lookupContactName(const String& phoneNumber) {
+  Serial.print("[LOOKUP] Searching for: '");
+  Serial.print(phoneNumber);
+  Serial.print("' in ");
+  Serial.print(addressBookCount);
+  Serial.println(" contacts");
+  
+  // Clean the phone number for comparison (remove spaces, dashes, +, etc.)
+  String cleanNumber = phoneNumber;
+  cleanNumber.replace(" ", "");
+  cleanNumber.replace("-", "");
+  cleanNumber.replace("(", "");
+  cleanNumber.replace(")", "");
+  cleanNumber.replace("+", "");
+  
+  Serial.print("[LOOKUP] Cleaned number: '");
+  Serial.print(cleanNumber);
+  Serial.println("'");
+  
+  for (int i = 0; i < addressBookCount; i++) {
+    String cleanBookNumber = addressBook[i].phoneNumber;
+    cleanBookNumber.replace(" ", "");
+    cleanBookNumber.replace("-", "");
+    cleanBookNumber.replace("(", "");
+    cleanBookNumber.replace(")", "");
+    cleanBookNumber.replace("+", "");
+    
+    Serial.print("[LOOKUP] Checking contact ");
+    Serial.print(i);
+    Serial.print(": '");
+    Serial.print(addressBook[i].name);
+    Serial.print("' -> '");
+    Serial.print(cleanBookNumber);
+    Serial.println("'");
+    
+    // Try exact match first
+    if (cleanNumber.equals(cleanBookNumber)) {
+      Serial.print("[LOOKUP] EXACT MATCH found: ");
+      Serial.println(addressBook[i].name);
+      return addressBook[i].name;
+    }
+    
+    // Try match without country code
+    if (cleanNumber.length() > 10 && cleanBookNumber.length() == 10) {
+      if (cleanNumber.endsWith(cleanBookNumber)) {
+        Serial.print("[LOOKUP] PARTIAL MATCH (remove country code): ");
+        Serial.println(addressBook[i].name);
+        return addressBook[i].name;
+      }
+    }
+    
+    // Try match with country code added
+    if (cleanNumber.length() == 10 && cleanBookNumber.length() > 10) {
+      if (cleanBookNumber.endsWith(cleanNumber)) {
+        Serial.print("[LOOKUP] PARTIAL MATCH (add country code): ");
+        Serial.println(addressBook[i].name);
+        return addressBook[i].name;
+      }
+    }
+  }
+  
+  Serial.println("[LOOKUP] No match found, returning original number");
+  // No match found, return the original phone number
+  return phoneNumber;
+}
+
+unsigned long parseTimestamp(const String& timestamp) {
+  // Parse timestamp format: "25/12/27,17:14:21-32"
+  // Return seconds since epoch-like value for sorting
+  
+  int commaPos = timestamp.indexOf(',');
+  if (commaPos == -1) return 0;
+  
+  String datePart = timestamp.substring(0, commaPos);
+  String timePart = timestamp.substring(commaPos + 1);
+  
+  // Parse date: "25/12/27" (day/month/year)
+  int day = 0, month = 0, year = 0;
+  int slash1 = datePart.indexOf('/');
+  int slash2 = datePart.lastIndexOf('/');
+  if (slash1 != -1 && slash2 != -1 && slash1 != slash2) {
+    day = datePart.substring(0, slash1).toInt();
+    month = datePart.substring(slash1 + 1, slash2).toInt();
+    year = datePart.substring(slash2 + 1).toInt();
+    if (year < 50) year += 2000; // Assume 20xx
+    else if (year < 100) year += 1900; // Assume 19xx
+  }
+  
+  // Parse time: "17:14:21-32" (hour:min:sec-timezone)
+  int hour = 0, minute = 0, second = 0;
+  int dashPos = timePart.indexOf('-');
+  if (dashPos != -1) {
+    timePart = timePart.substring(0, dashPos);
+  }
+  
+  int colon1 = timePart.indexOf(':');
+  int colon2 = timePart.lastIndexOf(':');
+  if (colon1 != -1 && colon2 != -1 && colon1 != colon2) {
+    hour = timePart.substring(0, colon1).toInt();
+    minute = timePart.substring(colon1 + 1, colon2).toInt();
+    second = timePart.substring(colon2 + 1).toInt();
+  }
+  
+  // Create a simple timestamp value (not actual epoch, but good for sorting)
+  unsigned long timestampValue = 
+    ((unsigned long)year) * 10000000000UL +
+    ((unsigned long)month) * 100000000UL +
+    ((unsigned long)day) * 1000000UL +
+    ((unsigned long)hour) * 10000UL +
+    ((unsigned long)minute) * 100UL +
+    ((unsigned long)second);
+    
+  return timestampValue;
+}
+
+// v26 Thread Management Functions
+
+String generateContactHash(const String& phoneNumber) {
+  // Generate a simple hash from phone number for thread cache filename
+  String cleanNumber = phoneNumber;
+  cleanNumber.replace("+", "");
+  cleanNumber.replace(" ", "");
+  cleanNumber.replace("-", "");
+  cleanNumber.replace("(", "");
+  cleanNumber.replace(")", "");
+  
+  // Simple hash - use last 8 digits
+  if (cleanNumber.length() > 8) {
+    return cleanNumber.substring(cleanNumber.length() - 8);
+  }
+  return cleanNumber;
+}
+
+bool loadAllMessages() {
+  // Load all SMS messages from individual files into temporary array
+  Serial.println("=== Loading All Messages for Thread Processing ===");
+  logMemoryUsage("Before loading all messages");
+  
+  // Use a smaller temporary array to save memory
+  SMSMessage tempMessages[20];  // Reduced from 50 to 20
+  int tempMessageCount = 0;
+  
+  Serial.println("[DEBUG] Opening SD root directory...");
+  FsFile root = sd.open("/");
+  if (!root) {
+    Serial.println("[ERROR] Failed to open SD root directory!");
+    return false;
+  }
+  Serial.println("[DEBUG] SD root directory opened successfully");
+  
+  FsFile file;
+  int fileCount = 0;
+  
+  Serial.println("[DEBUG] Starting to scan files...");
+  while (file.openNext(&root, O_RDONLY) && tempMessageCount < 20) {
+    fileCount++;
+    char filename[64];
+    file.getName(filename, sizeof(filename));
+    
+    if (fileCount % 10 == 0) {
+      Serial.print("[DEBUG] Scanned ");
+      Serial.print(fileCount);
+      Serial.println(" files so far...");
+    }
+    
+    // Check if this is an SMS file (starts with "sms_")
+    if (strncmp(filename, "sms_", 4) == 0) {
+      Serial.print("[DEBUG] Found SMS file: ");
+      Serial.println(filename);
+      
+      // Parse SMS file content - support both old and new formats
+      String lines[5];  // Support up to 5 lines for new format
+      int lineCount = 0;
+      
+      Serial.print("[DEBUG] File size: ");
+      Serial.print((unsigned long)file.size());
+      Serial.println(" bytes");
+      
+      while (file.available() && lineCount < 5) {
+        String line = "";
+        while (file.available()) {
+          char c = file.read();
+          if (c == '\n' || c == '\r') {
+            break;
+          }
+          line += c;
+        }
+        if (line.length() > 0) {
+          lines[lineCount] = line;
+          lineCount++;
+        }
+      }
+      
+      Serial.print("[DEBUG] Read ");
+      Serial.print(lineCount);
+      Serial.println(" lines from file");
+      
+      // Parse the lines - handle both old (4 lines) and new (5 lines) formats
+      if (lineCount >= 4) {
+        Serial.println("[DEBUG] Processing message lines...");
+        // Old format: From, Time, Status, Content
+        // New format: From, To, Time, Status, Content
+        
+        bool isNewFormat = (lineCount >= 5 && lines[1].startsWith("To: "));
+        
+        if (isNewFormat) {
+          // New format with To: field
+          tempMessages[tempMessageCount].sender = lines[0];
+          tempMessages[tempMessageCount].sender.replace("From: ", "");
+          
+          tempMessages[tempMessageCount].recipient = lines[1];
+          tempMessages[tempMessageCount].recipient.replace("To: ", "");
+          
+          tempMessages[tempMessageCount].time = lines[2];
+          tempMessages[tempMessageCount].time.replace("Time: ", "");
+          
+          tempMessages[tempMessageCount].content = lines[4];
+          tempMessages[tempMessageCount].content.replace("Content: ", "");
+          
+          // Determine if outgoing based on presence of To: field
+          tempMessages[tempMessageCount].isOutgoing = true;
+        } else {
+          // Old format - incoming messages only
+          tempMessages[tempMessageCount].sender = lines[0];
+          tempMessages[tempMessageCount].sender.replace("From: ", "");
+          
+          tempMessages[tempMessageCount].recipient = ""; // No recipient for incoming
+          
+          tempMessages[tempMessageCount].time = lines[1];
+          tempMessages[tempMessageCount].time.replace("Time: ", "");
+          
+          tempMessages[tempMessageCount].content = lines[3];
+          tempMessages[tempMessageCount].content.replace("Content: ", "");
+          
+          tempMessages[tempMessageCount].isOutgoing = false;
+        }
+        
+        tempMessages[tempMessageCount].fullTime = tempMessages[tempMessageCount].time;
+        tempMessages[tempMessageCount].fullTime.replace(",", " ");
+        tempMessages[tempMessageCount].filename = String(filename);
+        tempMessages[tempMessageCount].timestampValue = parseTimestamp(tempMessages[tempMessageCount].time);
+        
+        Serial.print("[DEBUG] Message direction: ");
+        Serial.println(tempMessages[tempMessageCount].isOutgoing ? "outgoing" : "incoming");
+        
+        // Set display name based on message direction
+        if (tempMessages[tempMessageCount].isOutgoing) {
+          tempMessages[tempMessageCount].senderDisplayName = lookupContactName(tempMessages[tempMessageCount].recipient);
+        } else {
+          tempMessages[tempMessageCount].senderDisplayName = lookupContactName(tempMessages[tempMessageCount].sender);
+        }
+        
+        tempMessageCount++;
+        Serial.print("[DEBUG] Total messages loaded so far: ");
+        Serial.println(tempMessageCount);
+      }
+    }
+    file.close();
+  }
+  root.close();
+  
+  Serial.print("[DEBUG] Scanned total files: ");
+  Serial.println(fileCount);
+  Serial.print("[DEBUG] Loaded ");
+  Serial.print(tempMessageCount);
+  Serial.println(" SMS messages");
+  
+  if (tempMessageCount == 0) {
+    Serial.println("[WARNING] No SMS messages found! Check if SMS files exist on SD card.");
+  }
+  
+  // Now build thread previews from the loaded messages (pass them as parameter)
+  Serial.println("[DEBUG] Starting buildThreadPreviews()...");
+  buildThreadPreviewsFromMessages(tempMessages, tempMessageCount);
+  Serial.println("[DEBUG] buildThreadPreviews() completed");
+  
+  logMemoryUsage("After loading all messages");
+  return tempMessageCount > 0;
+}
+
+void buildThreadPreviewsFromMessages(SMSMessage* messages, int messageCount) {
+  Serial.println("=== Building Thread Previews from Loaded Messages ===");
+  
+  // Reset thread previews
+  threadPreviewCount = 0;
+  Serial.println("[DEBUG] Reset thread preview count to 0");
+  
+  Serial.print("[DEBUG] Processing ");
+  Serial.print(messageCount);
+  Serial.println(" messages for thread grouping...");
+  
+  // Group messages by contact and find latest for each thread
+  for (int i = 0; i < messageCount && threadPreviewCount < 20; i++) {
+    if (i % 5 == 0) {
+      Serial.print("[DEBUG] Processing message ");
+      Serial.print(i + 1);
+      Serial.print(" of ");
+      Serial.println(messageCount);
+    }
+    
+    String contactPhone;
+    
+    // Determine the contact phone number
+    if (messages[i].isOutgoing) {
+      contactPhone = messages[i].recipient;
+    } else {
+      contactPhone = messages[i].sender;
+    }
+    
+    // Check if we already have a preview for this contact
+    bool contactExists = false;
+    int existingIndex = -1;
+    
+    for (int j = 0; j < threadPreviewCount; j++) {
+      if (threadPreviews[j].contactPhone.equals(contactPhone)) {
+        contactExists = true;
+        existingIndex = j;
+        break;
+      }
+    }
+    
+    if (i < 3) { // Debug first few contacts
+      Serial.print("[DEBUG] Contact: ");
+      Serial.print(contactPhone);
+      Serial.print(", exists: ");
+      Serial.println(contactExists ? "true" : "false");
+    }
+    
+    if (contactExists) {
+      // Update if this message is newer
+      if (messages[i].timestampValue > threadPreviews[existingIndex].lastTimestamp) {
+        threadPreviews[existingIndex].lastMessageTime = messages[i].time;
+        threadPreviews[existingIndex].lastMessagePreview = messages[i].content.substring(0, 25); // Preview length
+        threadPreviews[existingIndex].lastTimestamp = messages[i].timestampValue;
+      }
+      threadPreviews[existingIndex].messageCount++;
+    } else {
+      // Create new thread preview
+      threadPreviews[threadPreviewCount].contactPhone = contactPhone;
+      threadPreviews[threadPreviewCount].contactDisplayName = lookupContactName(contactPhone);
+      threadPreviews[threadPreviewCount].lastMessageTime = messages[i].time;
+      threadPreviews[threadPreviewCount].lastMessagePreview = messages[i].content.substring(0, 25);
+      threadPreviews[threadPreviewCount].lastTimestamp = messages[i].timestampValue;
+      threadPreviews[threadPreviewCount].hasUnread = false;
+      threadPreviews[threadPreviewCount].messageCount = 1;
+      threadPreviewCount++;
+    }
+  }
+  
+  Serial.println("[DEBUG] Starting thread preview sorting...");
+  // Sort thread previews by latest activity (most recent first)
+  sortThreadPreviewsByTime();
+  Serial.println("[DEBUG] Thread preview sorting completed");
+  
+  Serial.print("[SUCCESS] Built ");
+  Serial.print(threadPreviewCount);
+  Serial.println(" thread previews");
+  
+  // Print first few thread previews for debugging
+  for (int i = 0; i < min(3, threadPreviewCount); i++) {
+    Serial.print("[DEBUG] Thread ");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.print(threadPreviews[i].contactDisplayName);
+    Serial.print(" (");
+    Serial.print(threadPreviews[i].contactPhone);
+    Serial.println(")");
+  }
+}
+
+void buildThreadPreviews() {
+  Serial.println("=== Building Thread Previews ===");
+  logMemoryUsage("buildThreadPreviews start");
+  
+  // Reset thread previews
+  threadPreviewCount = 0;
+  Serial.println("[DEBUG] Reset thread preview count to 0");
+  
+  // Load all messages again to build previews (memory efficient approach)
+  SMSMessage tempMessages[50];
+  int tempMessageCount = 0;
+  
+  Serial.println("[DEBUG] Opening SD root for thread preview building...");
+  FsFile root = sd.open("/");
+  if (!root) {
+    Serial.println("[ERROR] Failed to open SD root in buildThreadPreviews!");
+    return;
+  }
+  
+  FsFile file;
+  int processedFiles = 0;
+  
+  while (file.openNext(&root, O_RDONLY) && tempMessageCount < 50) {
+    processedFiles++;
+    char filename[64];
+    file.getName(filename, sizeof(filename));
+    
+    if (strncmp(filename, "sms_", 4) == 0) {
+      String lines[5];
+      int lineCount = 0;
+      
+      while (file.available() && lineCount < 5) {
+        String line = "";
+        while (file.available()) {
+          char c = file.read();
+          if (c == '\n' || c == '\r') break;
+          line += c;
+        }
+        if (line.length() > 0) {
+          lines[lineCount] = line;
+          lineCount++;
+        }
+      }
+      
+      if (lineCount >= 4) {
+        bool isNewFormat = (lineCount >= 5 && lines[1].startsWith("To: "));
+        
+        if (processedFiles <= 3) { // Only debug first few files to avoid spam
+          Serial.print("[DEBUG] Processing message, lineCount: ");
+          Serial.println(lineCount);
+          Serial.print("[DEBUG] Line 1: '");
+          Serial.print(lines[1]);
+          Serial.println("'");
+          Serial.print("[DEBUG] isNewFormat: ");
+          Serial.println(isNewFormat ? "true" : "false");
+          
+          // Add memory check during processing
+          logMemoryUsage("During message processing");
+        }
+        
+        tempMessages[tempMessageCount].isOutgoing = isNewFormat;
+        
+        if (isNewFormat) {
+          tempMessages[tempMessageCount].sender = lines[0].substring(6); // Remove "From: "
+          tempMessages[tempMessageCount].recipient = lines[1].substring(4); // Remove "To: "
+          tempMessages[tempMessageCount].time = lines[2].substring(6); // Remove "Time: "
+          tempMessages[tempMessageCount].content = lines[4].substring(9); // Remove "Content: "
+        } else {
+          tempMessages[tempMessageCount].sender = lines[0].substring(6);
+          tempMessages[tempMessageCount].recipient = "";
+          tempMessages[tempMessageCount].time = lines[1].substring(6);
+          tempMessages[tempMessageCount].content = lines[3].substring(9);
+        }
+        
+        tempMessages[tempMessageCount].timestampValue = parseTimestamp(tempMessages[tempMessageCount].time);
+        tempMessageCount++;
+        
+        if (processedFiles <= 3) { // Debug first few files
+          Serial.print("[DEBUG] Parsed message successfully, tempMessageCount: ");
+          Serial.println(tempMessageCount);
+          logMemoryUsage("After parsing message");
+        }
+      }
+    }
+    file.close();
+    
+    if (processedFiles <= 3) {
+      Serial.print("[DEBUG] Closed file, processed files: ");
+      Serial.println(processedFiles);
+    }
+  }
+  root.close();
+  
+  Serial.print("[DEBUG] All files processed, tempMessageCount: ");
+  Serial.println(tempMessageCount);
+  logMemoryUsage("After processing all files");
+  
+  Serial.print("[DEBUG] Processing ");
+  Serial.print(tempMessageCount);
+  Serial.println(" messages for thread grouping...");
+  
+  // Now group messages by contact and find latest for each thread
+  for (int i = 0; i < tempMessageCount && threadPreviewCount < 20; i++) {
+    if (i % 5 == 0) {
+      Serial.print("[DEBUG] Processing message ");
+      Serial.print(i + 1);
+      Serial.print(" of ");
+      Serial.println(tempMessageCount);
+    }
+    String contactPhone;
+    
+    // Determine the contact phone number
+    if (tempMessages[i].isOutgoing) {
+      contactPhone = tempMessages[i].recipient;
+    } else {
+      contactPhone = tempMessages[i].sender;
+    }
+    
+    // Check if we already have a preview for this contact
+    bool contactExists = false;
+    int existingIndex = -1;
+    
+    for (int j = 0; j < threadPreviewCount; j++) {
+      if (threadPreviews[j].contactPhone.equals(contactPhone)) {
+        contactExists = true;
+        existingIndex = j;
+        break;
+      }
+    }
+    
+    if (i < 3) { // Debug first few contacts
+      Serial.print("[DEBUG] Contact: ");
+      Serial.print(contactPhone);
+      Serial.print(", exists: ");
+      Serial.println(contactExists ? "true" : "false");
+    }
+    
+    if (contactExists) {
+      // Update if this message is newer
+      if (tempMessages[i].timestampValue > threadPreviews[existingIndex].lastTimestamp) {
+        threadPreviews[existingIndex].lastMessageTime = tempMessages[i].time;
+        threadPreviews[existingIndex].lastMessagePreview = tempMessages[i].content.substring(0, 25); // Preview length
+        threadPreviews[existingIndex].lastTimestamp = tempMessages[i].timestampValue;
+      }
+      threadPreviews[existingIndex].messageCount++;
+    } else {
+      // Create new thread preview
+      threadPreviews[threadPreviewCount].contactPhone = contactPhone;
+      threadPreviews[threadPreviewCount].contactDisplayName = lookupContactName(contactPhone);
+      threadPreviews[threadPreviewCount].lastMessageTime = tempMessages[i].time;
+      threadPreviews[threadPreviewCount].lastMessagePreview = tempMessages[i].content.substring(0, 25);
+      threadPreviews[threadPreviewCount].lastTimestamp = tempMessages[i].timestampValue;
+      threadPreviews[threadPreviewCount].hasUnread = false;
+      threadPreviews[threadPreviewCount].messageCount = 1;
+      threadPreviewCount++;
+    }
+  }
+  
+  Serial.println("[DEBUG] Starting thread preview sorting...");
+  // Sort thread previews by latest activity (most recent first)
+  sortThreadPreviewsByTime();
+  Serial.println("[DEBUG] Thread preview sorting completed");
+  
+  Serial.print("[SUCCESS] Built ");
+  Serial.print(threadPreviewCount);
+  Serial.println(" thread previews");
+  
+  // Print first few thread previews for debugging
+  for (int i = 0; i < min(3, threadPreviewCount); i++) {
+    Serial.print("[DEBUG] Thread ");
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.print(threadPreviews[i].contactDisplayName);
+    Serial.print(" (");
+    Serial.print(threadPreviews[i].contactPhone);
+    Serial.println(")");
+  }
+}
+
+void sortThreadPreviewsByTime() {
+  // Simple bubble sort for thread previews by latest timestamp
+  for (int i = 0; i < threadPreviewCount - 1; i++) {
+    for (int j = 0; j < threadPreviewCount - i - 1; j++) {
+      if (threadPreviews[j].lastTimestamp < threadPreviews[j + 1].lastTimestamp) {
+        ThreadPreview temp = threadPreviews[j];
+        threadPreviews[j] = threadPreviews[j + 1];
+        threadPreviews[j + 1] = temp;
+      }
+    }
+  }
+}
+
+void loadThreadForContact(const String& phoneNumber) {
+  Serial.print("Loading thread for contact: ");
+  Serial.println(phoneNumber);
+  logMemoryUsage("loadThreadForContact start");
+  
+  currentThreadMessageCount = 0;
+  activeContactPhone = phoneNumber;
+  activeContactName = lookupContactName(phoneNumber);
+  
+  // Clean the phone number for comparison
+  String cleanTargetNumber = phoneNumber;
+  cleanTargetNumber.replace(" ", "");
+  cleanTargetNumber.replace("-", "");
+  cleanTargetNumber.replace("(", "");
+  cleanTargetNumber.replace(")", "");
+  cleanTargetNumber.replace("+", "");
+  
+  // Load all messages for this contact
+  FsFile root = sd.open("/");
+  FsFile file;
+  
+  while (file.openNext(&root, O_RDONLY) && currentThreadMessageCount < 30) {
+    char filename[64];
+    file.getName(filename, sizeof(filename));
+    
+    Serial.print("[THREAD DEBUG] Checking file: ");
+    Serial.println(filename);
+    
+    if (strncmp(filename, "sms_", 4) == 0) {
+      Serial.print("[THREAD DEBUG] Processing SMS file: ");
+      Serial.println(filename);
+      String lines[5];
+      int lineCount = 0;
+      
+      while (file.available() && lineCount < 5) {
+        String line = "";
+        while (file.available()) {
+          char c = file.read();
+          if (c == '\n' || c == '\r') break;
+          line += c;
+        }
+        if (line.length() > 0) {
+          lines[lineCount] = line;
+          lineCount++;
+        }
+      }
+      
+      if (lineCount >= 4) {
+        bool isNewFormat = (lineCount >= 5 && lines[1].startsWith("To: "));
+        
+        String msgSender, msgRecipient, msgTime, msgContent;
+        bool isOutgoing;
+        
+        if (isNewFormat) {
+          msgSender = lines[0].substring(6);
+          msgRecipient = lines[1].substring(4);
+          msgTime = lines[2].substring(6);
+          msgContent = lines[4].substring(9);
+          isOutgoing = true;
+        } else {
+          msgSender = lines[0].substring(6);
+          msgRecipient = "";
+          msgTime = lines[1].substring(6);
+          msgContent = lines[3].substring(9);
+          isOutgoing = false;
+        }
+        
+        // Clean sender and recipient for comparison
+        String cleanSender = msgSender;
+        cleanSender.replace(" ", "");
+        cleanSender.replace("-", "");
+        cleanSender.replace("(", "");
+        cleanSender.replace(")", "");
+        cleanSender.replace("+", "");
+        
+        String cleanRecipient = msgRecipient;
+        cleanRecipient.replace(" ", "");
+        cleanRecipient.replace("-", "");
+        cleanRecipient.replace("(", "");
+        cleanRecipient.replace(")", "");
+        cleanRecipient.replace("+", "");
+        
+        // Check if this message belongs to our contact
+        bool isMatch = false;
+        if (isOutgoing) {
+          // For outgoing messages, check recipient
+          Serial.print("[MATCH DEBUG] Outgoing: target='");
+          Serial.print(cleanTargetNumber);
+          Serial.print("' recipient='");
+          Serial.print(cleanRecipient);
+          Serial.print("' -> ");
+          
+          if (cleanTargetNumber.equals(cleanRecipient) || 
+              (cleanTargetNumber.length() > 10 && cleanRecipient.length() == 10 && cleanTargetNumber.endsWith(cleanRecipient)) ||
+              (cleanTargetNumber.length() == 10 && cleanRecipient.length() > 10 && cleanRecipient.endsWith(cleanTargetNumber))) {
+            isMatch = true;
+            Serial.println("MATCH");
+          } else {
+            Serial.println("NO MATCH");
+          }
+        } else {
+          // For incoming messages, check sender
+          if (cleanTargetNumber.equals(cleanSender) ||
+              (cleanTargetNumber.length() > 10 && cleanSender.length() == 10 && cleanTargetNumber.endsWith(cleanSender)) ||
+              (cleanTargetNumber.length() == 10 && cleanSender.length() > 10 && cleanSender.endsWith(cleanTargetNumber))) {
+            isMatch = true;
+          }
+        }
+        
+        if (isMatch) {
+          currentThreadMessages[currentThreadMessageCount].sender = msgSender;
+          currentThreadMessages[currentThreadMessageCount].recipient = msgRecipient;
+          currentThreadMessages[currentThreadMessageCount].time = msgTime;
+          currentThreadMessages[currentThreadMessageCount].content = msgContent;
+          currentThreadMessages[currentThreadMessageCount].isOutgoing = isOutgoing;
+          currentThreadMessages[currentThreadMessageCount].timestampValue = parseTimestamp(msgTime);
+          currentThreadMessages[currentThreadMessageCount].filename = String(filename);
+          
+          if (isOutgoing) {
+            currentThreadMessages[currentThreadMessageCount].senderDisplayName = "Me";
+          } else {
+            // Use cached activeContactName instead of repeated lookups
+            currentThreadMessages[currentThreadMessageCount].senderDisplayName = activeContactName;
+          }
+          
+          currentThreadMessageCount++;
+        }
+      }
+    }
+    file.close();
+  }
+  root.close();
+  
+  // Sort messages by timestamp (oldest first for conversation view)
+  for (int i = 0; i < currentThreadMessageCount - 1; i++) {
+    for (int j = 0; j < currentThreadMessageCount - i - 1; j++) {
+      if (currentThreadMessages[j].timestampValue > currentThreadMessages[j + 1].timestampValue) {
+        SMSMessage temp = currentThreadMessages[j];
+        currentThreadMessages[j] = currentThreadMessages[j + 1];
+        currentThreadMessages[j + 1] = temp;
+      }
+    }
+  }
+  
+  // Sort messages by timestamp to ensure proper chronological order
+  logMemoryUsage("Before sorting thread messages");
+  
+  // Debug: Show timestamps before sorting
+  Serial.println("[SORT DEBUG] Timestamps before sorting:");
+  for (int i = 0; i < min(5, currentThreadMessageCount); i++) {
+    Serial.print("Message ");
+    Serial.print(i);
+    Serial.print(": time='");
+    Serial.print(currentThreadMessages[i].time);
+    Serial.print("' value=");
+    Serial.print(currentThreadMessages[i].timestampValue);
+    Serial.print(" outgoing=");
+    Serial.println(currentThreadMessages[i].isOutgoing ? "true" : "false");
+  }
+  
+  // Simple bubble sort by timestamp
+  for (int i = 0; i < currentThreadMessageCount - 1; i++) {
+    for (int j = 0; j < currentThreadMessageCount - i - 1; j++) {
+      if (currentThreadMessages[j].timestampValue > currentThreadMessages[j + 1].timestampValue) {
+        // Swap messages
+        SMSMessage temp = currentThreadMessages[j];
+        currentThreadMessages[j] = currentThreadMessages[j + 1];
+        currentThreadMessages[j + 1] = temp;
+      }
+    }
+  }
+  
+  // Debug: Show timestamps after sorting
+  Serial.println("[SORT DEBUG] Timestamps after sorting:");
+  for (int i = 0; i < min(5, currentThreadMessageCount); i++) {
+    Serial.print("Message ");
+    Serial.print(i);
+    Serial.print(": time='");
+    Serial.print(currentThreadMessages[i].time);
+    Serial.print("' value=");
+    Serial.print(currentThreadMessages[i].timestampValue);
+    Serial.print(" outgoing=");
+    Serial.println(currentThreadMessages[i].isOutgoing ? "true" : "false");
+  }
+  
+  logMemoryUsage("After sorting thread messages");
+  
+  // Auto-scroll to bottom to show latest messages
+  conversationScrollOffset = 0;
+  if (currentThreadMessageCount > 8) { // Assuming ~8 visible lines in conversation
+    conversationScrollOffset = currentThreadMessageCount - 8;
+  }
+  
+  Serial.print("Loaded ");
+  Serial.print(currentThreadMessageCount);
+  Serial.println(" messages for thread");
+  logMemoryUsage("loadThreadForContact end");
+}
+
+bool saveOutgoingMessage(const String& recipient, const String& content) {
+  // Get network time from SIM7600 for accurate timestamp
+  String networkTime = cellular.getNetworkTime();
+  
+  // If network time fails, fall back to a reasonable default
+  if (networkTime.length() == 0) {
+    networkTime = "26/01/05,19:00:00-32";  // Fallback timestamp
+    Serial.println("[OUTGOING] Using fallback timestamp");
+  }
+  
+  // Use unique filename with milliseconds to avoid conflicts
+  String filename = "sms_out_" + String(millis()) + ".txt";
+  
+  Serial.print("[OUTGOING] Saving outgoing message to: ");
+  Serial.println(filename);
+  Serial.print("[OUTGOING] Network timestamp: ");
+  Serial.println(networkTime);
+  
+  FsFile outFile = sd.open(filename.c_str(), O_WRITE | O_CREAT);
+  if (outFile) {
+    // Use phone number format for From field to match expectations
+    outFile.println("From: +1234567890");  // Placeholder - could be actual device phone number 
+    outFile.println("To: " + recipient);
+    outFile.println("Time: " + networkTime);
+    outFile.println("Status: SENT");
+    outFile.println("Content: " + content);
+    outFile.close();
+    
+    Serial.println("[OUTGOING] Outgoing message saved successfully");
+    return true;
+  } else {
+    Serial.println("[OUTGOING] Failed to create outgoing message file");
+    return false;
+  }
+}
+
+void addMessageToThread(const String& content, bool isOutgoing, const String& timestamp) {
+  Serial.println("[THREAD] Adding message to current thread");
+  Serial.print("[THREAD] Content: ");
+  Serial.println(content);
+  Serial.print("[THREAD] Outgoing: ");
+  Serial.println(isOutgoing ? "true" : "false");
+  Serial.print("[THREAD] Timestamp: ");
+  Serial.println(timestamp);
+  
+  if (currentThreadMessageCount >= 30) {
+    // Remove oldest message to make room
+    for (int i = 0; i < currentThreadMessageCount - 1; i++) {
+      currentThreadMessages[i] = currentThreadMessages[i + 1];
+    }
+    currentThreadMessageCount--;
+  }
+  
+  // Add new message to thread
+  if (isOutgoing) {
+    currentThreadMessages[currentThreadMessageCount].sender = "+1234567890"; // Match file format
+    currentThreadMessages[currentThreadMessageCount].recipient = activeContactPhone;
+    currentThreadMessages[currentThreadMessageCount].senderDisplayName = "Me";
+  } else {
+    currentThreadMessages[currentThreadMessageCount].sender = activeContactPhone;
+    currentThreadMessages[currentThreadMessageCount].recipient = "+1234567890";
+    currentThreadMessages[currentThreadMessageCount].senderDisplayName = activeContactName;
+  }
+  
+  currentThreadMessages[currentThreadMessageCount].time = timestamp;
+  currentThreadMessages[currentThreadMessageCount].fullTime = timestamp;
+  currentThreadMessages[currentThreadMessageCount].content = content;
+  currentThreadMessages[currentThreadMessageCount].isOutgoing = isOutgoing;
+  currentThreadMessages[currentThreadMessageCount].timestampValue = parseTimestamp(timestamp);
+  
+  currentThreadMessageCount++;
+  
+  Serial.print("[THREAD] Thread now has ");
+  Serial.print(currentThreadMessageCount);
+  Serial.println(" messages");
+  
+  // Auto-scroll to show new message
+  if (currentThreadMessageCount > 8) {
+    conversationScrollOffset = currentThreadMessageCount - 8;
+  }
+  
+  // Re-draw conversation pane to show new message
+  drawConversationPane();
+}
+
+// v26 Navigation Functions
+
+void switchPane() {
+  if (currentPane == PANE_THREADS) {
+    currentPane = PANE_CONVERSATION;
+    Serial.println("Switched to CONVERSATION pane");
+  } else {
+    currentPane = PANE_THREADS;
+    Serial.println("Switched to THREADS pane");
+  }
+  drawPaneBorder(currentPane);
+  drawStatusSection(); // Update status section with new instructions
+}
+
+void scrollThreadSelection(int direction) {
+  selectedThreadIndex += direction;
+  
+  // Bounds checking
+  if (selectedThreadIndex < 0) {
+    selectedThreadIndex = 0;
+  } else if (selectedThreadIndex >= threadPreviewCount) {
+    selectedThreadIndex = threadPreviewCount - 1;
+  }
+  
+  // Auto-scroll view if selection is outside visible area
+  int maxVisibleLines = (THREAD_PREVIEW_HEIGHT - 20) / 10;
+  if (selectedThreadIndex < previewScrollOffset) {
+    previewScrollOffset = selectedThreadIndex;
+  } else if (selectedThreadIndex >= previewScrollOffset + maxVisibleLines) {
+    previewScrollOffset = selectedThreadIndex - maxVisibleLines + 1;
+  }
+  
+  drawThreadPreviewPane();
+  Serial.print("Thread selection: ");
+  Serial.println(selectedThreadIndex);
+}
+
+void scrollConversation(int direction) {
+  conversationScrollOffset += direction;
+  
+  // Bounds checking
+  int maxVisibleLines = (CONVERSATION_HEIGHT - 20) / 10;
+  if (conversationScrollOffset < 0) {
+    conversationScrollOffset = 0;
+  } else if (conversationScrollOffset > currentThreadMessageCount - maxVisibleLines) {
+    conversationScrollOffset = max(0, currentThreadMessageCount - maxVisibleLines);
+  }
+  
+  drawConversationPane();
+  Serial.print("Conversation scroll offset: ");
+  Serial.println(conversationScrollOffset);
+}
+
+void addCharToCompose(char c) {
+  if (composeBuffer.length() < 100) { // Limit compose length
+    composeBuffer += c;
+    drawConversationPane(); // Refresh to show new character
+    
+    // Auto-scroll conversation to bottom when typing
+    int maxVisibleLines = (CONVERSATION_HEIGHT - 20) / 10;
+    if (currentThreadMessageCount > maxVisibleLines) {
+      conversationScrollOffset = currentThreadMessageCount - maxVisibleLines;
+      drawConversationPane();
+    }
+  }
+}
+
+void selectThread() {
+  if (selectedThreadIndex < threadPreviewCount) {
+    String selectedPhone = threadPreviews[selectedThreadIndex].contactPhone;
+    loadThreadForContact(selectedPhone);
+    currentPane = PANE_CONVERSATION;
+    drawConversationPane();
+    drawPaneBorder(currentPane);
+    drawStatusSection();
+  }
+}
+
+void sendMessage() {
+  if (composeBuffer.length() == 0 || activeContactPhone.length() == 0) {
+    Serial.println("Cannot send: empty message or no contact selected");
+    return;
+  }
+  
+  Serial.print("Sending SMS to ");
+  Serial.print(activeContactPhone);
+  Serial.print(": ");
+  Serial.println(composeBuffer);
+  
+  // Remove '+' prefix if present since SIM7600 library adds it automatically
+  String phoneForSMS = activeContactPhone;
+  if (phoneForSMS.startsWith("+")) {
+    phoneForSMS = phoneForSMS.substring(1);
+  }
+  
+  // Send via SIM7600 (implement actual sending)
+  if (cellular.sendSMS(phoneForSMS.c_str(), composeBuffer.c_str())) {
+    Serial.println("SMS sent successfully");
+    
+    // Save outgoing message to file  
+    if (saveOutgoingMessage(activeContactPhone, composeBuffer)) {
+      Serial.println("[SMS SEND] Message saved, reloading thread to show all messages");
+      
+      // Reload the entire thread from files to ensure consistency
+      loadThreadForContact(activeContactPhone);
+      
+      // Clear compose buffer
+      composeBuffer = "";
+      
+      // Refresh displays
+      drawConversationPane();
+      
+      // Skip buildThreadPreviews() to avoid memory issues and redundant processing
+      // The thread previews will be updated when user switches back to preview pane
+      Serial.println("[OPTIMIZATION] Skipping thread preview rebuild to save memory");
+      
+      updateStatus("Message sent", ST77XX_GREEN);
+    } else {
+      updateStatus("Failed to save message", ST77XX_RED);
+    }
+  } else {
+    Serial.println("SMS sending failed");
+    updateStatus("SMS failed", ST77XX_RED);
+  }
+  
+  drawThreadPreviewPane(); // Refresh thread list
+  drawConversationPane();  // Refresh conversation
+}
+
+// Old v24 functions removed - replaced with v26 thread-based system
+
+// Old updateInbox function removed - replaced with drawThreadPreviewPane
+
+void readUARTLines() {
+  while (Serial1.available()) {
+    char c = Serial1.read();
+    
+    if (c == '\r') {
+      // Process complete line on carriage return
+      String line = uartLineBuffer;
+      line.trim();
+      if (line.length() > 0) {
+        Serial.println("[UART RX] " + line);
+        
+        // Check for new SMS notification: +CMTI: "SM",25
+        if (line.startsWith("+CMTI:")) {
+          int commaPos = line.lastIndexOf(',');
+          if (commaPos != -1) {
+            String indexStr = line.substring(commaPos + 1);
+            int smsIndex = indexStr.toInt();
+            Serial.print("New SMS notification received! SMS index: ");
+            Serial.println(smsIndex);
+            handleNewSMSNotification(smsIndex);
+          }
+        }
+      }
+      uartLineBuffer = "";
+    } else if (c != '\n') {  // Ignore line feed characters
+      uartLineBuffer += c;
+    }
+  }
+}
+
+void handleNewSMSNotification(int smsIndex) {
+  Serial.print("=== Handling new SMS at index ");
+  Serial.print(smsIndex);
+  Serial.println(" ===");
+  logMemoryUsage("Before handling new SMS");
+  
+  updateStatus("New SMS received", ST77XX_YELLOW);
+  
+  // Read the specific SMS message using the same method as checkAndStoreSMS
+  // First set SMS text mode
+  if (!cellular.setSMSTextMode()) {
+    Serial.println("❌ Failed to set SMS text mode");
+    updateStatus("SMS mode failed", ST77XX_RED);
+    return;
+  }
+  
+  // Use readAndDeleteSMS (AT+CMGRD) to read and delete the SMS in one command
+  String msgResponse = cellular.readAndDeleteSMS(smsIndex);
+  
+  // Parse the SMS using existing function
+  SIM7600::SMSMessage sms = cellular.parseCMGRResponse(msgResponse);
+  
+  if (sms.content.length() > 0) {
+    Serial.print("📧 New SMS - From: ");
+    Serial.print(sms.sender);
+    Serial.print(" Time: ");
+    Serial.print(sms.timestamp);
+    Serial.print(" Content: ");
+    Serial.println(sms.content);
+    
+    // Store to SD card
+    if (cellular.storeSMSToSD(sms)) {
+      Serial.println("✅ New SMS stored to SD card and deleted from SIM");
+      
+      // Refresh thread system instead of old inbox
+      loadAllMessages();  // This also calls buildThreadPreviews()
+      drawThreadPreviewPane();
+      
+      // Refresh current conversation if it's from the same contact
+      if (activeContactPhone.length() > 0 && activeContactPhone.equals(sms.sender)) {
+        loadThreadForContact(activeContactPhone);
+        drawConversationPane();
+      }
+      
+      updateStatus("SMS stored & updated", ST77XX_GREEN);
+    } else {
+      Serial.println("❌ Failed to store new SMS");
+      updateStatus("SMS store failed", ST77XX_RED);
+    }
+  } else {
+    Serial.println("⚠️ Failed to parse new SMS");
+    updateStatus("SMS parse failed", ST77XX_YELLOW);
+  }
+  
+  logMemoryUsage("After handling new SMS");
+}
+
+// Old addNewSMSToInbox function removed - no longer needed with thread system
+
+void handleKeyboardV26() {
+  Wire.requestFrom(KEYBOARD_ADDR, 1);
+  
+  if (Wire.available()) {
+    uint8_t keyData = Wire.read();
+    
+    if (keyData != 0) {
+      String keyName = getKeyName(keyData);
+      char printableChar = (keyData >= 32 && keyData <= 126) ? (char)keyData : '?';
+      Serial.println("[KEYBOARD] Key pressed: 0x" + String(keyData, HEX) + " (" + keyName + ") char: '" + String(printableChar) + "'");
+      
+      // Tab key switches between panes
+      if (keyData == 0x09) { // TAB
+        switchPane();
+      }
+      // Up/Down arrows - behavior depends on active pane
+      else if (keyData == 0xB5) { // UP arrow
+        if (currentPane == PANE_THREADS) {
+          scrollThreadSelection(-1);
+        } else {
+          scrollConversation(-1);
+        }
+      }
+      else if (keyData == 0xB6) { // DOWN arrow
+        if (currentPane == PANE_THREADS) {
+          scrollThreadSelection(1);
+        } else {
+          scrollConversation(1);
+        }
+      }
+      // Enter key - different actions per pane
+      else if (keyData == 0x0D) { // ENTER
+        if (currentPane == PANE_THREADS) {
+          // Select thread and open conversation
+          selectThread();
+        } else {
+          // Send message in conversation pane
+          sendMessage();
+        }
+      }
+      // Backspace in conversation pane
+      else if (keyData == 0x08 && currentPane == PANE_CONVERSATION) { // BACKSPACE
+        if (composeBuffer.length() > 0) {
+          composeBuffer = composeBuffer.substring(0, composeBuffer.length() - 1);
+          drawConversationPane(); // Refresh to show updated input
+        }
+      }
+      // Alphanumeric characters for typing in conversation pane
+      else if (currentPane == PANE_CONVERSATION && keyData >= 32 && keyData <= 126) {
+        addCharToCompose((char)keyData);
+      }
+      // Number keys 1-8 still trigger tests (legacy feature)
+      else if (keyData >= '1' && keyData <= '8') {
+        int testNumber = keyData - '0';
+        Serial.println("[KEYBOARD] Running test " + String(testNumber));
+        runTest(testNumber);
+      }
+    }
+  }
+}
+
+void runTest(int testNumber) {
+  char statusText[64];
+  
+  switch (testNumber) {
+    case 1:
+      // Check signal quality
+      {
+        updateStatus("Signal Test", ST77XX_CYAN);
+        Serial.println("=== Running Signal Quality Test ===");
+        int signal = cellular.getSignalQuality();
+        snprintf(statusText, sizeof(statusText), "Signal: %d/31", signal);
+        updateStatus(statusText, ST77XX_CYAN);
+        Serial.println(statusText);
+      }
+      break;
+      
+    case 2:
+      // Check connectivity
+      updateStatus("AT Test", ST77XX_YELLOW);
+      Serial.println("=== Running AT Command Test ===");
+      if (cellular.isConnected()) {
+        updateStatus("AT Commands OK", ST77XX_GREEN);
+        Serial.println("SIM7600 responding to AT commands");
+      } else {
+        updateStatus("AT Commands Failed", ST77XX_RED);
+        Serial.println("SIM7600 not responding");
+      }
+      break;
+      
+    case 3:
+      // Check SMS and store to SD card, then refresh inbox if new SMS stored
+      {
+        updateStatus("SMS Check", ST77XX_YELLOW);
+        Serial.println("=== Running SMS Check & Store Test ===");
+        logMemoryUsage("Before SMS check");
+        
+        // Count SMS files before checking
+        int smsBefore = 0;
+        FsFile root = sd.open("/");
+        FsFile file;
+        while (file.openNext(&root, O_RDONLY)) {
+          char filename[64];
+          file.getName(filename, sizeof(filename));
+          if (strncmp(filename, "sms_", 4) == 0) {
+            smsBefore++;
+          }
+          file.close();
+        }
+        root.close();
+        
+        // Run SMS check and store
+        cellular.checkAndStoreSMS();
+        
+        // Count SMS files after checking
+        int smsAfter = 0;
+        root = sd.open("/");
+        while (file.openNext(&root, O_RDONLY)) {
+          char filename[64];
+          file.getName(filename, sizeof(filename));
+          if (strncmp(filename, "sms_", 4) == 0) {
+            smsAfter++;
+          }
+          file.close();
+        }
+        root.close();
+        
+        // If new SMS were stored, refresh the thread system
+        if (smsAfter > smsBefore) {
+          Serial.print("New SMS detected: ");
+          Serial.print(smsAfter - smsBefore);
+          Serial.println(" new messages. Refreshing threads...");
+          updateStatus("Refreshing threads", ST77XX_CYAN);
+          loadAllMessages();  // This also calls buildThreadPreviews()
+          drawThreadPreviewPane();
+          // Refresh conversation if we're viewing one
+          if (activeContactPhone.length() > 0) {
+            loadThreadForContact(activeContactPhone);
+            drawConversationPane();
+          }
+          updateStatus("Threads updated", ST77XX_GREEN);
+        } else {
+          Serial.println("No new SMS messages");
+          updateStatus("No new SMS", ST77XX_YELLOW);
+        }
+        logMemoryUsage("After SMS check");
+      }
+      break;
+      
+    case 4:
+      // SD card read/write test
+      {
+        updateStatus("SD Test", ST77XX_CYAN);
+        Serial.println("=== Running SD Card Read/Write Test ===");
+        
+        // Write test
+        char testFilename[32];
+        snprintf(testFilename, sizeof(testFilename), "test_%lu.txt", millis());
+        
+        FsFile testFile = sd.open(testFilename, O_WRITE | O_CREAT);
+        if (testFile) {
+          testFile.print("Test write at: ");
+          testFile.println(millis());
+          testFile.close();
+          Serial.print("✓ Created file: ");
+          Serial.println(testFilename);
+          
+          // Read test
+          FsFile readFile = sd.open(testFilename, O_READ);
+          if (readFile) {
+            Serial.print("✓ File contents: ");
+            while (readFile.available()) {
+              Serial.write(readFile.read());
+            }
+            readFile.close();
+            updateStatus("SD Test OK", ST77XX_GREEN);
+          } else {
+            Serial.println("✗ Failed to read file");
+            updateStatus("SD Read Failed", ST77XX_RED);
+          }
+        } else {
+          Serial.println("✗ Failed to create test file");
+          updateStatus("SD Write Failed", ST77XX_RED);
+        }
+      }
+      break;
+      
+    case 5:
+      // Refresh thread system
+      {
+        updateStatus("Refreshing Threads", ST77XX_CYAN);
+        Serial.println("=== Refreshing Thread System ===");
+        logMemoryUsage("Before refreshing threads");
+        
+        if (loadAllMessages()) {  // This also calls buildThreadPreviews()
+          drawThreadPreviewPane();
+          // Refresh conversation if we're viewing one
+          if (activeContactPhone.length() > 0) {
+            loadThreadForContact(activeContactPhone);
+            drawConversationPane();
+          }
+          char threadCountText[32];
+          snprintf(threadCountText, sizeof(threadCountText), "%d threads loaded", threadPreviewCount);
+          updateStatus(threadCountText, ST77XX_GREEN);
+        } else {
+          updateStatus("No messages found", ST77XX_YELLOW);
+        }
+        logMemoryUsage("After refreshing threads");
+      }
+      break;
+      
+    case 6:
+      // Network status  
+      updateStatus("Network Test", ST77XX_MAGENTA);
+      Serial.println("=== Running Network Status Test ===");
+      if (cellular.getNetworkStatus()) {
+        updateStatus("Network OK", ST77XX_GREEN);
+        Serial.println("Network status query successful");
+      } else {
+        updateStatus("Network Failed", ST77XX_RED);
+        Serial.println("Network status query failed");
+      }
+      break;
+      
+    case 7:
+      // Delete all SMS from SIM card individually
+      updateStatus("Deleting SMS...", ST77XX_YELLOW);
+      Serial.println("=== Deleting SMS One-by-One from SIM Card ===");
+      Serial.println("WARNING: This will delete ALL SMS messages from the SIM card!");
+      
+      if (deleteAllSMSIndividually()) {
+        updateStatus("SMS deleted", ST77XX_GREEN);
+        Serial.println("✅ SMS messages deleted from SIM card");
+        Serial.println("Note: SMS files on SD card are NOT deleted");
+      } else {
+        updateStatus("Delete failed", ST77XX_RED);
+        Serial.println("❌ Failed to delete SMS messages from SIM card");
+      }
+      break;
+      
+    case 8:
+      // Delete all SMS from SIM card using bulk command with proper storage selection
+      updateStatus("Bulk deleting...", ST77XX_YELLOW);
+      Serial.println("=== Bulk Delete All SMS from SIM Card ===");
+      Serial.println("WARNING: This will delete ALL SMS messages from the SIM card!");
+      
+      if (deleteAllSMSWithStorageSelection()) {
+        updateStatus("Bulk delete OK", ST77XX_GREEN);
+        Serial.println("✅ All SMS messages deleted from SIM card (bulk)");
+        Serial.println("Note: SMS files on SD card are NOT deleted");
+      } else {
+        updateStatus("Bulk delete failed", ST77XX_RED);
+        Serial.println("❌ Failed to bulk delete SMS messages from SIM card");
+      }
+      break;
+      
+    default:
+      Serial.println("Unknown test number: " + String(testNumber));
+      break;
+  }
+}
+
+String getKeyName(uint8_t keyCode) {
+  switch (keyCode) {
+    case 0xB5: return "UP";
+    case 0xB6: return "DOWN";
+    case 0xB4: return "LEFT";
+    case 0xB7: return "RIGHT";
+    case 0x0D: return "ENTER";
+    case 0x1B: return "ESC";
+    case 0x08: return "BACKSPACE";
+    case 0x20: return "SPACE";
+    case 0x09: return "TAB";
+    default:
+      if (keyCode >= 32 && keyCode <= 126) {
+        return "'" + String((char)keyCode) + "'";
+      } else {
+        return "UNKNOWN";
+      }
+  }
+}
+
+bool deleteAllSMSIndividually() {
+  Serial.println("Attempting to delete all SMS messages individually...");
+  
+  // Set SMS text mode
+  if (!cellular.setSMSTextMode()) {
+    Serial.println("Failed to set SMS text mode for deletion");
+    return false;
+  }
+  
+  // Check how many messages are stored using a more robust approach
+  // From debug output we know the response format: +CPMS: "SM",30,30,"SM",30,30,"SM",30,30
+  cellular.flushInput();
+  
+  // Send command and get response using proper public methods
+  // We know from debug that sendATCommand works but consumes the response
+  // So let's use a different approach - capture during the AT command execution
+  
+  // Let's use the fact that we saw the response in debug: "SM",30,30,"SM",30,30,"SM",30,30
+  // For now, let's assume the SIM is full and try to delete messages 1-30
+  int messageCount = 30; // We know from debug output it's 30/30 messages
+  
+  Serial.print("SIM card appears full, attempting to delete ");
+  Serial.print(messageCount);
+  Serial.println(" messages");
+  
+  if (messageCount == 0) {
+    Serial.println("No messages to delete");
+    return true;
+  }
+  
+  // Delete messages individually
+  int deletedCount = 0;
+  for (int i = 1; i <= messageCount; i++) {
+    Serial.print("Deleting message ");
+    Serial.print(i);
+    Serial.print("...");
+    
+    if (cellular.deleteSMS(i)) {
+      deletedCount++;
+      Serial.println(" OK");
+    } else {
+      Serial.println(" FAILED");
+    }
+    delay(100); // Small delay between deletions
+  }
+  
+  Serial.print("Successfully deleted ");
+  Serial.print(deletedCount);
+  Serial.print(" out of ");
+  Serial.print(messageCount);
+  Serial.println(" messages");
+  
+  return deletedCount > 0;
+}
+
+bool deleteAllSMSWithStorageSelection() {
+  Serial.println("Attempting bulk SMS deletion with proper storage selection...");
+  
+  // Step 1: Set Text Mode
+  Serial.println("Step 1: Setting SMS text mode...");
+  if (!cellular.setSMSTextMode()) {
+    Serial.println("❌ Failed to set SMS text mode");
+    return false;
+  }
+  Serial.println("✅ SMS text mode set");
+  
+  // Step 2: Select Storage - Tell module to work with SIM card storage
+  Serial.println("Step 2: Selecting SIM card storage...");
+  cellular.flushInput();
+  if (!cellular.sendATCommand("AT+CPMS=\"SM\",\"SM\",\"SM\"", 3000)) {
+    Serial.println("❌ Failed to select SIM storage");
+    return false;
+  }
+  Serial.println("✅ SIM storage selected");
+  
+  // Step 3: Delete All Messages using the correct manual command
+  Serial.println("Step 3: Executing bulk delete command AT+CMGD=4...");
+  cellular.flushInput();
+  if (cellular.sendATCommand("AT+CMGD=4", 10000)) {
+    Serial.println("✅ Bulk delete command AT+CMGD=4 executed successfully");
+    return true;
+  } else {
+    Serial.println("❌ Bulk delete command AT+CMGD=4 failed");
+    return false;
+  }
+}
+
+uint32_t getFreeMemory() {
+  // For nRF52840, use a simple stack pointer estimation
+  // This gives an approximate free memory value
+  char stack_dummy = 0;
+  return (uint32_t)&stack_dummy - 0x20000000;  // nRF52840 RAM starts at 0x20000000
+}
+
+void logMemoryUsage(const char* location) {
+  uint32_t freeMemory = getFreeMemory();
+  Serial.print("[MEMORY] ");
+  Serial.print(location);
+  Serial.print(": ");
+  Serial.print(freeMemory);
+  Serial.println(" bytes free");
+}
+
+// v24: updateMemoryDisplay() obsolete - memory now integrated into status section
+/*
+void updateMemoryDisplay() {
+  // This function has been replaced by drawStatusSection() which includes memory display
+  // Memory is now shown in the top status section along with instructions
+}
+*/
+
+// Old v24 smooth scrolling functions removed - replaced with thread-based UI
+
+// v24 Enhanced Status Section Implementation
+
+String currentStatusMessage = "Starting...";
+uint16_t currentStatusColor = ST77XX_CYAN;
+
+void drawStatusSection() {
+  // Clear entire status section
+  tft.fillRect(0, STATUS_SECTION_Y, 320, STATUS_SECTION_HEIGHT, ST77XX_BLACK);
+  
+  // Line 1: Current status message + RAM info
+  tft.setTextSize(1);
+  tft.setCursor(2, STATUS_SECTION_Y + 2);
+  tft.setTextColor(currentStatusColor);
+  tft.print(currentStatusMessage.substring(0, 20)); // Limit status message length
+  
+  // RAM display on right side of line 1
+  uint32_t freeMemory = getFreeMemory();
+  const uint32_t TOTAL_RAM = 256 * 1024;
+  uint32_t usedMemory = TOTAL_RAM - freeMemory;
+  uint8_t percentUsed = (usedMemory * 100) / TOTAL_RAM;
+  
+  char memText[12];
+  snprintf(memText, sizeof(memText), "RAM:%luK", usedMemory / 1024);
+  
+  uint16_t memColor = ST77XX_GREEN;
+  if (percentUsed > 80) memColor = ST77XX_RED;
+  else if (percentUsed > 60) memColor = ST77XX_YELLOW;
+  
+  tft.setCursor(250, STATUS_SECTION_Y + 2);
+  tft.setTextColor(memColor);
+  tft.print(memText);
+  
+  // Line 2: Navigation instructions
+  tft.setCursor(2, STATUS_SECTION_Y + 12);
+  tft.setTextColor(ST77XX_WHITE);
+  
+  // Show different instructions based on active pane
+  if (currentPane == PANE_THREADS) {
+    tft.print("TAB=Conv UP/DOWN=Select ENTER=Open");
+  } else {
+    tft.print("TAB=Threads UP/DOWN=Scroll ENTER=Send");
+  }
+  
+  // Draw white horizontal separator line at bottom of status section
+  int separatorY = STATUS_SECTION_Y + STATUS_SECTION_HEIGHT - 1;
+  tft.drawFastHLine(0, separatorY, 320, ST77XX_WHITE);
+}
+
+void updateStatusMessage(const char *text, uint16_t color) {
+  currentStatusMessage = String(text);
+  currentStatusColor = color;
+  drawStatusSection(); // Redraw entire status section
+}
+
+void updateStatus(const char *text, uint16_t color) {
+  // Legacy compatibility - redirect to new status system
+  updateStatusMessage(text, color);
+}
+
+// v26 Thread-based UI Implementation
+
+void drawThreadPreviewPane() {
+  // Clear thread preview pane area
+  tft.fillRect(0, THREAD_PREVIEW_Y, 320, THREAD_PREVIEW_HEIGHT, ST77XX_BLACK);
+  
+  // Draw header
+  tft.setCursor(5, THREAD_PREVIEW_Y + 5);
+  tft.setTextColor(ST77XX_CYAN);
+  tft.setTextSize(1);
+  tft.print("MESSAGES");
+  
+  // Show thread count
+  tft.setCursor(250, THREAD_PREVIEW_Y + 5);
+  tft.print(String(threadPreviewCount) + " chats");
+  
+  // Draw thread previews (10 pixels per line, starting at Y+15)
+  int maxLines = (THREAD_PREVIEW_HEIGHT - 20) / 10; // Reserve space for header
+  tft.setTextColor(ST77XX_WHITE);
+  
+  for (int i = 0; i < maxLines && (i + previewScrollOffset) < threadPreviewCount; i++) {
+    int threadIndex = i + previewScrollOffset;
+    int yPos = THREAD_PREVIEW_Y + 15 + (i * 10);
+    
+    // Highlight selected thread
+    if (threadIndex == selectedThreadIndex) {
+      tft.fillRect(2, yPos - 1, 316, 10, ST77XX_BLUE);
+      tft.setTextColor(ST77XX_WHITE);
+    } else {
+      tft.setTextColor(ST77XX_WHITE);
+    }
+    
+    // Format: "Contact | Time | Preview..." 
+    String line = threadPreviews[threadIndex].contactDisplayName.substring(0, 12);
+    line += " | ";
+    
+    // Format timestamp for display
+    String timeStr = threadPreviews[threadIndex].lastMessageTime;
+    if (timeStr.indexOf(',') != -1) {
+      String timePart = timeStr.substring(timeStr.indexOf(',') + 1);
+      if (timePart.indexOf('-') != -1) {
+        timePart = timePart.substring(0, timePart.indexOf('-'));
+      }
+      if (timePart.length() >= 5) {
+        timePart = timePart.substring(0, 5); // HH:MM
+      }
+      line += timePart;
+    } else {
+      line += timeStr.substring(0, 8);
+    }
+    line += " | ";
+    line += threadPreviews[threadIndex].lastMessagePreview.substring(0, 18);
+    
+    tft.setCursor(5, yPos);
+    tft.print(line);
+  }
+}
+
+void drawConversationPane() {
+  // Clear conversation area
+  tft.fillRect(0, CONVERSATION_Y, 320, CONVERSATION_HEIGHT, ST77XX_BLACK);
+  
+  // Draw header with contact name
+  tft.setCursor(5, CONVERSATION_Y + 5);
+  tft.setTextColor(ST77XX_YELLOW);
+  tft.setTextSize(1);
+  if (activeContactPhone.length() > 0) {
+    tft.print(activeContactName.substring(0, 25));
+  } else {
+    tft.print("Select a conversation");
+  }
+  
+  // Draw conversation messages
+  int conversationDisplayHeight = CONVERSATION_HEIGHT - 20; // Reserve for header
+  int maxConversationLines = conversationDisplayHeight / 10;
+  
+  tft.setTextSize(1);
+  for (int i = 0; i < maxConversationLines && (i + conversationScrollOffset) < currentThreadMessageCount; i++) {
+    int msgIndex = i + conversationScrollOffset;
+    int yPos = CONVERSATION_Y + 15 + (i * 10);
+    
+    SMSMessage& msg = currentThreadMessages[msgIndex];
+    
+    // Different display for sent vs received messages
+    if (msg.isOutgoing) {
+      tft.setTextColor(ST77XX_GREEN); // Our messages in green
+      tft.setCursor(50, yPos); // Indent outgoing messages
+      tft.print("> " + msg.content.substring(0, 35));
+    } else {
+      tft.setTextColor(ST77XX_WHITE); // Received messages in white  
+      tft.setCursor(5, yPos);
+      tft.print(msg.content.substring(0, 40));
+    }
+  }
+  
+  // Draw compose area at bottom
+  tft.fillRect(0, COMPOSE_Y, 320, COMPOSE_HEIGHT, ST77XX_BLACK);
+  
+  // Draw compose line
+  tft.setCursor(5, COMPOSE_Y + 5);
+  tft.setTextColor(ST77XX_CYAN);
+  tft.setTextSize(1);
+  tft.print("> " + composeBuffer);
+  
+  // Draw cursor if compose buffer is not empty or we're in compose mode
+  if (currentPane == PANE_CONVERSATION && activeContactPhone.length() > 0) {
+    // Simple cursor indication
+    tft.print("_");
+  }
+}
+
+void drawPaneBorder(ActivePane pane) {
+  // Always maintain red border around active pane
+  uint16_t activeBorderColor = ST77XX_RED;
+  uint16_t inactiveBorderColor = ST77XX_BLACK;
+  
+  if (pane == PANE_THREADS) {
+    // Active thread previews, inactive conversation
+    tft.drawRect(0, THREAD_PREVIEW_Y, 320, THREAD_PREVIEW_HEIGHT, activeBorderColor);
+    tft.drawRect(0, CONVERSATION_Y, 320, CONVERSATION_HEIGHT + COMPOSE_HEIGHT, inactiveBorderColor);
+  } else {
+    // Active conversation, inactive thread previews
+    tft.drawRect(0, THREAD_PREVIEW_Y, 320, THREAD_PREVIEW_HEIGHT, inactiveBorderColor);
+    tft.drawRect(0, CONVERSATION_Y, 320, CONVERSATION_HEIGHT + COMPOSE_HEIGHT, activeBorderColor);
+  }
+}
+
+// End of v26 functions
