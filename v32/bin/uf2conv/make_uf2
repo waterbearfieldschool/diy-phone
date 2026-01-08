@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python3 uf2conv.py firmware.hex -f NRF52840 -o firmware.uf2

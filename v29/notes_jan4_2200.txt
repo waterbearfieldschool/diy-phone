@@ -1,0 +1,48 @@
+Great! The file debugging version is compiled. When you test this (send a message), you should see:
+
+  🔍 Debug Output Expected:
+
+  [THREAD DEBUG] Checking file: addressbook.txt
+  [THREAD DEBUG] Checking file: sms_12345.txt
+  [THREAD DEBUG] Processing SMS file: sms_12345.txt
+  [THREAD DEBUG] Checking file: sms_out_76995.txt
+  [THREAD DEBUG] Processing SMS file: sms_out_76995.txt
+
+  This will help us identify:
+
+  1. Are the sms_out_*.txt files being found? (Should see [THREAD DEBUG] Checking file: sms_out_xxxxx.txt)
+  2. Are they being processed? (Should see [THREAD DEBUG] Processing SMS file: sms_out_xxxxx.txt)
+  3. What's in the outgoing files? (Will show the line-by-line content)
+
+  Based on your previous debug showing "Loaded 18 messages" but only incoming messages in the timestamp debug, I suspect the outgoing files are
+  either:
+
+  - Not being found (missing from file list)
+  - Being processed but not matching the contact (recipient matching issue)
+  - Being processed but parsing incorrectly (format detection problem)
+
+  The file debug output will tell us exactly which case it is, and then we can fix the specific issue!
+
+● Perfect! Now I can see exactly what's happening. The debug output shows:
+
+  🔍 Key Findings:
+
+  1. ✅ Outgoing files ARE being found and processed:
+    - sms_out_34413.txt
+    - sms_out_32918.txt
+    - sms_out_46832.txt
+    - sms_out_82219.txt
+    - sms_out_35809.txt
+    - And many more...
+  2. ❌ But outgoing messages don't appear in the sorting debug:
+    - All 5 messages in sorting are outgoing=false
+    - No outgoing messages make it to the thread
+  3. 📊 File count mismatch:
+    - Files processed: ~20+ SMS files (including many sms_out_*.txt)
+    - Messages loaded: Only 19 total, but only 5 shown in sorting debug
+    - All loaded messages are incoming only
+
+  This means outgoing files are being processed but filtered out during the contact matching phase. The issue is likely in the recipient matching
+  logic.
+
+  Let me add debug output to see why outgoing messages are being rejected:
