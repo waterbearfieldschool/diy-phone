@@ -1,0 +1,1280 @@
+[KEYBOARD] Key pressed: 0xd (ENTER) char: '?'
+Sending SMS to 16512524765: ggggg
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] No response received - timeout
+SMS sending failed
+=== DIY Phone v35 Starting ===
+[DEBUG] Serial connection established after 9666 ms
+[DEBUG] Starting custom SPI initialization...
+[DEBUG] TFT SPI initialized
+[DEBUG] SD SPI initialized
+[DEBUG] Starting display initialization...
+[DEBUG] Display initialized
+[DEBUG] About to call updateStatus...
+[DEBUG] Status updated
+[DEBUG] Initializing I2C for keyboard...
+[DEBUG] I2C initialized for keyboard at address 0x5F
+[DEBUG] Skipping full I2C scan to prevent freeze - testing keyboard only...
+[DEBUG] Testing I2C keyboard connection...
+[DEBUG] Requesting 1 byte from address 0x5F
+[DEBUG] WARNING: I2C keyboard error code: 2
+[DEBUG] This could mean:
+[DEBUG] 1. Keyboard not connected
+[DEBUG] 2. Wrong I2C address
+[DEBUG] 3. I2C timing issue
+[DEBUG] I2C keyboard test complete
+[DEBUG] About to initialize SD card...
+[DEBUG] SD card initialized
+[DEBUG] Testing SD card write...
+[DEBUG] SD card test file created successfully
+[DEBUG] SD card initialization complete
+[DEBUG] Loading address book...
+=== Loading Address Book ===
+[MEMORY] Before loading address book: 58392 bytes free
+Address book file found, loading contacts...
+Loaded contact: Don (voip) -> 16512524765
+Loaded contact: Don (iphone) -> 17813230341
+Loaded contact: Liz -> 16174299144
+Loaded contact: Unknown 7465 -> +12079557465
+Loaded 4 contacts
+[MEMORY] After loading address book: 58392 bytes free
+[DEBUG] Address book loading complete
+[DEBUG] Configuring Serial1 pins...
+[DEBUG] Serial1 pins configured
+[DEBUG] Starting SIM7600 initialization...
+Disabling AT echo...
+[SIM7600 TX] "ATE0\r"
+[SIM7600 RX] No response received - timeout
+[SIM7600 TX] "AT\r"
+[SIM7600 RX] No response received - timeout
+[DEBUG] SIM7600 connection failed
+[DEBUG] SIM7600 initialization complete
+[DEBUG] Starting message loading process...
+=== Loading All Messages for Thread Processing ===
+[MEMORY] Before loading all messages: 56624 bytes free
+[DEBUG] Opening SD root directory...
+[DEBUG] SD root directory opened successfully
+[DEBUG] Starting to scan files...
+[DEBUG] Found SMS file: sms_260107_144140.txt
+[DEBUG] File size: 87 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408908 for timestamp: 26/01/07,14:41:40-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 1
+[DEBUG] Found SMS file: sms_out_69404.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 2
+[DEBUG] Found SMS file: sms_260107_144230.txt
+[DEBUG] File size: 90 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408998 for timestamp: 26/01/07,14:42:30-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 3
+[DEBUG] Found SMS file: sms_out_98641.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 4
+[DEBUG] Found SMS file: sms_out_32533.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 5
+[DEBUG] Found SMS file: sms_260107_144636.txt
+[DEBUG] File size: 232 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746409404 for timestamp: 26/01/07,14:46:36-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 6
+[DEBUG] Found SMS file: sms_out_37526.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 7
+[DEBUG] Found SMS file: sms_out_119087.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 8
+[DEBUG] Scanned 10 files so far...
+[DEBUG] Found SMS file: sms_out_30261.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 9
+[DEBUG] Found SMS file: sms_out_59266.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 10
+[DEBUG] Found SMS file: sms_out_174039.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 11
+[DEBUG] Found SMS file: sms_out_44515.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 12
+[DEBUG] Found SMS file: sms_out_20288.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 13
+[DEBUG] Found SMS file: sms_out_25765.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 14
+[DEBUG] Found SMS file: sms_out_54335.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 15
+[DEBUG] Found SMS file: sms_260107_164544.txt
+[DEBUG] File size: 93 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746429312 for timestamp: 26/01/07,16:45:44-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 16
+[DEBUG] Scanned 20 files so far...
+[DEBUG] Found SMS file: sms_out_140562.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 17
+[DEBUG] Found SMS file: sms_out_28314.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 18
+[DEBUG] Found SMS file: sms_out_68517.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 19
+[DEBUG] Found SMS file: sms_out_202036.txt
+[DEBUG] File size: 184 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 20
+[DEBUG] Scanned total files: 23
+[DEBUG] Loaded 20 SMS messages
+[DEBUG] Starting buildThreadPreviews()...
+=== Building Contact Previews from Address Book + Messages ===
+[DEBUG] Starting with 4 contacts from address book
+[DEBUG] Added 4 contacts to preview list
+[DEBUG] Processing 20 messages to update contact activity...
+[DEBUG] Starting contact sorting by recent activity...
+[DEBUG] Contact sorting completed
+[SUCCESS] Built 4 contact previews
+[DEBUG] Contact 0: Don (voip) (16512524765) - 20 msgs
+[DEBUG] Contact 1: Don (iphone) (17813230341) - 0 msgs
+[DEBUG] Contact 2: Liz (16174299144) - 0 msgs
+[DEBUG] Contact 3: Unknown 7465 (+12079557465) - 0 msgs
+[DEBUG] buildThreadPreviews() completed
+[MEMORY] After loading all messages: 56400 bytes free
+[DEBUG] Message loading completed in 260 ms
+[DEBUG] Initializing v26 thread-based interface...
+[MEMORY] Before UI initialization: 58560 bytes free
+[DEBUG] Selected first thread
+[DEBUG] Drawing UI components...
+[MEMORY] Before drawing UI: 58560 bytes free
+[DEBUG] Drawing status section...
+[MEMORY] Before status section: 58560 bytes free
+[MEMORY] After status section: 58560 bytes free
+[DEBUG] Drawing thread preview pane...
+[MEMORY] Before thread preview pane: 58560 bytes free
+[MEMORY] After thread preview pane: 58560 bytes free
+[DEBUG] Drawing conversation pane...
+[DEBUG] Drawing pane borders...
+[DEBUG] UI drawing completed
+[DEBUG] Setup complete!
+[MEMORY] Setup complete: 58560 bytes free
+===============================================
+Setup complete - Press keyboard numbers 1-9:
+1 = Signal Quality Test
+2 = AT Command Test
+3 = SMS Check & Store
+4 = SD Card Test
+5 = Read SMS Files
+6 = Network Status
+7 = Delete SMS One-by-One
+8 = Delete All SMS (Bulk)
+9 = Toggle Debug Output (v27+)
+Down Arrow = Scroll inbox
+===============================================
+[UART RX] RDY
+[UART RX] +CPIN: READY
+[UART RX] SMS DONE
+[UART RX] PB DONE
+=== DIY Phone v35 Starting ===
+[DEBUG] Serial connection established after 4984 ms
+[DEBUG] Starting custom SPI initialization...
+[DEBUG] TFT SPI initialized
+[DEBUG] SD SPI initialized
+[DEBUG] Starting display initialization...
+[DEBUG] Display initialized
+[DEBUG] About to call updateStatus...
+[DEBUG] Status updated
+[DEBUG] Initializing I2C for keyboard...
+[DEBUG] I2C initialized for keyboard at address 0x5F
+[DEBUG] Skipping full I2C scan to prevent freeze - testing keyboard only...
+[DEBUG] Testing I2C keyboard connection...
+[DEBUG] Requesting 1 byte from address 0x5F
+[DEBUG] I2C keyboard responds to address - connection OK
+[DEBUG] I2C keyboard test complete
+[DEBUG] About to initialize SD card...
+[DEBUG] SD card initialized
+[DEBUG] Testing SD card write...
+[DEBUG] SD card test file created successfully
+[DEBUG] SD card initialization complete
+[DEBUG] Loading address book...
+=== Loading Address Book ===
+[MEMORY] Before loading address book: 58392 bytes free
+Address book file found, loading contacts...
+Loaded contact: Don (voip) -> 16512524765
+Loaded contact: Don (iphone) -> 17813230341
+Loaded contact: Liz -> 16174299144
+Loaded contact: Unknown 7465 -> +12079557465
+Loaded 4 contacts
+[MEMORY] After loading address book: 58392 bytes free
+[DEBUG] Address book loading complete
+[DEBUG] Configuring Serial1 pins...
+[DEBUG] Serial1 pins configured
+[DEBUG] Starting SIM7600 initialization...
+Disabling AT echo...
+[SIM7600 TX] "ATE0\r"
+[SIM7600 RX] No response received - timeout
+[SIM7600 TX] "AT\r"
+[SIM7600 RX] No response received - timeout
+[DEBUG] SIM7600 connection failed
+[DEBUG] SIM7600 initialization complete
+[DEBUG] Starting message loading process...
+=== Loading All Messages for Thread Processing ===
+[MEMORY] Before loading all messages: 56624 bytes free
+[DEBUG] Opening SD root directory...
+[DEBUG] SD root directory opened successfully
+[DEBUG] Starting to scan files...
+[DEBUG] Found SMS file: sms_260107_144140.txt
+[DEBUG] File size: 87 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408908 for timestamp: 26/01/07,14:41:40-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 1
+[DEBUG] Found SMS file: sms_out_69404.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 2
+[DEBUG] Found SMS file: sms_260107_144230.txt
+[DEBUG] File size: 90 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408998 for timestamp: 26/01/07,14:42:30-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 3
+[DEBUG] Found SMS file: sms_out_98641.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 4
+[DEBUG] Found SMS file: sms_out_32533.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 5
+[DEBUG] Found SMS file: sms_260107_144636.txt
+[DEBUG] File size: 232 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746409404 for timestamp: 26/01/07,14:46:36-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 6
+[DEBUG] Found SMS file: sms_out_37526.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 7
+[DEBUG] Found SMS file: sms_out_119087.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 8
+[DEBUG] Scanned 10 files so far...
+[DEBUG] Found SMS file: sms_out_30261.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 9
+[DEBUG] Found SMS file: sms_out_59266.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 10
+[DEBUG] Found SMS file: sms_out_174039.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 11
+[DEBUG] Found SMS file: sms_out_44515.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 12
+[DEBUG] Found SMS file: sms_out_20288.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 13
+[DEBUG] Found SMS file: sms_out_25765.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 14
+[DEBUG] Found SMS file: sms_out_54335.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 15
+[DEBUG] Found SMS file: sms_260107_164544.txt
+[DEBUG] File size: 93 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746429312 for timestamp: 26/01/07,16:45:44-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 16
+[DEBUG] Scanned 20 files so far...
+[DEBUG] Found SMS file: sms_out_140562.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 17
+[DEBUG] Found SMS file: sms_out_28314.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 18
+[DEBUG] Found SMS file: sms_out_68517.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 19
+[DEBUG] Found SMS file: sms_out_202036.txt
+[DEBUG] File size: 184 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 20
+[DEBUG] Scanned total files: 23
+[DEBUG] Loaded 20 SMS messages
+[DEBUG] Starting buildThreadPreviews()...
+=== Building Contact Previews from Address Book + Messages ===
+[DEBUG] Starting with 4 contacts from address book
+[DEBUG] Added 4 contacts to preview list
+[DEBUG] Processing 20 messages to update contact activity...
+[DEBUG] Starting contact sorting by recent activity...
+[DEBUG] Contact sorting completed
+[SUCCESS] Built 4 contact previews
+[DEBUG] Contact 0: Don (voip) (16512524765) - 20 msgs
+[DEBUG] Contact 1: Don (iphone) (17813230341) - 0 msgs
+[DEBUG] Contact 2: Liz (16174299144) - 0 msgs
+[DEBUG] Contact 3: Unknown 7465 (+12079557465) - 0 msgs
+[DEBUG] buildThreadPreviews() completed
+[MEMORY] After loading all messages: 56400 bytes free
+[DEBUG] Message loading completed in 259 ms
+[DEBUG] Initializing v26 thread-based interface...
+[MEMORY] Before UI initialization: 58560 bytes free
+[DEBUG] Selected first thread
+[DEBUG] Drawing UI components...
+[MEMORY] Before drawing UI: 58560 bytes free
+[DEBUG] Drawing status section...
+[MEMORY] Before status section: 58560 bytes free
+[MEMORY] After status section: 58560 bytes free
+[DEBUG] Drawing thread preview pane...
+[MEMORY] Before thread preview pane: 58560 bytes free
+[MEMORY] After thread preview pane: 58560 bytes free
+[DEBUG] Drawing conversation pane...
+[DEBUG] Drawing pane borders...
+[DEBUG] UI drawing completed
+[DEBUG] Setup complete!
+[MEMORY] Setup complete: 58560 bytes free
+===============================================
+Setup complete - Press keyboard numbers 1-9:
+1 = Signal Quality Test
+2 = AT Command Test
+3 = SMS Check & Store
+4 = SD Card Test
+5 = Read SMS Files
+6 = Network Status
+7 = Delete SMS One-by-One
+8 = Delete All SMS (Bulk)
+9 = Toggle Debug Output (v27+)
+Down Arrow = Scroll inbox
+===============================================
+=== DIY Phone v35 Starting ===
+[DEBUG] Serial connection established after 5283 ms
+[DEBUG] Starting custom SPI initialization...
+[DEBUG] TFT SPI initialized
+[DEBUG] SD SPI initialized
+[DEBUG] Starting display initialization...
+[DEBUG] Display initialized
+[DEBUG] About to call updateStatus...
+[DEBUG] Status updated
+[DEBUG] Initializing I2C for keyboard...
+[DEBUG] I2C initialized for keyboard at address 0x5F
+[DEBUG] Skipping full I2C scan to prevent freeze - testing keyboard only...
+[DEBUG] Testing I2C keyboard connection...
+[DEBUG] Requesting 1 byte from address 0x5F
+[DEBUG] I2C keyboard responds to address - connection OK
+[DEBUG] I2C keyboard test complete
+[DEBUG] About to initialize SD card...
+[DEBUG] SD card initialized
+[DEBUG] Testing SD card write...
+[DEBUG] SD card test file created successfully
+[DEBUG] SD card initialization complete
+[DEBUG] Loading address book...
+=== Loading Address Book ===
+[MEMORY] Before loading address book: 58392 bytes free
+Address book file found, loading contacts...
+Loaded contact: Don (voip) -> 16512524765
+Loaded contact: Don (iphone) -> 17813230341
+Loaded contact: Liz -> 16174299144
+Loaded contact: Unknown 7465 -> +12079557465
+Loaded 4 contacts
+[MEMORY] After loading address book: 58392 bytes free
+[DEBUG] Address book loading complete
+[DEBUG] Configuring Serial1 pins...
+[DEBUG] Serial1 pins configured
+[DEBUG] Starting SIM7600 initialization...
+Disabling AT echo...
+[SIM7600 TX] "ATE0\r"
+[SIM7600 RX] "ATE0\r\r\nOK\r\n"
+[SIM7600 RX] Complete response: 11 bytes, contains 'OK': YES
+[SIM7600 TX] "AT\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[DEBUG] SIM7600 connected
+[DEBUG] Enabling caller ID...
+[SIM7600 TX] "AT+CLIP=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[DEBUG] Caller ID enabled
+[DEBUG] Checking signal quality...
+[SIM7600 TX] "AT+CSQ\r"
+[SIM7600 RX] "\r\n+CSQ: 25,99\r\n\r\nOK\r\n"
+[SIM7600 RX] Complete response: 21 bytes, contains 'OK': YES
+[SIM7600 RESPONSE] No response data received
+Signal: -1
+[DEBUG] Signal quality check complete
+[DEBUG] SIM7600 initialization complete
+[DEBUG] Starting message loading process...
+=== Loading All Messages for Thread Processing ===
+[MEMORY] Before loading all messages: 56624 bytes free
+[DEBUG] Opening SD root directory...
+[DEBUG] SD root directory opened successfully
+[DEBUG] Starting to scan files...
+[DEBUG] Found SMS file: sms_260107_144140.txt
+[DEBUG] File size: 87 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408908 for timestamp: 26/01/07,14:41:40-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 1
+[DEBUG] Found SMS file: sms_out_69404.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 2
+[DEBUG] Found SMS file: sms_260107_144230.txt
+[DEBUG] File size: 90 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408998 for timestamp: 26/01/07,14:42:30-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 3
+[DEBUG] Found SMS file: sms_out_98641.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 4
+[DEBUG] Found SMS file: sms_out_32533.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 5
+[DEBUG] Found SMS file: sms_260107_144636.txt
+[DEBUG] File size: 232 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746409404 for timestamp: 26/01/07,14:46:36-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 6
+[DEBUG] Found SMS file: sms_out_37526.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 7
+[DEBUG] Found SMS file: sms_out_119087.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 8
+[DEBUG] Scanned 10 files so far...
+[DEBUG] Found SMS file: sms_out_30261.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 9
+[DEBUG] Found SMS file: sms_out_59266.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 10
+[DEBUG] Found SMS file: sms_out_174039.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 11
+[DEBUG] Found SMS file: sms_out_44515.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 12
+[DEBUG] Found SMS file: sms_out_20288.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 13
+[DEBUG] Found SMS file: sms_out_25765.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 14
+[DEBUG] Found SMS file: sms_out_54335.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 15
+[DEBUG] Found SMS file: sms_260107_164544.txt
+[DEBUG] File size: 93 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746429312 for timestamp: 26/01/07,16:45:44-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 16
+[DEBUG] Scanned 20 files so far...
+[DEBUG] Found SMS file: sms_out_140562.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 17
+[DEBUG] Found SMS file: sms_out_28314.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 18
+[DEBUG] Found SMS file: sms_out_68517.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 19
+[DEBUG] Found SMS file: sms_out_202036.txt
+[DEBUG] File size: 184 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 20
+[DEBUG] Scanned total files: 23
+[DEBUG] Loaded 20 SMS messages
+[DEBUG] Starting buildThreadPreviews()...
+=== Building Contact Previews from Address Book + Messages ===
+[DEBUG] Starting with 4 contacts from address book
+[DEBUG] Added 4 contacts to preview list
+[DEBUG] Processing 20 messages to update contact activity...
+[DEBUG] Starting contact sorting by recent activity...
+[DEBUG] Contact sorting completed
+[SUCCESS] Built 4 contact previews
+[DEBUG] Contact 0: Don (voip) (16512524765) - 20 msgs
+[DEBUG] Contact 1: Don (iphone) (17813230341) - 0 msgs
+[DEBUG] Contact 2: Liz (16174299144) - 0 msgs
+[DEBUG] Contact 3: Unknown 7465 (+12079557465) - 0 msgs
+[DEBUG] buildThreadPreviews() completed
+[MEMORY] After loading all messages: 56400 bytes free
+[DEBUG] Message loading completed in 258 ms
+[DEBUG] Initializing v26 thread-based interface...
+[MEMORY] Before UI initialization: 58560 bytes free
+[DEBUG] Selected first thread
+[DEBUG] Drawing UI components...
+[MEMORY] Before drawing UI: 58560 bytes free
+[DEBUG] Drawing status section...
+[MEMORY] Before status section: 58560 bytes free
+[MEMORY] After status section: 58560 bytes free
+[DEBUG] Drawing thread preview pane...
+[MEMORY] Before thread preview pane: 58560 bytes free
+[MEMORY] After thread preview pane: 58560 bytes free
+[DEBUG] Drawing conversation pane...
+[DEBUG] Drawing pane borders...
+[DEBUG] UI drawing completed
+[DEBUG] Setup complete!
+[MEMORY] Setup complete: 58560 bytes free
+===============================================
+Setup complete - Press keyboard numbers 1-9:
+1 = Signal Quality Test
+2 = AT Command Test
+3 = SMS Check & Store
+4 = SD Card Test
+5 = Read SMS Files
+6 = Network Status
+7 = Delete SMS One-by-One
+8 = Delete All SMS (Bulk)
+9 = Toggle Debug Output (v27+)
+Down Arrow = Scroll inbox
+===============================================
+[KEYBOARD] Key pressed: 0xd (ENTER) char: '?'
+Loading thread for contact: 16512524765
+[MEMORY] loadThreadForContact start: 58404 bytes free
+[THREAD DEBUG] Checking file: test.txt
+[THREAD DEBUG] Checking file: sms_260107_144140.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144140.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:41:40
+[UTC DEBUG] totalMinutes before adjustment: 1361
+[UTC DEBUG] Final date: 26/01/07 time: 22:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488908 for timestamp: 26/01/07,22:41:40+00:00
+[THREAD DEBUG] Checking file: sms_out_69404.txt
+[THREAD DEBUG] Processing SMS file: sms_out_69404.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[THREAD DEBUG] Checking file: sms_260107_144230.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144230.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:42:30
+[UTC DEBUG] totalMinutes before adjustment: 1362
+[UTC DEBUG] Final date: 26/01/07 time: 22:42
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488998 for timestamp: 26/01/07,22:42:30+00:00
+[THREAD DEBUG] Checking file: sms_out_98641.txt
+[THREAD DEBUG] Processing SMS file: sms_out_98641.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[THREAD DEBUG] Checking file: sms_out_32533.txt
+[THREAD DEBUG] Processing SMS file: sms_out_32533.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[THREAD DEBUG] Checking file: sms_260107_144636.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144636.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:46:36
+[UTC DEBUG] totalMinutes before adjustment: 1366
+[UTC DEBUG] Final date: 26/01/07 time: 22:46
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489404 for timestamp: 26/01/07,22:46:36+00:00
+[THREAD DEBUG] Checking file: sms_out_37526.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37526.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[THREAD DEBUG] Checking file: sms_out_119087.txt
+[THREAD DEBUG] Processing SMS file: sms_out_119087.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[THREAD DEBUG] Checking file: addressbook.txt
+[THREAD DEBUG] Checking file: sms_out_30261.txt
+[THREAD DEBUG] Processing SMS file: sms_out_30261.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[THREAD DEBUG] Checking file: sms_out_59266.txt
+[THREAD DEBUG] Processing SMS file: sms_out_59266.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[THREAD DEBUG] Checking file: .Trash-1000
+[THREAD DEBUG] Checking file: sms_out_174039.txt
+[THREAD DEBUG] Processing SMS file: sms_out_174039.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[THREAD DEBUG] Checking file: sms_out_44515.txt
+[THREAD DEBUG] Processing SMS file: sms_out_44515.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[THREAD DEBUG] Checking file: sms_out_20288.txt
+[THREAD DEBUG] Processing SMS file: sms_out_20288.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[THREAD DEBUG] Checking file: sms_out_25765.txt
+[THREAD DEBUG] Processing SMS file: sms_out_25765.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[THREAD DEBUG] Checking file: sms_out_54335.txt
+[THREAD DEBUG] Processing SMS file: sms_out_54335.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[THREAD DEBUG] Checking file: sms_260107_164544.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_164544.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 16:45:44
+[UTC DEBUG] totalMinutes before adjustment: 1485
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 0:45
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269312 for timestamp: 26/01/08,00:45:44+00:00
+[THREAD DEBUG] Checking file: sms_out_140562.txt
+[THREAD DEBUG] Processing SMS file: sms_out_140562.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[THREAD DEBUG] Checking file: sms_out_28314.txt
+[THREAD DEBUG] Processing SMS file: sms_out_28314.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[THREAD DEBUG] Checking file: sms_out_68517.txt
+[THREAD DEBUG] Processing SMS file: sms_out_68517.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[THREAD DEBUG] Checking file: sms_out_202036.txt
+[THREAD DEBUG] Processing SMS file: sms_out_202036.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[THREAD DEBUG] Checking file: sms_out_39041.txt
+[THREAD DEBUG] Processing SMS file: sms_out_39041.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270699 for timestamp: 26/01/08,00:59:31+00:00
+[THREAD DEBUG] Checking file: sms_out_66408.txt
+[THREAD DEBUG] Processing SMS file: sms_out_66408.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270727 for timestamp: 26/01/08,00:59:59+00:00
+[THREAD DEBUG] Checking file: sms_out_85966.txt
+[THREAD DEBUG] Processing SMS file: sms_out_85966.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274786 for timestamp: 26/01/08,01:00:18+00:00
+[THREAD DEBUG] Checking file: sms_260107_170045.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_170045.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 17:0:45
+[UTC DEBUG] totalMinutes before adjustment: 1500
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 1:0
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274813 for timestamp: 26/01/08,01:00:45+00:00
+[THREAD DEBUG] Checking file: sms_out_132162.txt
+[THREAD DEBUG] Processing SMS file: sms_out_132162.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274872 for timestamp: 26/01/08,01:01:04+00:00
+[THREAD DEBUG] Checking file: sms_260107_183047.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_183047.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:30:47
+[UTC DEBUG] totalMinutes before adjustment: 1590
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 2:30
+[THREAD DEBUG] Checking file: sms_260107_190238.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190238.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:2:38
+[UTC DEBUG] totalMinutes before adjustment: 1622
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:2
+[THREAD DEBUG] Checking file: sms_260107_190326.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190326.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:26
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190344.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190344.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:44
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190851.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190851.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:8:51
+[UTC DEBUG] totalMinutes before adjustment: 1628
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:8
+[THREAD DEBUG] Checking file: sms_260107_191843.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_191843.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:18:43
+[UTC DEBUG] totalMinutes before adjustment: 1638
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:18
+[THREAD DEBUG] Checking file: sms_260107_192018.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192018.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:20:18
+[UTC DEBUG] totalMinutes before adjustment: 1640
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:20
+[THREAD DEBUG] Checking file: sms_260107_192141.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192141.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:21:41
+[UTC DEBUG] totalMinutes before adjustment: 1641
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:21
+[THREAD DEBUG] Checking file: sms_260109_095958.txt
+[THREAD DEBUG] Processing SMS file: sms_260109_095958.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 9:59:58
+[UTC DEBUG] totalMinutes before adjustment: 1079
+[UTC DEBUG] Final date: 26/01/09 time: 17:59
+[MEMORY] Before sorting thread messages: 58404 bytes free
+[SORT DEBUG] Timestamps before sorting:
+Message 0: time='26/01/07,22:41:40+00:00' value=746488908 outgoing=false
+Message 1: time='26/01/07,22:42:20+00:00' value=746488988 outgoing=true
+Message 2: time='26/01/07,22:42:30+00:00' value=746488998 outgoing=false
+Message 3: time='26/01/07,22:42:49+00:00' value=746489017 outgoing=true
+Message 4: time='26/01/07,22:44:21+00:00' value=746489189 outgoing=true
+[MEMORY] After sorting thread messages: 58404 bytes free
+Auto-scroll: pixel offset 241 (total height: 360, display height: 119, viewport: 241-360)
+Loaded 25 messages for thread
+[MEMORY] loadThreadForContact end: 58404 bytes free
+[KEYBOARD] Key pressed: 0x67 ('g') char: 'g'
+Auto-scroll: pixel offset 241 (total height: 360, display height: 119, viewport: 241-360)
+[KEYBOARD] Key pressed: 0x6f ('o') char: 'o'
+Auto-scroll: pixel offset 241 (total height: 360, display height: 119, viewport: 241-360)
+[KEYBOARD] Key pressed: 0x6f ('o') char: 'o'
+Auto-scroll: pixel offset 241 (total height: 360, display height: 119, viewport: 241-360)
+[KEYBOARD] Key pressed: 0x64 ('d') char: 'd'
+Auto-scroll: pixel offset 241 (total height: 360, display height: 119, viewport: 241-360)
+[KEYBOARD] Key pressed: 0xd (ENTER) char: '?'
+Sending SMS to 16512524765: good
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[SIM7600 TX] "AT+CMGS="+16512524765"\r"
+[SIM7600 RX] "\r\n> "
+[SIM7600 RX] Complete response: 4 bytes, contains '>': YES
+[SIM7600 TX] "good"
+[SIM7600 TX] ""
+[SIM7600 RX] "\r\n\r\n+CMGS: 133\r\n\r\nOK\r\n"
+[SIM7600 RX] Complete response: 22 bytes, contains 'OK': YES
+SMS sent successfully
+[SIM7600 TX] "AT+CCLK?\r"
+[SIM7600 RESPONSE] "\r\n+CCLK: "26/01/09,20:55:35-20"\r\n\r\nOK\r\n" - Complete response received
+" - Response timeout or incomplete
+[NETWORK TIME] Retrieved: 26/01/09,20:55:35-20
+[OUTGOING DEBUG] Raw network time from SIM7600: '26/01/09,20:55:35-20'
+[OUTGOING DEBUG] Input to convertToUTC: '26/01/09,20:55:35-20'
+[UTC DEBUG] Timezone part: '-20' quarters=-20 minutes=-300
+[UTC DEBUG] Original time: 20:55:35
+[UTC DEBUG] totalMinutes before adjustment: 1555
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/10 time: 1:55
+[OUTGOING DEBUG] Output from convertToUTC: '26/01/10,01:55:35+00:00'
+[OUTGOING] Saving outgoing message to: sms_out_36606.txt
+[OUTGOING] Local timestamp: 26/01/09,20:55:35-20
+[OUTGOING] UTC timestamp: 26/01/10,01:55:35+00:00
+[OUTGOING] Outgoing message saved successfully with dual timestamps
+[SMS SEND] Message saved, reloading thread to show all messages
+Loading thread for contact: 16512524765
+[MEMORY] loadThreadForContact start: 58396 bytes free
+[THREAD DEBUG] Checking file: test.txt
+[THREAD DEBUG] Checking file: sms_260107_144140.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144140.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:41:40
+[UTC DEBUG] totalMinutes before adjustment: 1361
+[UTC DEBUG] Final date: 26/01/07 time: 22:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488908 for timestamp: 26/01/07,22:41:40+00:00
+[THREAD DEBUG] Checking file: sms_out_69404.txt
+[THREAD DEBUG] Processing SMS file: sms_out_69404.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[THREAD DEBUG] Checking file: sms_260107_144230.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144230.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:42:30
+[UTC DEBUG] totalMinutes before adjustment: 1362
+[UTC DEBUG] Final date: 26/01/07 time: 22:42
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488998 for timestamp: 26/01/07,22:42:30+00:00
+[THREAD DEBUG] Checking file: sms_out_98641.txt
+[THREAD DEBUG] Processing SMS file: sms_out_98641.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[THREAD DEBUG] Checking file: sms_out_32533.txt
+[THREAD DEBUG] Processing SMS file: sms_out_32533.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[THREAD DEBUG] Checking file: sms_260107_144636.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144636.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:46:36
+[UTC DEBUG] totalMinutes before adjustment: 1366
+[UTC DEBUG] Final date: 26/01/07 time: 22:46
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489404 for timestamp: 26/01/07,22:46:36+00:00
+[THREAD DEBUG] Checking file: sms_out_37526.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37526.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[THREAD DEBUG] Checking file: sms_out_119087.txt
+[THREAD DEBUG] Processing SMS file: sms_out_119087.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[THREAD DEBUG] Checking file: addressbook.txt
+[THREAD DEBUG] Checking file: sms_out_30261.txt
+[THREAD DEBUG] Processing SMS file: sms_out_30261.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[THREAD DEBUG] Checking file: sms_out_59266.txt
+[THREAD DEBUG] Processing SMS file: sms_out_59266.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[THREAD DEBUG] Checking file: .Trash-1000
+[THREAD DEBUG] Checking file: sms_out_174039.txt
+[THREAD DEBUG] Processing SMS file: sms_out_174039.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[THREAD DEBUG] Checking file: sms_out_44515.txt
+[THREAD DEBUG] Processing SMS file: sms_out_44515.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[THREAD DEBUG] Checking file: sms_out_20288.txt
+[THREAD DEBUG] Processing SMS file: sms_out_20288.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[THREAD DEBUG] Checking file: sms_out_25765.txt
+[THREAD DEBUG] Processing SMS file: sms_out_25765.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[THREAD DEBUG] Checking file: sms_out_54335.txt
+[THREAD DEBUG] Processing SMS file: sms_out_54335.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[THREAD DEBUG] Checking file: sms_260107_164544.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_164544.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 16:45:44
+[UTC DEBUG] totalMinutes before adjustment: 1485
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 0:45
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269312 for timestamp: 26/01/08,00:45:44+00:00
+[THREAD DEBUG] Checking file: sms_out_140562.txt
+[THREAD DEBUG] Processing SMS file: sms_out_140562.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[THREAD DEBUG] Checking file: sms_out_28314.txt
+[THREAD DEBUG] Processing SMS file: sms_out_28314.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[THREAD DEBUG] Checking file: sms_out_68517.txt
+[THREAD DEBUG] Processing SMS file: sms_out_68517.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[THREAD DEBUG] Checking file: sms_out_202036.txt
+[THREAD DEBUG] Processing SMS file: sms_out_202036.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[THREAD DEBUG] Checking file: sms_out_39041.txt
+[THREAD DEBUG] Processing SMS file: sms_out_39041.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270699 for timestamp: 26/01/08,00:59:31+00:00
+[THREAD DEBUG] Checking file: sms_out_66408.txt
+[THREAD DEBUG] Processing SMS file: sms_out_66408.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270727 for timestamp: 26/01/08,00:59:59+00:00
+[THREAD DEBUG] Checking file: sms_out_85966.txt
+[THREAD DEBUG] Processing SMS file: sms_out_85966.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274786 for timestamp: 26/01/08,01:00:18+00:00
+[THREAD DEBUG] Checking file: sms_260107_170045.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_170045.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 17:0:45
+[UTC DEBUG] totalMinutes before adjustment: 1500
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 1:0
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274813 for timestamp: 26/01/08,01:00:45+00:00
+[THREAD DEBUG] Checking file: sms_out_132162.txt
+[THREAD DEBUG] Processing SMS file: sms_out_132162.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274872 for timestamp: 26/01/08,01:01:04+00:00
+[THREAD DEBUG] Checking file: sms_260107_183047.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_183047.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:30:47
+[UTC DEBUG] totalMinutes before adjustment: 1590
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 2:30
+[THREAD DEBUG] Checking file: sms_260107_190238.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190238.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:2:38
+[UTC DEBUG] totalMinutes before adjustment: 1622
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:2
+[THREAD DEBUG] Checking file: sms_260107_190326.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190326.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:26
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190344.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190344.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:44
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190851.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190851.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:8:51
+[UTC DEBUG] totalMinutes before adjustment: 1628
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:8
+[THREAD DEBUG] Checking file: sms_260107_191843.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_191843.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:18:43
+[UTC DEBUG] totalMinutes before adjustment: 1638
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:18
+[THREAD DEBUG] Checking file: sms_260107_192018.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192018.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:20:18
+[UTC DEBUG] totalMinutes before adjustment: 1640
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:20
+[THREAD DEBUG] Checking file: sms_260107_192141.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192141.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:21:41
+[UTC DEBUG] totalMinutes before adjustment: 1641
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:21
+[THREAD DEBUG] Checking file: sms_260109_095958.txt
+[THREAD DEBUG] Processing SMS file: sms_260109_095958.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 9:59:58
+[UTC DEBUG] totalMinutes before adjustment: 1079
+[UTC DEBUG] Final date: 26/01/09 time: 17:59
+[THREAD DEBUG] Checking file: sms_out_36606.txt
+[THREAD DEBUG] Processing SMS file: sms_out_36606.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 10
+[TIMESTAMP DEBUG] Final calculated value: 749280303 for timestamp: 26/01/10,01:55:35+00:00
+[MEMORY] Before sorting thread messages: 58396 bytes free
+[SORT DEBUG] Timestamps before sorting:
+Message 0: time='26/01/07,22:41:40+00:00' value=746488908 outgoing=false
+Message 1: time='26/01/07,22:42:20+00:00' value=746488988 outgoing=true
+Message 2: time='26/01/07,22:42:30+00:00' value=746488998 outgoing=false
+Message 3: time='26/01/07,22:42:49+00:00' value=746489017 outgoing=true
+Message 4: time='26/01/07,22:44:21+00:00' value=746489189 outgoing=true
+[MEMORY] After sorting thread messages: 58396 bytes free
+Auto-scroll: pixel offset 253 (total height: 372, display height: 119, viewport: 253-372)
+Loaded 26 messages for thread
+[MEMORY] loadThreadForContact end: 58396 bytes free
+[OPTIMIZATION] Skipping thread preview rebuild to save memory

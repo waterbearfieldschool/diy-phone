@@ -1,20 +1,17 @@
 /**************************************************************************
-  DIY Phone v27 - Smartphone-Style Messaging Interface (Message Sorting Fix)
+  DIY Phone v27 - Smartphone-Style Messaging Interface (ProMicro nRF52840)
   Features: Display + SIM7600 + SD card SMS storage + I2C keyboard control + Address book name lookup + Full timestamps + Auto SMS deletion + Thread-based UI
-  
-  v27 Changes (Message Sorting Fix):
-  - Fixed duplicate message sorting in thread conversations
-  - Improved timestamp parsing with better error handling
-  - Added fallback sorting by filename for messages with invalid timestamps
-  - Enhanced debugging output for message chronological ordering
-  - Ensures proper receive/send time ordering in conversation view
-  
-  v26 Changes: 
-  - Upper pane: Thread previews (unique contacts with latest message)
-  - Lower pane: Full conversation thread + compose line
-  - Added outgoing message storage and tracking
-  - Thread-based efficient storage with per-contact cache files
-  - Smartphone-like message threading and navigation
+
+  v27 Changes (from v26):
+  - Ported from ItsyBitsy nRF52840 to ProMicro nRF52840
+  - Updated pin mappings per promicromap.txt
+  - Separate SPI buses for TFT (SPIM2) and SD card (SPIM3)
+
+  Pin assignments (ProMicro nRF52840):
+  - TFT: MOSI=2(P0.17), SCK=9(P1.06), CS=11(P0.10), DC=10(P0.09), RST=5(P0.24)
+  - SD:  MOSI=14(P1.15), SCK=12(P1.11), MISO=15(P0.02), CS=13(P1.13)
+  - SIM7600: RX=3(P0.20), TX=4(P0.22)
+  - I2C: SDA=8(P1.04), SCL=7(P0.11)
  **************************************************************************/
 
 #include <Arduino.h>
@@ -25,22 +22,28 @@
 #include <SdFat.h>
 #include "SIM7600.h"
 
-// Custom SPI bus definition
-SPIClass customSPI(NRF_SPIM2, A1, A2, A0);  // MISO=A1, SCK=A2, MOSI=A0
+// Custom SPI bus definition for TFT (ProMicro nRF52840)
+// Based on promicromap.txt: MOSI=P0.17(pin2), SCK=P1.06(pin9)
+// MISO not needed for display-only, using pin 6 (P1.00) as placeholder
+SPIClass tftSPI(NRF_SPIM2, 6, 9, 2);  // MISO=6, SCK=9, MOSI=2
 
-// Pin definitions for ItsyBitsy nRF52840
-#define TFT_CS        A3
-#define TFT_RST        12 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_DC         A5
+// Custom SPI bus definition for SD card (separate bus)
+// Based on promicromap.txt: MISO=P0.02(pin15), SCK=P1.11(pin12), MOSI=P1.15(pin14)
+SPIClass sdSPI(NRF_SPIM3, 15, 12, 14);  // MISO=15, SCK=12, MOSI=14
 
-// SD card pin (using hardware SPI)
-#define SD_CS_PIN     10
+// Pin definitions for ProMicro nRF52840 (from promicromap.txt)
+#define TFT_CS        11   // P0.10
+#define TFT_RST        5   // P0.24
+#define TFT_DC        10   // P0.09
+
+// SD card CS pin
+#define SD_CS_PIN     13   // P1.13
 
 // I2C keyboard address
 #define KEYBOARD_ADDR 0x5F
 
 // Create display object with custom SPI bus
-Adafruit_ST7789 tft = Adafruit_ST7789(&customSPI, TFT_CS, TFT_DC, TFT_RST);
+Adafruit_ST7789 tft = Adafruit_ST7789(&tftSPI, TFT_CS, TFT_DC, TFT_RST);
 
 // SIM7600 cellular module - using Serial1 (hardware UART)
 SIM7600 cellular(&Serial1);
@@ -123,9 +126,6 @@ String composeBuffer = "";            // Text being typed for new message
 #define COMPOSE_HEIGHT 20              // Compose line area
 #define PANE_BORDER_WIDTH 2
 
-// v27 Debug control
-bool debugThreadLoading = true;  // Set to false to disable verbose debug output
-
 // Function declarations - v26 thread-based interface
 void drawStatusSection();
 void updateStatusMessage(const char *text, uint16_t color);
@@ -194,15 +194,17 @@ void setup(void) {
   // Additional delay to ensure stable connection
   delay(1000);
   
-  Serial.println("=== DIY Phone v26 Starting ===");
+  Serial.println("=== DIY Phone v27 Starting ===");
   Serial.print("[DEBUG] Serial connection established after ");
   Serial.print(millis() - serialStartTime);
   Serial.println(" ms");
 
-  // Initialize custom SPI bus
+  // Initialize custom SPI buses
   Serial.println("[DEBUG] Starting custom SPI initialization...");
-  customSPI.begin();
-  Serial.println("[DEBUG] Custom SPI initialized");
+  tftSPI.begin();
+  Serial.println("[DEBUG] TFT SPI initialized");
+  sdSPI.begin();
+  Serial.println("[DEBUG] SD SPI initialized");
 
   // Initialize display
   Serial.println("[DEBUG] Starting display initialization...");
@@ -214,7 +216,7 @@ void setup(void) {
   tft.setTextSize(2);
   tft.setTextColor(ST77XX_GREEN);
   tft.setCursor(10, 120);
-  tft.print("DIY Phone v26");
+  tft.print("DIY Phone v27");
   tft.setCursor(10, 140);
   tft.setTextColor(ST77XX_CYAN);
   tft.print("Starting...");
@@ -298,9 +300,10 @@ void setup(void) {
   
   delay(1000);
 
-  // Initialize SD card
+  // Initialize SD card with custom SPI bus
   Serial.println("[DEBUG] About to initialize SD card...");
-  if (sd.begin(SD_CS_PIN, SD_SCK_MHZ(4))) {
+  SdSpiConfig sdConfig(SD_CS_PIN, DEDICATED_SPI, SD_SCK_MHZ(4), &sdSPI);
+  if (sd.begin(sdConfig)) {
     Serial.println("[DEBUG] SD card initialized");
     updateStatus("SD card OK", ST77XX_GREEN);
     
@@ -308,7 +311,7 @@ void setup(void) {
     Serial.println("[DEBUG] Testing SD card write...");
     FsFile testFile = sd.open("test.txt", O_WRITE | O_CREAT);
     if (testFile) {
-      testFile.println("DIY Phone v24 Test");
+      testFile.println("DIY Phone v27 Test");
       testFile.close();
       Serial.println("[DEBUG] SD card test file created successfully");
       updateStatus("SD test OK", ST77XX_GREEN);
@@ -330,9 +333,9 @@ void setup(void) {
   Serial.println("[DEBUG] Address book loading complete");
   delay(500);
 
-  // Configure Serial1 pins to match hardware: RX=A4, TX=D2
+  // Configure Serial1 pins for ProMicro: RX=P0.20(pin3), TX=P0.22(pin4)
   Serial.println("[DEBUG] Configuring Serial1 pins...");
-  Serial1.setPins(A4, 2);  // setPins(rx, tx)
+  Serial1.setPins(3, 4);  // setPins(rx, tx)
   Serial.println("[DEBUG] Serial1 pins configured");
   
   // Note: UART buffer size increased via platformio.ini build_flags
@@ -416,9 +419,9 @@ void setup(void) {
   // Initial memory display and logging
   logMemoryUsage("Setup complete");
   
-  updateStatusMessage("Ready - v27 Interface", ST77XX_GREEN);
+  updateStatusMessage("Ready - v26 Interface", ST77XX_GREEN);
   Serial.println("===============================================");
-  Serial.println("Setup complete - Press keyboard numbers 1-9:");
+  Serial.println("Setup complete - Press keyboard numbers 1-8:");
   Serial.println("1 = Signal Quality Test");
   Serial.println("2 = AT Command Test");
   Serial.println("3 = SMS Check & Store");
@@ -427,7 +430,6 @@ void setup(void) {
   Serial.println("6 = Network Status");
   Serial.println("7 = Delete SMS One-by-One");
   Serial.println("8 = Delete All SMS (Bulk)");
-  Serial.println("9 = Toggle Debug Output (v27)");
   Serial.println("Down Arrow = Scroll inbox");
   Serial.println("===============================================");
 }
@@ -583,26 +585,16 @@ String lookupContactName(const String& phoneNumber) {
 }
 
 unsigned long parseTimestamp(const String& timestamp) {
-  // v27 Fix: Parse timestamp format with UTC support
-  // Input formats: "26/01/04,19:04:26-32" (old) or "26/01/04,23:04:26+00:00" (UTC)
+  // Parse timestamp format: "25/12/27,17:14:21-32"
   // Return seconds since epoch-like value for sorting
   
-  if (timestamp.length() == 0) {
-    Serial.println("[TIMESTAMP] Empty timestamp, returning 0");
-    return 0;
-  }
-  
   int commaPos = timestamp.indexOf(',');
-  if (commaPos == -1) {
-    Serial.print("[TIMESTAMP] No comma found in timestamp: ");
-    Serial.println(timestamp);
-    return 0;
-  }
+  if (commaPos == -1) return 0;
   
   String datePart = timestamp.substring(0, commaPos);
   String timePart = timestamp.substring(commaPos + 1);
   
-  // Parse date: "26/01/04" (day/month/year)
+  // Parse date: "25/12/27" (day/month/year)
   int day = 0, month = 0, year = 0;
   int slash1 = datePart.indexOf('/');
   int slash2 = datePart.lastIndexOf('/');
@@ -612,67 +604,24 @@ unsigned long parseTimestamp(const String& timestamp) {
     year = datePart.substring(slash2 + 1).toInt();
     if (year < 50) year += 2000; // Assume 20xx
     else if (year < 100) year += 1900; // Assume 19xx
-  } else {
-    Serial.print("[TIMESTAMP] Invalid date format: ");
-    Serial.println(datePart);
-    return 0;
   }
   
-  // v27: Enhanced time parsing for both old and UTC formats
+  // Parse time: "17:14:21-32" (hour:min:sec-timezone)
   int hour = 0, minute = 0, second = 0;
-  String timeOnly = timePart;
-  
-  // Remove timezone info (both old "-32" and new "+00:00" formats)
   int dashPos = timePart.indexOf('-');
-  int plusPos = timePart.indexOf('+');
-  int tzPos = -1;
-  
-  if (dashPos != -1) tzPos = dashPos;
-  else if (plusPos != -1) tzPos = plusPos;
-  
-  if (tzPos != -1) {
-    timeOnly = timePart.substring(0, tzPos);
-    if (debugThreadLoading) {
-      Serial.print("[TIMESTAMP] Timezone stripped: '");
-      Serial.print(timePart.substring(tzPos));
-      Serial.print("' Time only: '");
-      Serial.print(timeOnly);
-      Serial.println("'");
-    }
+  if (dashPos != -1) {
+    timePart = timePart.substring(0, dashPos);
   }
   
-  int colon1 = timeOnly.indexOf(':');
-  int colon2 = timeOnly.lastIndexOf(':');
+  int colon1 = timePart.indexOf(':');
+  int colon2 = timePart.lastIndexOf(':');
   if (colon1 != -1 && colon2 != -1 && colon1 != colon2) {
-    hour = timeOnly.substring(0, colon1).toInt();
-    minute = timeOnly.substring(colon1 + 1, colon2).toInt();
-    second = timeOnly.substring(colon2 + 1).toInt();
-  } else {
-    Serial.print("[TIMESTAMP] Invalid time format: ");
-    Serial.println(timeOnly);
-    return 0;
-  }
-  
-  // v27 Fix: Validate ranges
-  if (month < 1 || month > 12 || day < 1 || day > 31 || 
-      hour < 0 || hour > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) {
-    Serial.print("[TIMESTAMP] Invalid date/time values - Year: ");
-    Serial.print(year);
-    Serial.print(" Month: ");
-    Serial.print(month);
-    Serial.print(" Day: ");
-    Serial.print(day);
-    Serial.print(" Hour: ");
-    Serial.print(hour);
-    Serial.print(" Min: ");
-    Serial.print(minute);
-    Serial.print(" Sec: ");
-    Serial.println(second);
-    return 0;
+    hour = timePart.substring(0, colon1).toInt();
+    minute = timePart.substring(colon1 + 1, colon2).toInt();
+    second = timePart.substring(colon2 + 1).toInt();
   }
   
   // Create a simple timestamp value (not actual epoch, but good for sorting)
-  // v27: This now works consistently since all timestamps are normalized to UTC
   unsigned long timestampValue = 
     ((unsigned long)year) * 10000000000UL +
     ((unsigned long)month) * 100000000UL +
@@ -682,100 +631,6 @@ unsigned long parseTimestamp(const String& timestamp) {
     ((unsigned long)second);
     
   return timestampValue;
-}
-
-// v27 Timezone Helper Functions
-
-String convertToUTC(const String& localTimestamp) {
-  // Convert timestamp with timezone to UTC format
-  // Input: "26/01/04,19:04:26-32" Output: "26/01/04,23:04:26+00:00"
-  
-  if (localTimestamp.length() == 0) return "";
-  
-  int commaPos = localTimestamp.indexOf(',');
-  if (commaPos == -1) return localTimestamp + "+00:00"; // Fallback
-  
-  String datePart = localTimestamp.substring(0, commaPos);
-  String timePart = localTimestamp.substring(commaPos + 1);
-  
-  // Extract timezone offset
-  int dashPos = timePart.indexOf('-');
-  int plusPos = timePart.indexOf('+');
-  int tzPos = (dashPos != -1) ? dashPos : plusPos;
-  
-  if (tzPos == -1) return localTimestamp + "+00:00"; // No timezone found
-  
-  String timeOnly = timePart.substring(0, tzPos);
-  String tzPart = timePart.substring(tzPos);
-  
-  // Parse timezone offset (e.g., "-32" means -8 hours in quarter-hours)
-  int tzQuarters = tzPart.toInt();
-  int tzMinutes = tzQuarters * 15; // Convert quarter-hours to minutes
-  
-  // Parse time components
-  int colon1 = timeOnly.indexOf(':');
-  int colon2 = timeOnly.lastIndexOf(':');
-  if (colon1 == -1 || colon2 == -1) return localTimestamp + "+00:00";
-  
-  int hour = timeOnly.substring(0, colon1).toInt();
-  int minute = timeOnly.substring(colon1 + 1, colon2).toInt();
-  int second = timeOnly.substring(colon2 + 1).toInt();
-  
-  // Convert to UTC by subtracting timezone offset
-  int totalMinutes = hour * 60 + minute - tzMinutes;
-  
-  // Handle day rollover
-  String newDate = datePart;
-  if (totalMinutes < 0) {
-    totalMinutes += 24 * 60;
-    // TODO: Subtract a day (simplified for now)
-  } else if (totalMinutes >= 24 * 60) {
-    totalMinutes -= 24 * 60;
-    // TODO: Add a day (simplified for now)
-  }
-  
-  int utcHour = totalMinutes / 60;
-  int utcMinute = totalMinutes % 60;
-  
-  // Format UTC timestamp
-  char utcTime[32];
-  snprintf(utcTime, sizeof(utcTime), "%s,%02d:%02d:%02d+00:00", 
-           newDate.c_str(), utcHour, utcMinute, second);
-  
-  return String(utcTime);
-}
-
-String formatTimeForDisplay(const String& timestamp) {
-  // Format timestamp for display: "26/01/04,19:04:26-32" -> "19:04"
-  // Works with both UTC and local timestamps
-  
-  if (timestamp.length() == 0) return "";
-  
-  int commaPos = timestamp.indexOf(',');
-  if (commaPos == -1) return timestamp;
-  
-  String timePart = timestamp.substring(commaPos + 1);
-  
-  // Remove timezone info
-  int dashPos = timePart.indexOf('-');
-  int plusPos = timePart.indexOf('+');
-  int tzPos = -1;
-  
-  if (dashPos != -1) tzPos = dashPos;
-  else if (plusPos != -1) tzPos = plusPos;
-  
-  if (tzPos != -1) {
-    timePart = timePart.substring(0, tzPos);
-  }
-  
-  // Extract HH:MM from HH:MM:SS
-  int colon1 = timePart.indexOf(':');
-  int colon2 = timePart.lastIndexOf(':');
-  if (colon1 != -1 && colon2 != -1 && colon1 != colon2) {
-    return timePart.substring(0, colon2); // Returns "HH:MM"
-  }
-  
-  return timePart;
 }
 
 // v26 Thread Management Functions
@@ -1256,10 +1111,10 @@ void loadThreadForContact(const String& phoneNumber) {
     if (strncmp(filename, "sms_", 4) == 0) {
       Serial.print("[THREAD DEBUG] Processing SMS file: ");
       Serial.println(filename);
-      String lines[6];  // v27: Increased for dual-timestamp format  
+      String lines[5];
       int lineCount = 0;
       
-      while (file.available() && lineCount < 6) {
+      while (file.available() && lineCount < 5) {
         String line = "";
         while (file.available()) {
           char c = file.read();
@@ -1272,119 +1127,24 @@ void loadThreadForContact(const String& phoneNumber) {
         }
       }
       
-      // v27 Debug: Show full file contents (conditional)
-      if (debugThreadLoading) {
-        Serial.println("========== FULL SMS FILE CONTENTS ==========");
-        Serial.print("[FILE] ");
-        Serial.println(filename);
-        Serial.print("[LINES] ");
-        Serial.println(lineCount);
-        for (int i = 0; i < lineCount; i++) {
-          Serial.print("[LINE ");
-          Serial.print(i);
-          Serial.print("] '");
-          Serial.print(lines[i]);
-          Serial.println("'");
-        }
-        Serial.println("============================================");
-      }
-      
       if (lineCount >= 4) {
-        // v27: Detect format type
-        bool hasLocalTime = false;
-        bool isOutgoing = false;
+        bool isNewFormat = (lineCount >= 5 && lines[1].startsWith("To: "));
         
-        // Check for v27 dual-timestamp format (has LocalTime line)
-        for (int i = 0; i < lineCount; i++) {
-          if (lines[i].startsWith("LocalTime: ")) {
-            hasLocalTime = true;
-            break;
-          }
-        }
+        String msgSender, msgRecipient, msgTime, msgContent;
+        bool isOutgoing;
         
-        // Check if outgoing (has "To:" field)
-        for (int i = 0; i < lineCount; i++) {
-          if (lines[i].startsWith("To: ")) {
-            isOutgoing = true;
-            break;
-          }
-        }
-        
-        if (debugThreadLoading) {
-          Serial.print("[FORMAT] ");
-          if (hasLocalTime) {
-            Serial.println("V27 DUAL-TIMESTAMP");
-          } else if (isOutgoing) {
-            Serial.println("V26 OUTGOING");
-          } else {
-            Serial.println("V26 INCOMING");
-          }
-        }
-        
-        String msgSender, msgRecipient, msgTime, msgLocalTime, msgContent;
-        
-        if (hasLocalTime && isOutgoing) {
-          // v27 new format: From/To/Time(UTC)/LocalTime/Status/Content
-          msgSender = lines[0].substring(6);        // Remove "From: "
-          msgRecipient = lines[1].substring(4);     // Remove "To: "  
-          msgTime = lines[2].substring(6);          // Remove "Time: " (UTC)
-          msgLocalTime = lines[3].substring(11);    // Remove "LocalTime: "
-          msgContent = lines[5].substring(9);       // Remove "Content: "
-        } else if (isOutgoing) {
-          // v26 outgoing format: From/To/Time/Status/Content
+        if (isNewFormat) {
           msgSender = lines[0].substring(6);
           msgRecipient = lines[1].substring(4);
           msgTime = lines[2].substring(6);
-          msgLocalTime = msgTime; // Same as msgTime in old format
           msgContent = lines[4].substring(9);
+          isOutgoing = true;
         } else {
-          // v26 incoming format: From/Time/Status/Content
           msgSender = lines[0].substring(6);
           msgRecipient = "";
           msgTime = lines[1].substring(6);
-          msgLocalTime = msgTime; // Same as msgTime in old format
           msgContent = lines[3].substring(9);
-        }
-        
-        // v27: For old format messages without UTC, convert local time to UTC for sorting
-        String utcTimeForSorting = msgTime;
-        if (!hasLocalTime && msgTime.indexOf('+') == -1) {
-          // Old format without UTC - convert to UTC
-          utcTimeForSorting = convertToUTC(msgTime);
-          if (debugThreadLoading) {
-            Serial.print("[CONVERSION] Old format converted to UTC: ");
-            Serial.println(utcTimeForSorting);
-          }
-        }
-        
-        // v27 Debug: Show parsed message data (conditional)
-        if (debugThreadLoading) {
-          Serial.println("---------- PARSED MESSAGE DATA ----------");
-          Serial.print("[PARSED SENDER] '");
-          Serial.print(msgSender);
-          Serial.println("'");
-          Serial.print("[PARSED RECIPIENT] '");
-          Serial.print(msgRecipient);
-          Serial.println("'");
-          Serial.print("[PARSED TIME (for sorting)] '");
-          Serial.print(utcTimeForSorting);
-          Serial.println("'");
-          if (hasLocalTime) {
-            Serial.print("[PARSED LOCAL TIME] '");
-            Serial.print(msgLocalTime);
-            Serial.println("'");
-          }
-          Serial.print("[PARSED CONTENT] '");
-          Serial.print(msgContent);
-          Serial.println("'");
-          Serial.print("[PARSED OUTGOING] ");
-          Serial.println(isOutgoing ? "true" : "false");
-          
-          // Parse and show timestamp value
-          unsigned long timestampVal = parseTimestamp(utcTimeForSorting);
-          Serial.print("[TIMESTAMP VALUE] ");
-          Serial.println(timestampVal);
-          Serial.println("------------------------------------------");
+          isOutgoing = false;
         }
         
         // Clean sender and recipient for comparison
@@ -1430,23 +1190,13 @@ void loadThreadForContact(const String& phoneNumber) {
         }
         
         if (isMatch) {
-          if (debugThreadLoading) {
-            Serial.println(">>>>>>> MESSAGE MATCHED - ADDING TO THREAD <<<<<<<");
-            Serial.print("[THREAD MSG #");
-            Serial.print(currentThreadMessageCount);
-            Serial.println("]");
-          }
-          
           currentThreadMessages[currentThreadMessageCount].sender = msgSender;
           currentThreadMessages[currentThreadMessageCount].recipient = msgRecipient;
-          currentThreadMessages[currentThreadMessageCount].time = utcTimeForSorting;  // v27: Use UTC for sorting
+          currentThreadMessages[currentThreadMessageCount].time = msgTime;
           currentThreadMessages[currentThreadMessageCount].content = msgContent;
           currentThreadMessages[currentThreadMessageCount].isOutgoing = isOutgoing;
-          currentThreadMessages[currentThreadMessageCount].timestampValue = parseTimestamp(utcTimeForSorting);  // v27: Parse UTC timestamp
+          currentThreadMessages[currentThreadMessageCount].timestampValue = parseTimestamp(msgTime);
           currentThreadMessages[currentThreadMessageCount].filename = String(filename);
-          
-          // v27: Store local time for display (will add fullTime field usage later)
-          currentThreadMessages[currentThreadMessageCount].fullTime = hasLocalTime ? msgLocalTime : msgTime;
           
           if (isOutgoing) {
             currentThreadMessages[currentThreadMessageCount].senderDisplayName = "Me";
@@ -1455,21 +1205,7 @@ void loadThreadForContact(const String& phoneNumber) {
             currentThreadMessages[currentThreadMessageCount].senderDisplayName = activeContactName;
           }
           
-          if (debugThreadLoading) {
-            Serial.print("[ADDED] File: ");
-            Serial.print(filename);
-            Serial.print(" | Time: ");
-            Serial.print(msgTime);
-            Serial.print(" | TimestampVal: ");
-            Serial.print(currentThreadMessages[currentThreadMessageCount].timestampValue);
-            Serial.print(" | Direction: ");
-            Serial.println(isOutgoing ? "OUT" : "IN");
-            Serial.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-          }
-          
           currentThreadMessageCount++;
-        } else if (debugThreadLoading) {
-          Serial.println("[NO MATCH] - Message not added to thread");
         }
       }
     }
@@ -1477,7 +1213,18 @@ void loadThreadForContact(const String& phoneNumber) {
   }
   root.close();
   
-  // v27 Fix: Sort messages by timestamp (oldest first for conversation view)
+  // Sort messages by timestamp (oldest first for conversation view)
+  for (int i = 0; i < currentThreadMessageCount - 1; i++) {
+    for (int j = 0; j < currentThreadMessageCount - i - 1; j++) {
+      if (currentThreadMessages[j].timestampValue > currentThreadMessages[j + 1].timestampValue) {
+        SMSMessage temp = currentThreadMessages[j];
+        currentThreadMessages[j] = currentThreadMessages[j + 1];
+        currentThreadMessages[j + 1] = temp;
+      }
+    }
+  }
+  
+  // Sort messages by timestamp to ensure proper chronological order
   logMemoryUsage("Before sorting thread messages");
   
   // Debug: Show timestamps before sorting
@@ -1493,28 +1240,11 @@ void loadThreadForContact(const String& phoneNumber) {
     Serial.println(currentThreadMessages[i].isOutgoing ? "true" : "false");
   }
   
-  // v27 Fix: Single sort with improved comparison (handles zero timestamps)
+  // Simple bubble sort by timestamp
   for (int i = 0; i < currentThreadMessageCount - 1; i++) {
     for (int j = 0; j < currentThreadMessageCount - i - 1; j++) {
-      // v27 Fix: Handle invalid timestamps by using filename as fallback
-      unsigned long timeJ = currentThreadMessages[j].timestampValue;
-      unsigned long timeJPlus1 = currentThreadMessages[j + 1].timestampValue;
-      
-      // If timestamps are invalid (0), use filename comparison as fallback
-      if (timeJ == 0 && timeJPlus1 == 0) {
-        // Sort by filename lexically (sms_ files are timestamped)
-        if (currentThreadMessages[j].filename > currentThreadMessages[j + 1].filename) {
-          SMSMessage temp = currentThreadMessages[j];
-          currentThreadMessages[j] = currentThreadMessages[j + 1];
-          currentThreadMessages[j + 1] = temp;
-        }
-      } else if (timeJ == 0) {
-        // Move invalid timestamp to end
-        SMSMessage temp = currentThreadMessages[j];
-        currentThreadMessages[j] = currentThreadMessages[j + 1];
-        currentThreadMessages[j + 1] = temp;
-      } else if (timeJPlus1 != 0 && timeJ > timeJPlus1) {
-        // Normal timestamp comparison
+      if (currentThreadMessages[j].timestampValue > currentThreadMessages[j + 1].timestampValue) {
+        // Swap messages
         SMSMessage temp = currentThreadMessages[j];
         currentThreadMessages[j] = currentThreadMessages[j + 1];
         currentThreadMessages[j + 1] = temp;
@@ -1522,27 +1252,17 @@ void loadThreadForContact(const String& phoneNumber) {
     }
   }
   
-  // Debug: Show final thread order (conditional)
-  if (debugThreadLoading) {
-    Serial.println("=============== FINAL THREAD ORDER ===============");
-    Serial.print("[TOTAL MESSAGES] ");
-    Serial.println(currentThreadMessageCount);
-    for (int i = 0; i < currentThreadMessageCount; i++) {
-      Serial.print("[MSG ");
-      Serial.print(i);
-      Serial.print("] ");
-      Serial.print(currentThreadMessages[i].isOutgoing ? "OUT" : "IN ");
-      Serial.print(" | File: ");
-      Serial.print(currentThreadMessages[i].filename);
-      Serial.print(" | Time: '");
-      Serial.print(currentThreadMessages[i].time);
-      Serial.print("' | TimestampVal: ");
-      Serial.print(currentThreadMessages[i].timestampValue);
-      Serial.print(" | Content: '");
-      Serial.print(currentThreadMessages[i].content.substring(0, 30));
-      Serial.println("...'");
-    }
-    Serial.println("====================================================");
+  // Debug: Show timestamps after sorting
+  Serial.println("[SORT DEBUG] Timestamps after sorting:");
+  for (int i = 0; i < min(5, currentThreadMessageCount); i++) {
+    Serial.print("Message ");
+    Serial.print(i);
+    Serial.print(": time='");
+    Serial.print(currentThreadMessages[i].time);
+    Serial.print("' value=");
+    Serial.print(currentThreadMessages[i].timestampValue);
+    Serial.print(" outgoing=");
+    Serial.println(currentThreadMessages[i].isOutgoing ? "true" : "false");
   }
   
   logMemoryUsage("After sorting thread messages");
@@ -1561,39 +1281,33 @@ void loadThreadForContact(const String& phoneNumber) {
 
 bool saveOutgoingMessage(const String& recipient, const String& content) {
   // Get network time from SIM7600 for accurate timestamp
-  String localTime = cellular.getNetworkTime();
+  String networkTime = cellular.getNetworkTime();
   
   // If network time fails, fall back to a reasonable default
-  if (localTime.length() == 0) {
-    localTime = "26/01/05,19:00:00-32";  // Fallback timestamp
+  if (networkTime.length() == 0) {
+    networkTime = "26/01/05,19:00:00-32";  // Fallback timestamp
     Serial.println("[OUTGOING] Using fallback timestamp");
   }
-  
-  // v27 Dual-Timestamp: Convert to UTC for consistent sorting
-  String utcTime = convertToUTC(localTime);
   
   // Use unique filename with milliseconds to avoid conflicts
   String filename = "sms_out_" + String(millis()) + ".txt";
   
   Serial.print("[OUTGOING] Saving outgoing message to: ");
   Serial.println(filename);
-  Serial.print("[OUTGOING] Local timestamp: ");
-  Serial.println(localTime);
-  Serial.print("[OUTGOING] UTC timestamp: ");
-  Serial.println(utcTime);
+  Serial.print("[OUTGOING] Network timestamp: ");
+  Serial.println(networkTime);
   
   FsFile outFile = sd.open(filename.c_str(), O_WRITE | O_CREAT);
   if (outFile) {
-    // v27 New format: UTC timestamp for sorting + local timestamp for reference
+    // Use phone number format for From field to match expectations
     outFile.println("From: +1234567890");  // Placeholder - could be actual device phone number 
     outFile.println("To: " + recipient);
-    outFile.println("Time: " + utcTime);        // UTC timestamp for sorting
-    outFile.println("LocalTime: " + localTime); // Original local timestamp
+    outFile.println("Time: " + networkTime);
     outFile.println("Status: SENT");
     outFile.println("Content: " + content);
     outFile.close();
     
-    Serial.println("[OUTGOING] Outgoing message saved successfully with dual timestamps");
+    Serial.println("[OUTGOING] Outgoing message saved successfully");
     return true;
   } else {
     Serial.println("[OUTGOING] Failed to create outgoing message file");
@@ -1923,8 +1637,8 @@ void handleKeyboardV26() {
       else if (currentPane == PANE_CONVERSATION && keyData >= 32 && keyData <= 126) {
         addCharToCompose((char)keyData);
       }
-      // Number keys 1-9 still trigger tests (including v27 debug toggle)
-      else if (keyData >= '1' && keyData <= '9') {
+      // Number keys 1-8 still trigger tests (legacy feature)
+      else if (keyData >= '1' && keyData <= '8') {
         int testNumber = keyData - '0';
         Serial.println("[KEYBOARD] Running test " + String(testNumber));
         runTest(testNumber);
@@ -1937,14 +1651,6 @@ void runTest(int testNumber) {
   char statusText[64];
   
   switch (testNumber) {
-    case 9:
-      // v27 Debug: Toggle thread loading debug output
-      debugThreadLoading = !debugThreadLoading;
-      snprintf(statusText, sizeof(statusText), "Debug: %s", debugThreadLoading ? "ON" : "OFF");
-      updateStatus(statusText, debugThreadLoading ? ST77XX_GREEN : ST77XX_RED);
-      Serial.print("Thread loading debug is now ");
-      Serial.println(debugThreadLoading ? "ENABLED" : "DISABLED");
-      break;
     case 1:
       // Check signal quality
       {
@@ -2417,27 +2123,15 @@ void drawConversationPane() {
     
     SMSMessage& msg = currentThreadMessages[msgIndex];
     
-    // v27: Enhanced display with timestamps
-    String displayTime = formatTimeForDisplay(msg.fullTime);
-    
+    // Different display for sent vs received messages
     if (msg.isOutgoing) {
       tft.setTextColor(ST77XX_GREEN); // Our messages in green
       tft.setCursor(50, yPos); // Indent outgoing messages
-      tft.print("> " + msg.content.substring(0, 28)); // Shortened for timestamp
-      
-      // Display timestamp on right side
-      tft.setTextColor(ST77XX_CYAN);
-      tft.setCursor(280, yPos);
-      tft.print(displayTime);
+      tft.print("> " + msg.content.substring(0, 35));
     } else {
       tft.setTextColor(ST77XX_WHITE); // Received messages in white  
       tft.setCursor(5, yPos);
-      tft.print(msg.content.substring(0, 33)); // Shortened for timestamp
-      
-      // Display timestamp on right side  
-      tft.setTextColor(ST77XX_CYAN);
-      tft.setCursor(280, yPos);
-      tft.print(displayTime);
+      tft.print(msg.content.substring(0, 40));
     }
   }
   
