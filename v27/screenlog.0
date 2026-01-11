@@ -1278,3 +1278,11 @@ Auto-scroll: pixel offset 253 (total height: 372, display height: 119, viewport:
 Loaded 26 messages for thread
 [MEMORY] loadThreadForContact end: 58396 bytes free
 [OPTIMIZATION] Skipping thread preview rebuild to save memory
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 253 (total height: 372, display height: 119, viewport: 253-372)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 253
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 253 (total height: 372, display height: 119, viewport: 253-372)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 253
