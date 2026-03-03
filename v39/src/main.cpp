@@ -294,9 +294,9 @@ void setup(void) {
     
     // Test SD card by creating a test file
     Serial.println("[DEBUG] Testing SD card write...");
-    FsFile testFile = sd.open("test.txt", O_WRITE | O_CREAT);
+    FsFile testFile = sd.open("test.txt", O_RDWR | O_CREAT | O_TRUNC);
     if (testFile) {
-      testFile.println("DIY Phone v35 Test");
+      testFile.println("DIY Phone v39 Test");
       testFile.close();
       Serial.println("[DEBUG] SD card test file created successfully");
       updateStatus("SD test OK", ST77XX_GREEN);
@@ -991,6 +991,9 @@ bool loadAllMessages() {
   FsFile root = sd.open("/");
   if (!root) {
     Serial.println("[ERROR] Failed to open SD root directory!");
+    // Still build thread previews from address book even if SD fails
+    Serial.println("[DEBUG] Building thread previews from address book only...");
+    buildThreadPreviewsFromMessages(tempMessages, 0);
     return false;
   }
   Serial.println("[DEBUG] SD root directory opened successfully");
@@ -1256,6 +1259,10 @@ void buildThreadPreviews() {
   FsFile root = sd.open("/");
   if (!root) {
     Serial.println("[ERROR] Failed to open SD root in buildThreadPreviews!");
+    // Still build previews from address book
+    Serial.println("[DEBUG] Building previews from address book only...");
+    SMSMessage emptyMessages[1];
+    buildThreadPreviewsFromMessages(emptyMessages, 0);
     return;
   }
   
@@ -1452,8 +1459,9 @@ void loadThreadForContact(const String& phoneNumber) {
   // Load all messages for this contact
   FsFile root = sd.open("/");
   FsFile file;
-  
-  while (file.openNext(&root, O_RDONLY) && currentThreadMessageCount < 30) {
+
+  // Scan ALL files - don't stop at 30, we'll keep the 30 most recent
+  while (file.openNext(&root, O_RDONLY)) {
     char filename[64];
     file.getName(filename, sizeof(filename));
     
@@ -1637,44 +1645,79 @@ void loadThreadForContact(const String& phoneNumber) {
         }
         
         if (isMatch) {
-          if (debugThreadLoading) {
-            Serial.println(">>>>>>> MESSAGE MATCHED - ADDING TO THREAD <<<<<<<");
-            Serial.print("[THREAD MSG #");
-            Serial.print(currentThreadMessageCount);
-            Serial.println("]");
-          }
-          
-          currentThreadMessages[currentThreadMessageCount].sender = msgSender;
-          currentThreadMessages[currentThreadMessageCount].recipient = msgRecipient;
-          currentThreadMessages[currentThreadMessageCount].time = utcTimeForSorting;  // v27: Use UTC for sorting
-          currentThreadMessages[currentThreadMessageCount].content = msgContent;
-          currentThreadMessages[currentThreadMessageCount].isOutgoing = isOutgoing;
-          currentThreadMessages[currentThreadMessageCount].timestampValue = parseTimestamp(utcTimeForSorting);  // v27: Parse UTC timestamp
-          currentThreadMessages[currentThreadMessageCount].filename = String(filename);
-          
-          // v27: Store local time for display (will add fullTime field usage later)
-          currentThreadMessages[currentThreadMessageCount].fullTime = hasLocalTime ? msgLocalTime : msgTime;
-          
-          if (isOutgoing) {
-            currentThreadMessages[currentThreadMessageCount].senderDisplayName = "Me";
+          // Calculate timestamp for this new message
+          unsigned long newTimestamp = parseTimestamp(utcTimeForSorting);
+
+          // Determine which slot to use
+          int targetSlot = -1;
+
+          if (currentThreadMessageCount < 30) {
+            // Array not full, add to next slot
+            targetSlot = currentThreadMessageCount;
+            currentThreadMessageCount++;
           } else {
-            // Use cached activeContactName instead of repeated lookups
-            currentThreadMessages[currentThreadMessageCount].senderDisplayName = activeContactName;
+            // Array full - find oldest message and replace if new one is newer
+            int oldestIndex = 0;
+            unsigned long oldestTimestamp = currentThreadMessages[0].timestampValue;
+            for (int k = 1; k < 30; k++) {
+              if (currentThreadMessages[k].timestampValue < oldestTimestamp) {
+                oldestTimestamp = currentThreadMessages[k].timestampValue;
+                oldestIndex = k;
+              }
+            }
+            // Only replace if new message is newer than oldest
+            if (newTimestamp > oldestTimestamp) {
+              targetSlot = oldestIndex;
+              if (debugThreadLoading) {
+                Serial.print("[REPLACE] Replacing oldest msg at slot ");
+                Serial.print(oldestIndex);
+                Serial.print(" (ts=");
+                Serial.print(oldestTimestamp);
+                Serial.print(") with newer msg (ts=");
+                Serial.print(newTimestamp);
+                Serial.println(")");
+              }
+            }
           }
-          
-          if (debugThreadLoading) {
-            Serial.print("[ADDED] File: ");
-            Serial.print(filename);
-            Serial.print(" | Time: ");
-            Serial.print(msgTime);
-            Serial.print(" | TimestampVal: ");
-            Serial.print(currentThreadMessages[currentThreadMessageCount].timestampValue);
-            Serial.print(" | Direction: ");
-            Serial.println(isOutgoing ? "OUT" : "IN");
-            Serial.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+          if (targetSlot >= 0) {
+            if (debugThreadLoading) {
+              Serial.println(">>>>>>> MESSAGE MATCHED - ADDING TO THREAD <<<<<<<");
+              Serial.print("[THREAD MSG #");
+              Serial.print(targetSlot);
+              Serial.println("]");
+            }
+
+            currentThreadMessages[targetSlot].sender = msgSender;
+            currentThreadMessages[targetSlot].recipient = msgRecipient;
+            currentThreadMessages[targetSlot].time = utcTimeForSorting;  // v27: Use UTC for sorting
+            currentThreadMessages[targetSlot].content = msgContent;
+            currentThreadMessages[targetSlot].isOutgoing = isOutgoing;
+            currentThreadMessages[targetSlot].timestampValue = newTimestamp;
+            currentThreadMessages[targetSlot].filename = String(filename);
+
+            // v27: Store local time for display (will add fullTime field usage later)
+            currentThreadMessages[targetSlot].fullTime = hasLocalTime ? msgLocalTime : msgTime;
+
+            if (isOutgoing) {
+              currentThreadMessages[targetSlot].senderDisplayName = "Me";
+            } else {
+              // Use cached activeContactName instead of repeated lookups
+              currentThreadMessages[targetSlot].senderDisplayName = activeContactName;
+            }
+
+            if (debugThreadLoading) {
+              Serial.print("[ADDED] File: ");
+              Serial.print(filename);
+              Serial.print(" | Time: ");
+              Serial.print(msgTime);
+              Serial.print(" | TimestampVal: ");
+              Serial.print(newTimestamp);
+              Serial.print(" | Direction: ");
+              Serial.println(isOutgoing ? "OUT" : "IN");
+              Serial.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            }
           }
-          
-          currentThreadMessageCount++;
         } else if (debugThreadLoading) {
           Serial.println("[NO MATCH] - Message not added to thread");
         }
@@ -1868,10 +1911,10 @@ bool saveOutgoingMessage(const String& recipient, const String& content) {
   Serial.print("[OUTGOING] UTC timestamp: ");
   Serial.println(utcTime);
   
-  FsFile outFile = sd.open(filename.c_str(), O_WRITE | O_CREAT);
+  FsFile outFile = sd.open(filename.c_str(), O_RDWR | O_CREAT | O_TRUNC);
   if (outFile) {
     // v27 New format: UTC timestamp for sorting + local timestamp for reference
-    outFile.println("From: +1234567890");  // Placeholder - could be actual device phone number 
+    outFile.println("From: +1234567890");  // Placeholder - could be actual device phone number
     outFile.println("To: " + recipient);
     outFile.println("Time: " + utcTime);        // UTC timestamp for sorting
     outFile.println("LocalTime: " + localTime); // Original local timestamp
@@ -2204,7 +2247,35 @@ void handleNewSMSNotification(int smsIndex) {
       drawContactsPane();
       
       // Refresh current conversation if it's from the same contact
-      if (activeContactPhone.length() > 0 && activeContactPhone.equals(sms.sender)) {
+      // Clean phone numbers for comparison (remove +, spaces, dashes, parentheses)
+      String cleanActivePhone = activeContactPhone;
+      cleanActivePhone.replace(" ", "");
+      cleanActivePhone.replace("-", "");
+      cleanActivePhone.replace("(", "");
+      cleanActivePhone.replace(")", "");
+      cleanActivePhone.replace("+", "");
+
+      String cleanSenderPhone = sms.sender;
+      cleanSenderPhone.replace(" ", "");
+      cleanSenderPhone.replace("-", "");
+      cleanSenderPhone.replace("(", "");
+      cleanSenderPhone.replace(")", "");
+      cleanSenderPhone.replace("+", "");
+
+      // Match if exact match, or if last 10 digits match (handles country code differences)
+      bool phoneMatch = false;
+      if (activeContactPhone.length() > 0) {
+        if (cleanActivePhone.equals(cleanSenderPhone)) {
+          phoneMatch = true;
+        } else if (cleanActivePhone.length() > 10 && cleanSenderPhone.length() == 10 && cleanActivePhone.endsWith(cleanSenderPhone)) {
+          phoneMatch = true;
+        } else if (cleanActivePhone.length() == 10 && cleanSenderPhone.length() > 10 && cleanSenderPhone.endsWith(cleanActivePhone)) {
+          phoneMatch = true;
+        }
+      }
+
+      if (phoneMatch) {
+        Serial.println("[SMS] Sender matches active contact - refreshing conversation");
         loadThreadForContact(activeContactPhone);
         drawConversationPane();
       }
@@ -2554,8 +2625,8 @@ void runTest(int testNumber) {
         // Write test
         char testFilename[32];
         snprintf(testFilename, sizeof(testFilename), "test_%lu.txt", millis());
-        
-        FsFile testFile = sd.open(testFilename, O_WRITE | O_CREAT);
+
+        FsFile testFile = sd.open(testFilename, O_RDWR | O_CREAT | O_TRUNC);
         if (testFile) {
           testFile.print("Test write at: ");
           testFile.println(millis());

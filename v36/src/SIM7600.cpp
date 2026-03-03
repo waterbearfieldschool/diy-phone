@@ -499,6 +499,12 @@ bool SIM7600::setVolume(uint8_t level) {
     return sendATCommand(command);
 }
 
+bool SIM7600::setMicGain(uint8_t level) {
+    char command[32];
+    snprintf(command, sizeof(command), "AT+CMICGAIN=%d", level);
+    return sendATCommand(command);
+}
+
 // Network Functions
 int SIM7600::getSignalQuality() {
     if (!sendATCommand("AT+CSQ")) return -1;

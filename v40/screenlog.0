@@ -1,0 +1,1975 @@
+[KEYBOARD] Key pressed: 0xd (ENTER) char: '?'
+Loading thread for contact: 16512524765
+[MEMORY] loadThreadForContact start: 58324 bytes free
+[THREAD DEBUG] Checking file: test.txt
+[THREAD DEBUG] Checking file: sms_260107_144140.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144140.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:41:40
+[UTC DEBUG] totalMinutes before adjustment: 1361
+[UTC DEBUG] Final date: 26/01/07 time: 22:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488908 for timestamp: 26/01/07,22:41:40+00:00
+[THREAD DEBUG] Checking file: sms_out_69404.txt
+[THREAD DEBUG] Processing SMS file: sms_out_69404.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[THREAD DEBUG] Checking file: sms_260107_144230.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144230.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:42:30
+[UTC DEBUG] totalMinutes before adjustment: 1362
+[UTC DEBUG] Final date: 26/01/07 time: 22:42
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488998 for timestamp: 26/01/07,22:42:30+00:00
+[THREAD DEBUG] Checking file: sms_out_98641.txt
+[THREAD DEBUG] Processing SMS file: sms_out_98641.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[THREAD DEBUG] Checking file: sms_out_32533.txt
+[THREAD DEBUG] Processing SMS file: sms_out_32533.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[THREAD DEBUG] Checking file: sms_260107_144636.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144636.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:46:36
+[UTC DEBUG] totalMinutes before adjustment: 1366
+[UTC DEBUG] Final date: 26/01/07 time: 22:46
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489404 for timestamp: 26/01/07,22:46:36+00:00
+[THREAD DEBUG] Checking file: sms_out_37526.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37526.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[THREAD DEBUG] Checking file: sms_out_119087.txt
+[THREAD DEBUG] Processing SMS file: sms_out_119087.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[THREAD DEBUG] Checking file: addressbook.txt
+[THREAD DEBUG] Checking file: sms_out_30261.txt
+[THREAD DEBUG] Processing SMS file: sms_out_30261.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[THREAD DEBUG] Checking file: sms_out_59266.txt
+[THREAD DEBUG] Processing SMS file: sms_out_59266.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[THREAD DEBUG] Checking file: .Trash-1000
+[THREAD DEBUG] Checking file: sms_out_174039.txt
+[THREAD DEBUG] Processing SMS file: sms_out_174039.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[THREAD DEBUG] Checking file: sms_out_44515.txt
+[THREAD DEBUG] Processing SMS file: sms_out_44515.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[THREAD DEBUG] Checking file: sms_out_20288.txt
+[THREAD DEBUG] Processing SMS file: sms_out_20288.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[THREAD DEBUG] Checking file: sms_out_25765.txt
+[THREAD DEBUG] Processing SMS file: sms_out_25765.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[THREAD DEBUG] Checking file: sms_out_54335.txt
+[THREAD DEBUG] Processing SMS file: sms_out_54335.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[THREAD DEBUG] Checking file: sms_260107_164544.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_164544.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 16:45:44
+[UTC DEBUG] totalMinutes before adjustment: 1485
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 0:45
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269312 for timestamp: 26/01/08,00:45:44+00:00
+[THREAD DEBUG] Checking file: sms_out_140562.txt
+[THREAD DEBUG] Processing SMS file: sms_out_140562.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[THREAD DEBUG] Checking file: sms_out_28314.txt
+[THREAD DEBUG] Processing SMS file: sms_out_28314.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[THREAD DEBUG] Checking file: sms_out_68517.txt
+[THREAD DEBUG] Processing SMS file: sms_out_68517.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[THREAD DEBUG] Checking file: sms_out_202036.txt
+[THREAD DEBUG] Processing SMS file: sms_out_202036.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[THREAD DEBUG] Checking file: sms_out_39041.txt
+[THREAD DEBUG] Processing SMS file: sms_out_39041.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270699 for timestamp: 26/01/08,00:59:31+00:00
+[THREAD DEBUG] Checking file: sms_out_66408.txt
+[THREAD DEBUG] Processing SMS file: sms_out_66408.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270727 for timestamp: 26/01/08,00:59:59+00:00
+[THREAD DEBUG] Checking file: sms_out_85966.txt
+[THREAD DEBUG] Processing SMS file: sms_out_85966.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274786 for timestamp: 26/01/08,01:00:18+00:00
+[THREAD DEBUG] Checking file: sms_260107_170045.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_170045.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 17:0:45
+[UTC DEBUG] totalMinutes before adjustment: 1500
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 1:0
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274813 for timestamp: 26/01/08,01:00:45+00:00
+[THREAD DEBUG] Checking file: sms_out_132162.txt
+[THREAD DEBUG] Processing SMS file: sms_out_132162.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274872 for timestamp: 26/01/08,01:01:04+00:00
+[THREAD DEBUG] Checking file: sms_260107_183047.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_183047.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:30:47
+[UTC DEBUG] totalMinutes before adjustment: 1590
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 2:30
+[THREAD DEBUG] Checking file: sms_260107_190238.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190238.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:2:38
+[UTC DEBUG] totalMinutes before adjustment: 1622
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:2
+[THREAD DEBUG] Checking file: sms_260107_190326.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190326.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:26
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190344.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190344.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:44
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190851.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190851.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:8:51
+[UTC DEBUG] totalMinutes before adjustment: 1628
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:8
+[THREAD DEBUG] Checking file: sms_260107_191843.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_191843.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:18:43
+[UTC DEBUG] totalMinutes before adjustment: 1638
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:18
+[THREAD DEBUG] Checking file: sms_260107_192018.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192018.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:20:18
+[UTC DEBUG] totalMinutes before adjustment: 1640
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:20
+[THREAD DEBUG] Checking file: sms_260107_192141.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192141.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:21:41
+[UTC DEBUG] totalMinutes before adjustment: 1641
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:21
+[THREAD DEBUG] Checking file: sms_260109_095958.txt
+[THREAD DEBUG] Processing SMS file: sms_260109_095958.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 9:59:58
+[UTC DEBUG] totalMinutes before adjustment: 1079
+[UTC DEBUG] Final date: 26/01/09 time: 17:59
+[THREAD DEBUG] Checking file: sms_out_36606.txt
+[THREAD DEBUG] Processing SMS file: sms_out_36606.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 10
+[TIMESTAMP DEBUG] Final calculated value: 749280303 for timestamp: 26/01/10,01:55:35+00:00
+[THREAD DEBUG] Checking file: sms_out_35577.txt
+[THREAD DEBUG] Processing SMS file: sms_out_35577.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750286470 for timestamp: 26/01/11,02:17:02+00:00
+[THREAD DEBUG] Checking file: sms_out_37373.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37373.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288673 for timestamp: 26/01/11,02:39:05+00:00
+[THREAD DEBUG] Checking file: sms_260110_183929.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_183929.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:39:29
+[UTC DEBUG] totalMinutes before adjustment: 1599
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:39
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288697 for timestamp: 26/01/11,02:39:29+00:00
+[THREAD DEBUG] Checking file: sms_260110_184101.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184101.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:1
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288869 for timestamp: 26/01/11,02:41:01+00:00
+[THREAD DEBUG] Checking file: sms_260110_184146.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184146.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:46
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288914 for timestamp: 26/01/11,02:41:46+00:00
+[THREAD DEBUG] Checking file: sms_260110_184754.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184754.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:47:54
+[UTC DEBUG] totalMinutes before adjustment: 1607
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:47
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289522 for timestamp: 26/01/11,02:47:54+00:00
+[THREAD DEBUG] Checking file: sms_260110_184842.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184842.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:48:42
+[UTC DEBUG] totalMinutes before adjustment: 1608
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:48
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289610 for timestamp: 26/01/11,02:48:42+00:00
+[MEMORY] Before sorting thread messages: 58324 bytes free
+[SORT DEBUG] Timestamps before sorting:
+Message 0: time='26/01/07,22:41:40+00:00' value=746488908 outgoing=false
+Message 1: time='26/01/07,22:42:20+00:00' value=746488988 outgoing=true
+Message 2: time='26/01/07,22:42:30+00:00' value=746488998 outgoing=false
+Message 3: time='26/01/07,22:42:49+00:00' value=746489017 outgoing=true
+Message 4: time='26/01/07,22:44:21+00:00' value=746489189 outgoing=true
+[MEMORY] After sorting thread messages: 58324 bytes free
+Auto-scroll: pixel offset 331 (total height: 450, display height: 119, viewport: 331-450)
+Loaded 30 messages for thread
+[MEMORY] loadThreadForContact end: 58324 bytes free
+[UART RX] +CMTI: "SM",17
+New SMS notification received! SMS index: 17
+=== Handling new SMS at index 17 ===
+[MEMORY] Before handling new SMS: 58564 bytes free
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[SIM7600 TX] "AT+CMGRD=17\r"
+[SIM7600 MULTILINE] "\r\n+CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:56:54-32"\r\nand what about this goof\r\n\r\nOK\r\n" - Complete multiline response received
+[SIM7600] readAndDeleteSMS response length: 97
+[SIM7600] readAndDeleteSMS response: '
++CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:56:54-32"
+and what about this goof
+
+OK
+'
+[SIM7600] First 20 bytes as hex: 0D 0A 2B 43 4D 47 52 44 3A 20 22 52 45 43 20 55 4E 52 45 41 
+[SMS PARSE] Raw response length: 97
+[SMS PARSE] Raw response:
+
++CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:56:54-32"
+and what about this goof
+
+OK
+
+[SMS PARSE] First 10 chars as hex: 0D 0A 2B 43 4D 47 52 44 3A 20 
+[SMS PARSE] Parsed parts count: 4
+[SMS PARSE] Part 0: 'REC UNREAD'
+[SMS PARSE] Part 1: '+16512524765'
+[SMS PARSE] Part 2: ''
+[SMS PARSE] Part 3: '26/01/10,18:56:54-32'
+[SMS PARSE] Status: REC UNREAD
+[SMS PARSE] Sender: +16512524765
+[SMS PARSE] Timestamp: 26/01/10,18:56:54-32
+[SMS PARSE] Content start: 65, end: 89
+[SMS PARSE] Content: 'and what about this goof'
+📧 New SMS - From: +16512524765 Time: 26/01/10,18:56:54-32 Content: and what about this goof
+📞 Known contact: Don (voip)
+🔍 Checking if file exists: sms_260110_185654.txt
+💾 Creating new file on SD card: sms_260110_185654.txt
+✅ Successfully wrote SMS to SD card: sms_260110_185654.txt
+📝 File contents written:
+  From: +16512524765
+  Time: 26/01/10,18:56:54-32
+  Content: and what about this goof...
+✅ New SMS stored to SD card and deleted from SIM
+🔍 Contact count before refresh: 4
+=== Loading All Messages for Thread Processing ===
+[MEMORY] Before loading all messages: 56504 bytes free
+[DEBUG] Opening SD root directory...
+[DEBUG] SD root directory opened successfully
+[DEBUG] Starting to scan files...
+[DEBUG] Found SMS file: sms_260107_144140.txt
+[DEBUG] File size: 87 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408908 for timestamp: 26/01/07,14:41:40-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 1
+[DEBUG] Found SMS file: sms_out_69404.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 2
+[DEBUG] Found SMS file: sms_260107_144230.txt
+[DEBUG] File size: 90 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408998 for timestamp: 26/01/07,14:42:30-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 3
+[DEBUG] Found SMS file: sms_out_98641.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 4
+[DEBUG] Found SMS file: sms_out_32533.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 5
+[DEBUG] Found SMS file: sms_260107_144636.txt
+[DEBUG] File size: 232 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746409404 for timestamp: 26/01/07,14:46:36-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 6
+[DEBUG] Found SMS file: sms_out_37526.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 7
+[DEBUG] Found SMS file: sms_out_119087.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 8
+[DEBUG] Scanned 10 files so far...
+[DEBUG] Found SMS file: sms_out_30261.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 9
+[DEBUG] Found SMS file: sms_out_59266.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 10
+[DEBUG] Found SMS file: sms_out_174039.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 11
+[DEBUG] Found SMS file: sms_out_44515.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 12
+[DEBUG] Found SMS file: sms_out_20288.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 13
+[DEBUG] Found SMS file: sms_out_25765.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 14
+[DEBUG] Found SMS file: sms_out_54335.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 15
+[DEBUG] Found SMS file: sms_260107_164544.txt
+[DEBUG] File size: 93 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746429312 for timestamp: 26/01/07,16:45:44-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 16
+[DEBUG] Scanned 20 files so far...
+[DEBUG] Found SMS file: sms_out_140562.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 17
+[DEBUG] Found SMS file: sms_out_28314.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 18
+[DEBUG] Found SMS file: sms_out_68517.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 19
+[DEBUG] Found SMS file: sms_out_202036.txt
+[DEBUG] File size: 184 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 20
+[DEBUG] Scanned total files: 23
+[DEBUG] Loaded 20 SMS messages
+[DEBUG] Starting buildThreadPreviews()...
+=== Building Contact Previews from Address Book + Messages ===
+[DEBUG] Starting with 4 contacts from address book
+[DEBUG] Added 4 contacts to preview list
+[DEBUG] Processing 20 messages to update contact activity...
+[DEBUG] Starting contact sorting by recent activity...
+[DEBUG] Contact sorting completed
+[SUCCESS] Built 4 contact previews
+[DEBUG] Contact 0: Don (voip) (16512524765) - 20 msgs
+[DEBUG] Contact 1: Don (iphone) (17813230341) - 0 msgs
+[DEBUG] Contact 2: Liz (16174299144) - 0 msgs
+[DEBUG] Contact 3: Unknown 7465 (+12079557465) - 0 msgs
+[DEBUG] buildThreadPreviews() completed
+[MEMORY] After loading all messages: 56280 bytes free
+🔍 Contact count after refresh: 4
+🔍 Thread preview count: 4
+[SMS] Sender matches active contact - refreshing conversation
+Loading thread for contact: 16512524765
+[MEMORY] loadThreadForContact start: 58252 bytes free
+[THREAD DEBUG] Checking file: test.txt
+[THREAD DEBUG] Checking file: sms_260107_144140.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144140.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:41:40
+[UTC DEBUG] totalMinutes before adjustment: 1361
+[UTC DEBUG] Final date: 26/01/07 time: 22:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488908 for timestamp: 26/01/07,22:41:40+00:00
+[THREAD DEBUG] Checking file: sms_out_69404.txt
+[THREAD DEBUG] Processing SMS file: sms_out_69404.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[THREAD DEBUG] Checking file: sms_260107_144230.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144230.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:42:30
+[UTC DEBUG] totalMinutes before adjustment: 1362
+[UTC DEBUG] Final date: 26/01/07 time: 22:42
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488998 for timestamp: 26/01/07,22:42:30+00:00
+[THREAD DEBUG] Checking file: sms_out_98641.txt
+[THREAD DEBUG] Processing SMS file: sms_out_98641.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[THREAD DEBUG] Checking file: sms_out_32533.txt
+[THREAD DEBUG] Processing SMS file: sms_out_32533.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[THREAD DEBUG] Checking file: sms_260107_144636.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144636.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:46:36
+[UTC DEBUG] totalMinutes before adjustment: 1366
+[UTC DEBUG] Final date: 26/01/07 time: 22:46
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489404 for timestamp: 26/01/07,22:46:36+00:00
+[THREAD DEBUG] Checking file: sms_out_37526.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37526.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[THREAD DEBUG] Checking file: sms_out_119087.txt
+[THREAD DEBUG] Processing SMS file: sms_out_119087.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[THREAD DEBUG] Checking file: addressbook.txt
+[THREAD DEBUG] Checking file: sms_out_30261.txt
+[THREAD DEBUG] Processing SMS file: sms_out_30261.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[THREAD DEBUG] Checking file: sms_out_59266.txt
+[THREAD DEBUG] Processing SMS file: sms_out_59266.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[THREAD DEBUG] Checking file: .Trash-1000
+[THREAD DEBUG] Checking file: sms_out_174039.txt
+[THREAD DEBUG] Processing SMS file: sms_out_174039.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[THREAD DEBUG] Checking file: sms_out_44515.txt
+[THREAD DEBUG] Processing SMS file: sms_out_44515.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[THREAD DEBUG] Checking file: sms_out_20288.txt
+[THREAD DEBUG] Processing SMS file: sms_out_20288.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[THREAD DEBUG] Checking file: sms_out_25765.txt
+[THREAD DEBUG] Processing SMS file: sms_out_25765.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[THREAD DEBUG] Checking file: sms_out_54335.txt
+[THREAD DEBUG] Processing SMS file: sms_out_54335.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[THREAD DEBUG] Checking file: sms_260107_164544.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_164544.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 16:45:44
+[UTC DEBUG] totalMinutes before adjustment: 1485
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 0:45
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269312 for timestamp: 26/01/08,00:45:44+00:00
+[THREAD DEBUG] Checking file: sms_out_140562.txt
+[THREAD DEBUG] Processing SMS file: sms_out_140562.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[THREAD DEBUG] Checking file: sms_out_28314.txt
+[THREAD DEBUG] Processing SMS file: sms_out_28314.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[THREAD DEBUG] Checking file: sms_out_68517.txt
+[THREAD DEBUG] Processing SMS file: sms_out_68517.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[THREAD DEBUG] Checking file: sms_out_202036.txt
+[THREAD DEBUG] Processing SMS file: sms_out_202036.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[THREAD DEBUG] Checking file: sms_out_39041.txt
+[THREAD DEBUG] Processing SMS file: sms_out_39041.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270699 for timestamp: 26/01/08,00:59:31+00:00
+[THREAD DEBUG] Checking file: sms_out_66408.txt
+[THREAD DEBUG] Processing SMS file: sms_out_66408.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270727 for timestamp: 26/01/08,00:59:59+00:00
+[THREAD DEBUG] Checking file: sms_out_85966.txt
+[THREAD DEBUG] Processing SMS file: sms_out_85966.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274786 for timestamp: 26/01/08,01:00:18+00:00
+[THREAD DEBUG] Checking file: sms_260107_170045.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_170045.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 17:0:45
+[UTC DEBUG] totalMinutes before adjustment: 1500
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 1:0
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274813 for timestamp: 26/01/08,01:00:45+00:00
+[THREAD DEBUG] Checking file: sms_out_132162.txt
+[THREAD DEBUG] Processing SMS file: sms_out_132162.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274872 for timestamp: 26/01/08,01:01:04+00:00
+[THREAD DEBUG] Checking file: sms_260107_183047.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_183047.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:30:47
+[UTC DEBUG] totalMinutes before adjustment: 1590
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 2:30
+[THREAD DEBUG] Checking file: sms_260107_190238.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190238.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:2:38
+[UTC DEBUG] totalMinutes before adjustment: 1622
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:2
+[THREAD DEBUG] Checking file: sms_260107_190326.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190326.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:26
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190344.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190344.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:44
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190851.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190851.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:8:51
+[UTC DEBUG] totalMinutes before adjustment: 1628
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:8
+[THREAD DEBUG] Checking file: sms_260107_191843.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_191843.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:18:43
+[UTC DEBUG] totalMinutes before adjustment: 1638
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:18
+[THREAD DEBUG] Checking file: sms_260107_192018.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192018.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:20:18
+[UTC DEBUG] totalMinutes before adjustment: 1640
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:20
+[THREAD DEBUG] Checking file: sms_260107_192141.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192141.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:21:41
+[UTC DEBUG] totalMinutes before adjustment: 1641
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:21
+[THREAD DEBUG] Checking file: sms_260109_095958.txt
+[THREAD DEBUG] Processing SMS file: sms_260109_095958.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 9:59:58
+[UTC DEBUG] totalMinutes before adjustment: 1079
+[UTC DEBUG] Final date: 26/01/09 time: 17:59
+[THREAD DEBUG] Checking file: sms_out_36606.txt
+[THREAD DEBUG] Processing SMS file: sms_out_36606.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 10
+[TIMESTAMP DEBUG] Final calculated value: 749280303 for timestamp: 26/01/10,01:55:35+00:00
+[THREAD DEBUG] Checking file: sms_out_35577.txt
+[THREAD DEBUG] Processing SMS file: sms_out_35577.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750286470 for timestamp: 26/01/11,02:17:02+00:00
+[THREAD DEBUG] Checking file: sms_out_37373.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37373.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288673 for timestamp: 26/01/11,02:39:05+00:00
+[THREAD DEBUG] Checking file: sms_260110_183929.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_183929.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:39:29
+[UTC DEBUG] totalMinutes before adjustment: 1599
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:39
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288697 for timestamp: 26/01/11,02:39:29+00:00
+[THREAD DEBUG] Checking file: sms_260110_184101.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184101.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:1
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288869 for timestamp: 26/01/11,02:41:01+00:00
+[THREAD DEBUG] Checking file: sms_260110_184146.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184146.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:46
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288914 for timestamp: 26/01/11,02:41:46+00:00
+[THREAD DEBUG] Checking file: sms_260110_184754.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184754.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:47:54
+[UTC DEBUG] totalMinutes before adjustment: 1607
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:47
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289522 for timestamp: 26/01/11,02:47:54+00:00
+[THREAD DEBUG] Checking file: sms_260110_184842.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184842.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:48:42
+[UTC DEBUG] totalMinutes before adjustment: 1608
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:48
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289610 for timestamp: 26/01/11,02:48:42+00:00
+[THREAD DEBUG] Checking file: sms_260110_185654.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_185654.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:56:54
+[UTC DEBUG] totalMinutes before adjustment: 1616
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:56
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750290422 for timestamp: 26/01/11,02:56:54+00:00
+[MEMORY] Before sorting thread messages: 58252 bytes free
+[SORT DEBUG] Timestamps before sorting:
+Message 0: time='26/01/07,22:41:40+00:00' value=746488908 outgoing=false
+Message 1: time='26/01/07,22:42:20+00:00' value=746488988 outgoing=true
+Message 2: time='26/01/07,22:42:30+00:00' value=746488998 outgoing=false
+Message 3: time='26/01/07,22:42:49+00:00' value=746489017 outgoing=true
+Message 4: time='26/01/07,22:44:21+00:00' value=746489189 outgoing=true
+[MEMORY] After sorting thread messages: 58252 bytes free
+Auto-scroll: pixel offset 331 (total height: 450, display height: 119, viewport: 331-450)
+Loaded 30 messages for thread
+[MEMORY] loadThreadForContact end: 58252 bytes free
+[MEMORY] After handling new SMS: 58444 bytes free
+[UART RX] +CMTI: "SM",17
+New SMS notification received! SMS index: 17
+=== Handling new SMS at index 17 ===
+[MEMORY] Before handling new SMS: 58564 bytes free
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[SIM7600 TX] "AT+CMGRD=17\r"
+[SIM7600 MULTILINE] "\r\n+CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:57:17-32"\r\nI was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it\r\n\r\nOK\r\n" - Complete multiline response received
+[SIM7600] readAndDeleteSMS response length: 226
+[SIM7600] readAndDeleteSMS response: '
++CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:57:17-32"
+I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it
+
+OK
+'
+[SIM7600] First 20 bytes as hex: 0D 0A 2B 43 4D 47 52 44 3A 20 22 52 45 43 20 55 4E 52 45 41 
+[SMS PARSE] Raw response length: 226
+[SMS PARSE] Raw response:
+
++CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:57:17-32"
+I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it
+
+OK
+
+[SMS PARSE] First 10 chars as hex: 0D 0A 2B 43 4D 47 52 44 3A 20 
+[SMS PARSE] Parsed parts count: 4
+[SMS PARSE] Part 0: 'REC UNREAD'
+[SMS PARSE] Part 1: '+16512524765'
+[SMS PARSE] Part 2: ''
+[SMS PARSE] Part 3: '26/01/10,18:57:17-32'
+[SMS PARSE] Status: REC UNREAD
+[SMS PARSE] Sender: +16512524765
+[SMS PARSE] Timestamp: 26/01/10,18:57:17-32
+[SMS PARSE] Content start: 65, end: 218
+[SMS PARSE] Content: 'I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it'
+📧 New SMS - From: +16512524765 Time: 26/01/10,18:57:17-32 Content: I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it might be crazy. I was thinking it
+📞 Known contact: Don (voip)
+🔍 Checking if file exists: sms_260110_185717.txt
+💾 Creating new file on SD card: sms_260110_185717.txt
+✅ Successfully wrote SMS to SD card: sms_260110_185717.txt
+📝 File contents written:
+  From: +16512524765
+  Time: 26/01/10,18:57:17-32
+  Content: I was thinking it might be crazy. I was thinking i...
+✅ New SMS stored to SD card and deleted from SIM
+🔍 Contact count before refresh: 4
+=== Loading All Messages for Thread Processing ===
+[MEMORY] Before loading all messages: 56504 bytes free
+[DEBUG] Opening SD root directory...
+[DEBUG] SD root directory opened successfully
+[DEBUG] Starting to scan files...
+[DEBUG] Found SMS file: sms_260107_144140.txt
+[DEBUG] File size: 87 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408908 for timestamp: 26/01/07,14:41:40-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 1
+[DEBUG] Found SMS file: sms_out_69404.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 2
+[DEBUG] Found SMS file: sms_260107_144230.txt
+[DEBUG] File size: 90 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746408998 for timestamp: 26/01/07,14:42:30-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 3
+[DEBUG] Found SMS file: sms_out_98641.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 4
+[DEBUG] Found SMS file: sms_out_32533.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 5
+[DEBUG] Found SMS file: sms_260107_144636.txt
+[DEBUG] File size: 232 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746409404 for timestamp: 26/01/07,14:46:36-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 6
+[DEBUG] Found SMS file: sms_out_37526.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 7
+[DEBUG] Found SMS file: sms_out_119087.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 8
+[DEBUG] Scanned 10 files so far...
+[DEBUG] Found SMS file: sms_out_30261.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 9
+[DEBUG] Found SMS file: sms_out_59266.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 10
+[DEBUG] Found SMS file: sms_out_174039.txt
+[DEBUG] File size: 131 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 11
+[DEBUG] Found SMS file: sms_out_44515.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 12
+[DEBUG] Found SMS file: sms_out_20288.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 13
+[DEBUG] Found SMS file: sms_out_25765.txt
+[DEBUG] File size: 128 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 14
+[DEBUG] Found SMS file: sms_out_54335.txt
+[DEBUG] File size: 129 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 15
+[DEBUG] Found SMS file: sms_260107_164544.txt
+[DEBUG] File size: 93 bytes
+[DEBUG] Read 4 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746429312 for timestamp: 26/01/07,16:45:44-32
+[DEBUG] Message direction: incoming
+[DEBUG] Total messages loaded so far: 16
+[DEBUG] Scanned 20 files so far...
+[DEBUG] Found SMS file: sms_out_140562.txt
+[DEBUG] File size: 134 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 17
+[DEBUG] Found SMS file: sms_out_28314.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 18
+[DEBUG] Found SMS file: sms_out_68517.txt
+[DEBUG] File size: 130 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 19
+[DEBUG] Found SMS file: sms_out_202036.txt
+[DEBUG] File size: 184 bytes
+[DEBUG] Read 5 lines from file
+[DEBUG] Processing message lines...
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[DEBUG] Message direction: outgoing
+[DEBUG] Total messages loaded so far: 20
+[DEBUG] Scanned total files: 23
+[DEBUG] Loaded 20 SMS messages
+[DEBUG] Starting buildThreadPreviews()...
+=== Building Contact Previews from Address Book + Messages ===
+[DEBUG] Starting with 4 contacts from address book
+[DEBUG] Added 4 contacts to preview list
+[DEBUG] Processing 20 messages to update contact activity...
+[DEBUG] Starting contact sorting by recent activity...
+[DEBUG] Contact sorting completed
+[SUCCESS] Built 4 contact previews
+[DEBUG] Contact 0: Don (voip) (16512524765) - 20 msgs
+[DEBUG] Contact 1: Don (iphone) (17813230341) - 0 msgs
+[DEBUG] Contact 2: Liz (16174299144) - 0 msgs
+[DEBUG] Contact 3: Unknown 7465 (+12079557465) - 0 msgs
+[DEBUG] buildThreadPreviews() completed
+[MEMORY] After loading all messages: 56280 bytes free
+🔍 Contact count after refresh: 4
+🔍 Thread preview count: 4
+[SMS] Sender matches active contact - refreshing conversation
+Loading thread for contact: 16512524765
+[MEMORY] loadThreadForContact start: 58252 bytes free
+[THREAD DEBUG] Checking file: test.txt
+[THREAD DEBUG] Checking file: sms_260107_144140.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144140.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:41:40
+[UTC DEBUG] totalMinutes before adjustment: 1361
+[UTC DEBUG] Final date: 26/01/07 time: 22:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488908 for timestamp: 26/01/07,22:41:40+00:00
+[THREAD DEBUG] Checking file: sms_out_69404.txt
+[THREAD DEBUG] Processing SMS file: sms_out_69404.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[THREAD DEBUG] Checking file: sms_260107_144230.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144230.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:42:30
+[UTC DEBUG] totalMinutes before adjustment: 1362
+[UTC DEBUG] Final date: 26/01/07 time: 22:42
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488998 for timestamp: 26/01/07,22:42:30+00:00
+[THREAD DEBUG] Checking file: sms_out_98641.txt
+[THREAD DEBUG] Processing SMS file: sms_out_98641.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[THREAD DEBUG] Checking file: sms_out_32533.txt
+[THREAD DEBUG] Processing SMS file: sms_out_32533.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[THREAD DEBUG] Checking file: sms_260107_144636.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144636.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:46:36
+[UTC DEBUG] totalMinutes before adjustment: 1366
+[UTC DEBUG] Final date: 26/01/07 time: 22:46
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489404 for timestamp: 26/01/07,22:46:36+00:00
+[THREAD DEBUG] Checking file: sms_out_37526.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37526.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[THREAD DEBUG] Checking file: sms_out_119087.txt
+[THREAD DEBUG] Processing SMS file: sms_out_119087.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[THREAD DEBUG] Checking file: addressbook.txt
+[THREAD DEBUG] Checking file: sms_out_30261.txt
+[THREAD DEBUG] Processing SMS file: sms_out_30261.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[THREAD DEBUG] Checking file: sms_out_59266.txt
+[THREAD DEBUG] Processing SMS file: sms_out_59266.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[THREAD DEBUG] Checking file: .Trash-1000
+[THREAD DEBUG] Checking file: sms_out_174039.txt
+[THREAD DEBUG] Processing SMS file: sms_out_174039.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[THREAD DEBUG] Checking file: sms_out_44515.txt
+[THREAD DEBUG] Processing SMS file: sms_out_44515.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[THREAD DEBUG] Checking file: sms_out_20288.txt
+[THREAD DEBUG] Processing SMS file: sms_out_20288.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[THREAD DEBUG] Checking file: sms_out_25765.txt
+[THREAD DEBUG] Processing SMS file: sms_out_25765.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[THREAD DEBUG] Checking file: sms_out_54335.txt
+[THREAD DEBUG] Processing SMS file: sms_out_54335.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[THREAD DEBUG] Checking file: sms_260107_164544.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_164544.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 16:45:44
+[UTC DEBUG] totalMinutes before adjustment: 1485
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 0:45
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269312 for timestamp: 26/01/08,00:45:44+00:00
+[THREAD DEBUG] Checking file: sms_out_140562.txt
+[THREAD DEBUG] Processing SMS file: sms_out_140562.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[THREAD DEBUG] Checking file: sms_out_28314.txt
+[THREAD DEBUG] Processing SMS file: sms_out_28314.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[THREAD DEBUG] Checking file: sms_out_68517.txt
+[THREAD DEBUG] Processing SMS file: sms_out_68517.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[THREAD DEBUG] Checking file: sms_out_202036.txt
+[THREAD DEBUG] Processing SMS file: sms_out_202036.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[THREAD DEBUG] Checking file: sms_out_39041.txt
+[THREAD DEBUG] Processing SMS file: sms_out_39041.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270699 for timestamp: 26/01/08,00:59:31+00:00
+[THREAD DEBUG] Checking file: sms_out_66408.txt
+[THREAD DEBUG] Processing SMS file: sms_out_66408.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270727 for timestamp: 26/01/08,00:59:59+00:00
+[THREAD DEBUG] Checking file: sms_out_85966.txt
+[THREAD DEBUG] Processing SMS file: sms_out_85966.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274786 for timestamp: 26/01/08,01:00:18+00:00
+[THREAD DEBUG] Checking file: sms_260107_170045.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_170045.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 17:0:45
+[UTC DEBUG] totalMinutes before adjustment: 1500
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 1:0
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274813 for timestamp: 26/01/08,01:00:45+00:00
+[THREAD DEBUG] Checking file: sms_out_132162.txt
+[THREAD DEBUG] Processing SMS file: sms_out_132162.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274872 for timestamp: 26/01/08,01:01:04+00:00
+[THREAD DEBUG] Checking file: sms_260107_183047.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_183047.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:30:47
+[UTC DEBUG] totalMinutes before adjustment: 1590
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 2:30
+[THREAD DEBUG] Checking file: sms_260107_190238.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190238.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:2:38
+[UTC DEBUG] totalMinutes before adjustment: 1622
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:2
+[THREAD DEBUG] Checking file: sms_260107_190326.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190326.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:26
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190344.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190344.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:44
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190851.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190851.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:8:51
+[UTC DEBUG] totalMinutes before adjustment: 1628
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:8
+[THREAD DEBUG] Checking file: sms_260107_191843.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_191843.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:18:43
+[UTC DEBUG] totalMinutes before adjustment: 1638
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:18
+[THREAD DEBUG] Checking file: sms_260107_192018.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192018.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:20:18
+[UTC DEBUG] totalMinutes before adjustment: 1640
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:20
+[THREAD DEBUG] Checking file: sms_260107_192141.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192141.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:21:41
+[UTC DEBUG] totalMinutes before adjustment: 1641
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:21
+[THREAD DEBUG] Checking file: sms_260109_095958.txt
+[THREAD DEBUG] Processing SMS file: sms_260109_095958.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 9:59:58
+[UTC DEBUG] totalMinutes before adjustment: 1079
+[UTC DEBUG] Final date: 26/01/09 time: 17:59
+[THREAD DEBUG] Checking file: sms_out_36606.txt
+[THREAD DEBUG] Processing SMS file: sms_out_36606.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 10
+[TIMESTAMP DEBUG] Final calculated value: 749280303 for timestamp: 26/01/10,01:55:35+00:00
+[THREAD DEBUG] Checking file: sms_out_35577.txt
+[THREAD DEBUG] Processing SMS file: sms_out_35577.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750286470 for timestamp: 26/01/11,02:17:02+00:00
+[THREAD DEBUG] Checking file: sms_out_37373.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37373.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288673 for timestamp: 26/01/11,02:39:05+00:00
+[THREAD DEBUG] Checking file: sms_260110_183929.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_183929.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:39:29
+[UTC DEBUG] totalMinutes before adjustment: 1599
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:39
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288697 for timestamp: 26/01/11,02:39:29+00:00
+[THREAD DEBUG] Checking file: sms_260110_184101.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184101.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:1
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288869 for timestamp: 26/01/11,02:41:01+00:00
+[THREAD DEBUG] Checking file: sms_260110_184146.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184146.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:46
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288914 for timestamp: 26/01/11,02:41:46+00:00
+[THREAD DEBUG] Checking file: sms_260110_184754.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184754.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:47:54
+[UTC DEBUG] totalMinutes before adjustment: 1607
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:47
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289522 for timestamp: 26/01/11,02:47:54+00:00
+[THREAD DEBUG] Checking file: sms_260110_184842.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184842.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:48:42
+[UTC DEBUG] totalMinutes before adjustment: 1608
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:48
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289610 for timestamp: 26/01/11,02:48:42+00:00
+[THREAD DEBUG] Checking file: sms_260110_185654.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_185654.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:56:54
+[UTC DEBUG] totalMinutes before adjustment: 1616
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:56
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750290422 for timestamp: 26/01/11,02:56:54+00:00
+[THREAD DEBUG] Checking file: sms_260110_185717.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_185717.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:57:17
+[UTC DEBUG] totalMinutes before adjustment: 1617
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:57
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750290485 for timestamp: 26/01/11,02:57:17+00:00
+[MEMORY] Before sorting thread messages: 58252 bytes free
+[SORT DEBUG] Timestamps before sorting:
+Message 0: time='26/01/11,02:57:17+00:00' value=750290485 outgoing=false
+Message 1: time='26/01/07,22:42:20+00:00' value=746488988 outgoing=true
+Message 2: time='26/01/07,22:42:30+00:00' value=746488998 outgoing=false
+Message 3: time='26/01/07,22:42:49+00:00' value=746489017 outgoing=true
+Message 4: time='26/01/07,22:44:21+00:00' value=746489189 outgoing=true
+[MEMORY] After sorting thread messages: 58252 bytes free
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+Loaded 30 messages for thread
+[MEMORY] loadThreadForContact end: 58252 bytes free
+[MEMORY] After handling new SMS: 58444 bytes free
+[UART RX] +CMTI: "SM",17
+New SMS notification received! SMS index: 17
+=== Handling new SMS at index 17 ===
+[MEMORY] Before handling new SMS: 58564 bytes free
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[SIM7600 TX] "AT+CMGF=1\r"
+[SIM7600 RX] "\r\nOK\r\n"
+[SIM7600 RX] Complete response: 6 bytes, contains 'OK': YES
+[SIM7600 TX] "AT+CMGRD=17\r"
+[SIM7600 MULTILINE] "\r\n+CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:57:17-32"\r\n might be crazy. I was thinking it might be crazy. I was thinking it might be crazy.\r\n\r\nOK\r\n" - Complete multiline response received
+[SIM7600] readAndDeleteSMS response length: 157
+[SIM7600] readAndDeleteSMS response: '
++CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:57:17-32"
+ might be crazy. I was thinking it might be crazy. I was thinking it might be crazy.
+
+OK
+'
+[SIM7600] First 20 bytes as hex: 0D 0A 2B 43 4D 47 52 44 3A 20 22 52 45 43 20 55 4E 52 45 41 
+[SMS PARSE] Raw response length: 157
+[SMS PARSE] Raw response:
+
++CMGRD: "REC UNREAD","+16512524765","","26/01/10,18:57:17-32"
+ might be crazy. I was thinking it might be crazy. I was thinking it might be crazy.
+
+OK
+
+[SMS PARSE] First 10 chars as hex: 0D 0A 2B 43 4D 47 52 44 3A 20 
+[SMS PARSE] Parsed parts count: 4
+[SMS PARSE] Part 0: 'REC UNREAD'
+[SMS PARSE] Part 1: '+16512524765'
+[SMS PARSE] Part 2: ''
+[SMS PARSE] Part 3: '26/01/10,18:57:17-32'
+[SMS PARSE] Status: REC UNREAD
+[SMS PARSE] Sender: +16512524765
+[SMS PARSE] Timestamp: 26/01/10,18:57:17-32
+[SMS PARSE] Content start: 65, end: 149
+[SMS PARSE] Content: 'might be crazy. I was thinking it might be crazy. I was thinking it might be crazy.'
+📧 New SMS - From: +16512524765 Time: 26/01/10,18:57:17-32 Content: might be crazy. I was thinking it might be crazy. I was thinking it might be crazy.
+📞 Known contact: Don (voip)
+🔍 Checking if file exists: sms_260110_185717.txt
+📄 File already exists on SD card: sms_260110_185717.txt
+❌ Failed to store new SMS
+[MEMORY] After handling new SMS: 58444 bytes free
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0x9 (TAB) char: '?'
+Switched to THREADS pane
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Thread selection: 1
+[KEYBOARD] Key pressed: 0xd (ENTER) char: '?'
+Loading thread for contact: 17813230341
+[MEMORY] loadThreadForContact start: 58324 bytes free
+[THREAD DEBUG] Checking file: test.txt
+[THREAD DEBUG] Checking file: sms_260107_144140.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144140.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:41:40
+[UTC DEBUG] totalMinutes before adjustment: 1361
+[UTC DEBUG] Final date: 26/01/07 time: 22:41
+[THREAD DEBUG] Checking file: sms_out_69404.txt
+[THREAD DEBUG] Processing SMS file: sms_out_69404.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_260107_144230.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144230.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:42:30
+[UTC DEBUG] totalMinutes before adjustment: 1362
+[UTC DEBUG] Final date: 26/01/07 time: 22:42
+[THREAD DEBUG] Checking file: sms_out_98641.txt
+[THREAD DEBUG] Processing SMS file: sms_out_98641.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_32533.txt
+[THREAD DEBUG] Processing SMS file: sms_out_32533.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_260107_144636.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144636.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:46:36
+[UTC DEBUG] totalMinutes before adjustment: 1366
+[UTC DEBUG] Final date: 26/01/07 time: 22:46
+[THREAD DEBUG] Checking file: sms_out_37526.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37526.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_119087.txt
+[THREAD DEBUG] Processing SMS file: sms_out_119087.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: addressbook.txt
+[THREAD DEBUG] Checking file: sms_out_30261.txt
+[THREAD DEBUG] Processing SMS file: sms_out_30261.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_59266.txt
+[THREAD DEBUG] Processing SMS file: sms_out_59266.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: .Trash-1000
+[THREAD DEBUG] Checking file: sms_out_174039.txt
+[THREAD DEBUG] Processing SMS file: sms_out_174039.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_44515.txt
+[THREAD DEBUG] Processing SMS file: sms_out_44515.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_20288.txt
+[THREAD DEBUG] Processing SMS file: sms_out_20288.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_25765.txt
+[THREAD DEBUG] Processing SMS file: sms_out_25765.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_54335.txt
+[THREAD DEBUG] Processing SMS file: sms_out_54335.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_260107_164544.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_164544.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 16:45:44
+[UTC DEBUG] totalMinutes before adjustment: 1485
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 0:45
+[THREAD DEBUG] Checking file: sms_out_140562.txt
+[THREAD DEBUG] Processing SMS file: sms_out_140562.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_28314.txt
+[THREAD DEBUG] Processing SMS file: sms_out_28314.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_68517.txt
+[THREAD DEBUG] Processing SMS file: sms_out_68517.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_202036.txt
+[THREAD DEBUG] Processing SMS file: sms_out_202036.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_39041.txt
+[THREAD DEBUG] Processing SMS file: sms_out_39041.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_66408.txt
+[THREAD DEBUG] Processing SMS file: sms_out_66408.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_85966.txt
+[THREAD DEBUG] Processing SMS file: sms_out_85966.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_260107_170045.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_170045.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 17:0:45
+[UTC DEBUG] totalMinutes before adjustment: 1500
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 1:0
+[THREAD DEBUG] Checking file: sms_out_132162.txt
+[THREAD DEBUG] Processing SMS file: sms_out_132162.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_260107_183047.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_183047.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:30:47
+[UTC DEBUG] totalMinutes before adjustment: 1590
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 2:30
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747287815 for timestamp: 26/01/08,02:30:47+00:00
+[THREAD DEBUG] Checking file: sms_260107_190238.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190238.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:2:38
+[UTC DEBUG] totalMinutes before adjustment: 1622
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:2
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747295006 for timestamp: 26/01/08,03:02:38+00:00
+[THREAD DEBUG] Checking file: sms_260107_190326.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190326.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:26
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747295094 for timestamp: 26/01/08,03:03:26+00:00
+[THREAD DEBUG] Checking file: sms_260107_190344.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190344.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:44
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747295112 for timestamp: 26/01/08,03:03:44+00:00
+[THREAD DEBUG] Checking file: sms_260107_190851.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190851.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:8:51
+[UTC DEBUG] totalMinutes before adjustment: 1628
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:8
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747295619 for timestamp: 26/01/08,03:08:51+00:00
+[THREAD DEBUG] Checking file: sms_260107_191843.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_191843.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:18:43
+[UTC DEBUG] totalMinutes before adjustment: 1638
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:18
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747296611 for timestamp: 26/01/08,03:18:43+00:00
+[THREAD DEBUG] Checking file: sms_260107_192018.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192018.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:20:18
+[UTC DEBUG] totalMinutes before adjustment: 1640
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:20
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747296786 for timestamp: 26/01/08,03:20:18+00:00
+[THREAD DEBUG] Checking file: sms_260107_192141.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192141.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:21:41
+[UTC DEBUG] totalMinutes before adjustment: 1641
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:21
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747296909 for timestamp: 26/01/08,03:21:41+00:00
+[THREAD DEBUG] Checking file: sms_260109_095958.txt
+[THREAD DEBUG] Processing SMS file: sms_260109_095958.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 9:59:58
+[UTC DEBUG] totalMinutes before adjustment: 1079
+[UTC DEBUG] Final date: 26/01/09 time: 17:59
+[THREAD DEBUG] Checking file: sms_out_36606.txt
+[THREAD DEBUG] Processing SMS file: sms_out_36606.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_35577.txt
+[THREAD DEBUG] Processing SMS file: sms_out_35577.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_out_37373.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37373.txt
+[MATCH DEBUG] Outgoing: target='17813230341' recipient='16512524765' -> NO MATCH
+[THREAD DEBUG] Checking file: sms_260110_183929.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_183929.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:39:29
+[UTC DEBUG] totalMinutes before adjustment: 1599
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:39
+[THREAD DEBUG] Checking file: sms_260110_184101.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184101.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:1
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[THREAD DEBUG] Checking file: sms_260110_184146.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184146.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:46
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[THREAD DEBUG] Checking file: sms_260110_184754.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184754.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:47:54
+[UTC DEBUG] totalMinutes before adjustment: 1607
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:47
+[THREAD DEBUG] Checking file: sms_260110_184842.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184842.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:48:42
+[UTC DEBUG] totalMinutes before adjustment: 1608
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:48
+[THREAD DEBUG] Checking file: sms_260110_185654.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_185654.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:56:54
+[UTC DEBUG] totalMinutes before adjustment: 1616
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:56
+[THREAD DEBUG] Checking file: sms_260110_185717.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_185717.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:57:17
+[UTC DEBUG] totalMinutes before adjustment: 1617
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:57
+[MEMORY] Before sorting thread messages: 58324 bytes free
+[SORT DEBUG] Timestamps before sorting:
+Message 0: time='26/01/08,02:30:47+00:00' value=747287815 outgoing=false
+Message 1: time='26/01/08,03:02:38+00:00' value=747295006 outgoing=false
+Message 2: time='26/01/08,03:03:26+00:00' value=747295094 outgoing=false
+Message 3: time='26/01/08,03:03:44+00:00' value=747295112 outgoing=false
+Message 4: time='26/01/08,03:08:51+00:00' value=747295619 outgoing=false
+[MEMORY] After sorting thread messages: 58324 bytes free
+Auto-scroll: pixel offset 0 (total height: 96, display height: 119, viewport: 0-119)
+Loaded 8 messages for thread
+[MEMORY] loadThreadForContact end: 58324 bytes free
+[KEYBOARD] Key pressed: 0x9 (TAB) char: '?'
+Switched to THREADS pane
+[KEYBOARD] Key pressed: 0xb5 (UP) char: '?'
+Thread selection: 0
+[KEYBOARD] Key pressed: 0xd (ENTER) char: '?'
+Loading thread for contact: 16512524765
+[MEMORY] loadThreadForContact start: 58324 bytes free
+[THREAD DEBUG] Checking file: test.txt
+[THREAD DEBUG] Checking file: sms_260107_144140.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144140.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:41:40
+[UTC DEBUG] totalMinutes before adjustment: 1361
+[UTC DEBUG] Final date: 26/01/07 time: 22:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488908 for timestamp: 26/01/07,22:41:40+00:00
+[THREAD DEBUG] Checking file: sms_out_69404.txt
+[THREAD DEBUG] Processing SMS file: sms_out_69404.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488988 for timestamp: 26/01/07,22:42:20+00:00
+[THREAD DEBUG] Checking file: sms_260107_144230.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144230.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:42:30
+[UTC DEBUG] totalMinutes before adjustment: 1362
+[UTC DEBUG] Final date: 26/01/07 time: 22:42
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746488998 for timestamp: 26/01/07,22:42:30+00:00
+[THREAD DEBUG] Checking file: sms_out_98641.txt
+[THREAD DEBUG] Processing SMS file: sms_out_98641.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489017 for timestamp: 26/01/07,22:42:49+00:00
+[THREAD DEBUG] Checking file: sms_out_32533.txt
+[THREAD DEBUG] Processing SMS file: sms_out_32533.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489189 for timestamp: 26/01/07,22:44:21+00:00
+[THREAD DEBUG] Checking file: sms_260107_144636.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_144636.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 14:46:36
+[UTC DEBUG] totalMinutes before adjustment: 1366
+[UTC DEBUG] Final date: 26/01/07 time: 22:46
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489404 for timestamp: 26/01/07,22:46:36+00:00
+[THREAD DEBUG] Checking file: sms_out_37526.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37526.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746489568 for timestamp: 26/01/07,22:48:00+00:00
+[THREAD DEBUG] Checking file: sms_out_119087.txt
+[THREAD DEBUG] Processing SMS file: sms_out_119087.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746494810 for timestamp: 26/01/07,23:00:42+00:00
+[THREAD DEBUG] Checking file: addressbook.txt
+[THREAD DEBUG] Checking file: sms_out_30261.txt
+[THREAD DEBUG] Processing SMS file: sms_out_30261.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267072 for timestamp: 26/01/07,00:23:04+00:00
+[THREAD DEBUG] Checking file: sms_out_59266.txt
+[THREAD DEBUG] Processing SMS file: sms_out_59266.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267101 for timestamp: 26/01/07,00:23:33+00:00
+[THREAD DEBUG] Checking file: .Trash-1000
+[THREAD DEBUG] Checking file: sms_out_174039.txt
+[THREAD DEBUG] Processing SMS file: sms_out_174039.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267296 for timestamp: 26/01/07,00:25:28+00:00
+[THREAD DEBUG] Checking file: sms_out_44515.txt
+[THREAD DEBUG] Processing SMS file: sms_out_44515.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 7
+[TIMESTAMP DEBUG] Final calculated value: 746267985 for timestamp: 26/01/07,00:32:17+00:00
+[THREAD DEBUG] Checking file: sms_out_20288.txt
+[THREAD DEBUG] Processing SMS file: sms_out_20288.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747268395 for timestamp: 26/01/08,00:36:27+00:00
+[THREAD DEBUG] Checking file: sms_out_25765.txt
+[THREAD DEBUG] Processing SMS file: sms_out_25765.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269178 for timestamp: 26/01/08,00:44:10+00:00
+[THREAD DEBUG] Checking file: sms_out_54335.txt
+[THREAD DEBUG] Processing SMS file: sms_out_54335.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269207 for timestamp: 26/01/08,00:44:39+00:00
+[THREAD DEBUG] Checking file: sms_260107_164544.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_164544.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 16:45:44
+[UTC DEBUG] totalMinutes before adjustment: 1485
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 0:45
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269312 for timestamp: 26/01/08,00:45:44+00:00
+[THREAD DEBUG] Checking file: sms_out_140562.txt
+[THREAD DEBUG] Processing SMS file: sms_out_140562.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269373 for timestamp: 26/01/08,00:46:05+00:00
+[THREAD DEBUG] Checking file: sms_out_28314.txt
+[THREAD DEBUG] Processing SMS file: sms_out_28314.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747269696 for timestamp: 26/01/08,00:49:28+00:00
+[THREAD DEBUG] Checking file: sms_out_68517.txt
+[THREAD DEBUG] Processing SMS file: sms_out_68517.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270023 for timestamp: 26/01/08,00:52:55+00:00
+[THREAD DEBUG] Checking file: sms_out_202036.txt
+[THREAD DEBUG] Processing SMS file: sms_out_202036.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270277 for timestamp: 26/01/08,00:55:09+00:00
+[THREAD DEBUG] Checking file: sms_out_39041.txt
+[THREAD DEBUG] Processing SMS file: sms_out_39041.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270699 for timestamp: 26/01/08,00:59:31+00:00
+[THREAD DEBUG] Checking file: sms_out_66408.txt
+[THREAD DEBUG] Processing SMS file: sms_out_66408.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747270727 for timestamp: 26/01/08,00:59:59+00:00
+[THREAD DEBUG] Checking file: sms_out_85966.txt
+[THREAD DEBUG] Processing SMS file: sms_out_85966.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274786 for timestamp: 26/01/08,01:00:18+00:00
+[THREAD DEBUG] Checking file: sms_260107_170045.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_170045.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 17:0:45
+[UTC DEBUG] totalMinutes before adjustment: 1500
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 1:0
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274813 for timestamp: 26/01/08,01:00:45+00:00
+[THREAD DEBUG] Checking file: sms_out_132162.txt
+[THREAD DEBUG] Processing SMS file: sms_out_132162.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 8
+[TIMESTAMP DEBUG] Final calculated value: 747274872 for timestamp: 26/01/08,01:01:04+00:00
+[THREAD DEBUG] Checking file: sms_260107_183047.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_183047.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:30:47
+[UTC DEBUG] totalMinutes before adjustment: 1590
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 2:30
+[THREAD DEBUG] Checking file: sms_260107_190238.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190238.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:2:38
+[UTC DEBUG] totalMinutes before adjustment: 1622
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:2
+[THREAD DEBUG] Checking file: sms_260107_190326.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190326.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:26
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190344.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190344.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:3:44
+[UTC DEBUG] totalMinutes before adjustment: 1623
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:3
+[THREAD DEBUG] Checking file: sms_260107_190851.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_190851.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:8:51
+[UTC DEBUG] totalMinutes before adjustment: 1628
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:8
+[THREAD DEBUG] Checking file: sms_260107_191843.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_191843.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:18:43
+[UTC DEBUG] totalMinutes before adjustment: 1638
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:18
+[THREAD DEBUG] Checking file: sms_260107_192018.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192018.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:20:18
+[UTC DEBUG] totalMinutes before adjustment: 1640
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:20
+[THREAD DEBUG] Checking file: sms_260107_192141.txt
+[THREAD DEBUG] Processing SMS file: sms_260107_192141.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 19:21:41
+[UTC DEBUG] totalMinutes before adjustment: 1641
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/08 time: 3:21
+[THREAD DEBUG] Checking file: sms_260109_095958.txt
+[THREAD DEBUG] Processing SMS file: sms_260109_095958.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 9:59:58
+[UTC DEBUG] totalMinutes before adjustment: 1079
+[UTC DEBUG] Final date: 26/01/09 time: 17:59
+[THREAD DEBUG] Checking file: sms_out_36606.txt
+[THREAD DEBUG] Processing SMS file: sms_out_36606.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 10
+[TIMESTAMP DEBUG] Final calculated value: 749280303 for timestamp: 26/01/10,01:55:35+00:00
+[THREAD DEBUG] Checking file: sms_out_35577.txt
+[THREAD DEBUG] Processing SMS file: sms_out_35577.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750286470 for timestamp: 26/01/11,02:17:02+00:00
+[THREAD DEBUG] Checking file: sms_out_37373.txt
+[THREAD DEBUG] Processing SMS file: sms_out_37373.txt
+[MATCH DEBUG] Outgoing: target='16512524765' recipient='16512524765' -> MATCH
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288673 for timestamp: 26/01/11,02:39:05+00:00
+[THREAD DEBUG] Checking file: sms_260110_183929.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_183929.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:39:29
+[UTC DEBUG] totalMinutes before adjustment: 1599
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:39
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288697 for timestamp: 26/01/11,02:39:29+00:00
+[THREAD DEBUG] Checking file: sms_260110_184101.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184101.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:1
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288869 for timestamp: 26/01/11,02:41:01+00:00
+[THREAD DEBUG] Checking file: sms_260110_184146.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184146.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:41:46
+[UTC DEBUG] totalMinutes before adjustment: 1601
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:41
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750288914 for timestamp: 26/01/11,02:41:46+00:00
+[THREAD DEBUG] Checking file: sms_260110_184754.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184754.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:47:54
+[UTC DEBUG] totalMinutes before adjustment: 1607
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:47
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289522 for timestamp: 26/01/11,02:47:54+00:00
+[THREAD DEBUG] Checking file: sms_260110_184842.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_184842.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:48:42
+[UTC DEBUG] totalMinutes before adjustment: 1608
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:48
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750289610 for timestamp: 26/01/11,02:48:42+00:00
+[THREAD DEBUG] Checking file: sms_260110_185654.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_185654.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:56:54
+[UTC DEBUG] totalMinutes before adjustment: 1616
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:56
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750290422 for timestamp: 26/01/11,02:56:54+00:00
+[THREAD DEBUG] Checking file: sms_260110_185717.txt
+[THREAD DEBUG] Processing SMS file: sms_260110_185717.txt
+[UTC DEBUG] Timezone part: '-32' quarters=-32 minutes=-480
+[UTC DEBUG] Original time: 18:57:17
+[UTC DEBUG] totalMinutes before adjustment: 1617
+[UTC DEBUG] Day rollover forwards - adding day
+[UTC DEBUG] Final date: 26/01/11 time: 2:57
+[TIMESTAMP DEBUG] Parsed date - Year: 2026 Month: 1 Day: 11
+[TIMESTAMP DEBUG] Final calculated value: 750290485 for timestamp: 26/01/11,02:57:17+00:00
+[MEMORY] Before sorting thread messages: 58324 bytes free
+[SORT DEBUG] Timestamps before sorting:
+Message 0: time='26/01/11,02:57:17+00:00' value=750290485 outgoing=false
+Message 1: time='26/01/07,22:42:20+00:00' value=746488988 outgoing=true
+Message 2: time='26/01/07,22:42:30+00:00' value=746488998 outgoing=false
+Message 3: time='26/01/07,22:42:49+00:00' value=746489017 outgoing=true
+Message 4: time='26/01/07,22:44:21+00:00' value=746489189 outgoing=true
+[MEMORY] After sorting thread messages: 58324 bytes free
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+Loaded 30 messages for thread
+[MEMORY] loadThreadForContact end: 58324 bytes free
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371
+[KEYBOARD] Key pressed: 0xb6 (DOWN) char: '?'
+Auto-scroll: pixel offset 371 (total height: 490, display height: 119, viewport: 371-490)
+User scrolled back to bottom - resuming auto-scroll
+Manual pixel scroll offset: 371

@@ -1,6 +1,12 @@
 /**************************************************************************
-  DIY Phone v35 - ProMicro nRF52840 Port
+  DIY Phone v36 - ProMicro nRF52840 Port
   Features: Display + SIM7600 + SD card SMS storage + I2C keyboard control + Address book name lookup + Full timestamps + Auto SMS deletion + Thread-based UI
+
+  v36 Changes:
+  - Answer incoming calls with ENTER key
+  - Adjust loudspeaker volume with UP/DOWN keys (AT+CLVL, 0-5)
+  - Adjust microphone gain with LEFT/RIGHT keys (AT+CMICGAIN, 0-8)
+  - RING detection for incoming call notification
 
   v35 Changes (ProMicro Port):
   - Ported from ItsyBitsy nRF52840 to ProMicro nRF52840
@@ -141,6 +147,16 @@ unsigned long lastSearchTime = 0;     // Time of last search keystroke for timeo
 // v27 Debug control
 bool debugThreadLoading = false;  // v34: Disabled by default - use key '9' to toggle
 
+// v36 Call state and volume control
+bool incomingCallActive = false;      // True when RING detected, false after answer/hangup
+String incomingCallerNumber = "";     // Caller ID from +CLIP notification
+uint8_t speakerVolume = 4;            // AT+CLVL level (0-5, default 4)
+uint8_t micGain = 4;                  // AT+CMICGAIN level (0-8, default 4)
+#define SPEAKER_VOLUME_MIN 0
+#define SPEAKER_VOLUME_MAX 5
+#define MIC_GAIN_MIN 0
+#define MIC_GAIN_MAX 8
+
 // Function declarations - v26 thread-based interface
 void drawStatusSection();
 void updateStatusMessage(const char *text, uint16_t color);
@@ -215,7 +231,7 @@ void setup(void) {
   // Additional delay to ensure stable connection
   delay(1000);
   
-  Serial.println("=== DIY Phone v35 Starting ===");
+  Serial.println("=== DIY Phone v36 Starting ===");
   Serial.print("[DEBUG] Serial connection established after ");
   Serial.print(millis() - serialStartTime);
   Serial.println(" ms");
@@ -229,7 +245,7 @@ void setup(void) {
 
   // Initialize display
   Serial.println("[DEBUG] Starting display initialization...");
-  tft.init(240, 240);
+  tft.init(240, 320);
   tft.setRotation(3);
   tft.fillScreen(ST77XX_BLACK);
   
@@ -292,7 +308,7 @@ void setup(void) {
     Serial.println("[DEBUG] Testing SD card write...");
     FsFile testFile = sd.open("test.txt", O_WRITE | O_CREAT);
     if (testFile) {
-      testFile.println("DIY Phone v35 Test");
+      testFile.println("DIY Phone v36 Test");
       testFile.close();
       Serial.println("[DEBUG] SD card test file created successfully");
       updateStatus("SD test OK", ST77XX_GREEN);
@@ -400,7 +416,7 @@ void setup(void) {
   // Initial memory display and logging
   logMemoryUsage("Setup complete");
   
-  updateStatusMessage("Ready - v32 Interface", ST77XX_GREEN);
+  updateStatusMessage("Ready - v36 Interface", ST77XX_GREEN);
   Serial.println("===============================================");
   Serial.println("Setup complete - Press keyboard numbers 1-9:");
   Serial.println("1 = Signal Quality Test");
@@ -412,7 +428,9 @@ void setup(void) {
   Serial.println("7 = Delete SMS One-by-One");
   Serial.println("8 = Delete All SMS (Bulk)");
   Serial.println("9 = Toggle Debug Output (v27+)");
-  Serial.println("Down Arrow = Scroll inbox");
+  Serial.println("ENTER = Answer incoming call");
+  Serial.println("UP/DOWN = Adjust speaker volume (0-5)");
+  Serial.println("LEFT/RIGHT = Adjust mic gain (0-8)");
   Serial.println("===============================================");
 }
 
@@ -2103,16 +2121,48 @@ void sendMessage() {
 void readUARTLines() {
   while (Serial1.available()) {
     char c = Serial1.read();
-    
+
     if (c == '\r') {
       // Process complete line on carriage return
       String line = uartLineBuffer;
       line.trim();
       if (line.length() > 0) {
         Serial.println("[UART RX] " + line);
-        
+
+        // v36: Check for incoming call RING notification
+        if (line.equals("RING")) {
+          Serial.println(">>> INCOMING CALL DETECTED <<<");
+          incomingCallActive = true;
+          updateStatus("INCOMING CALL!", ST77XX_YELLOW);
+        }
+        // v36: Check for caller ID: +CLIP: "+16175551234",145,"",0,"",0
+        else if (line.startsWith("+CLIP:")) {
+          int firstQuote = line.indexOf('"');
+          int secondQuote = line.indexOf('"', firstQuote + 1);
+          if (firstQuote != -1 && secondQuote != -1) {
+            incomingCallerNumber = line.substring(firstQuote + 1, secondQuote);
+            Serial.print(">>> CALLER ID: ");
+            Serial.println(incomingCallerNumber);
+            // Look up contact name
+            String callerName = lookupContactName(incomingCallerNumber);
+            char statusMsg[64];
+            if (callerName.length() > 0 && !callerName.equals(incomingCallerNumber)) {
+              snprintf(statusMsg, sizeof(statusMsg), "CALL: %s", callerName.c_str());
+            } else {
+              snprintf(statusMsg, sizeof(statusMsg), "CALL: %s", incomingCallerNumber.c_str());
+            }
+            updateStatus(statusMsg, ST77XX_YELLOW);
+          }
+        }
+        // v36: Check for call ended (NO CARRIER or call disconnect)
+        else if (line.equals("NO CARRIER") || line.startsWith("+CEND:")) {
+          Serial.println(">>> CALL ENDED <<<");
+          incomingCallActive = false;
+          incomingCallerNumber = "";
+          updateStatus("Call ended", ST77XX_CYAN);
+        }
         // Check for new SMS notification: +CMTI: "SM",25
-        if (line.startsWith("+CMTI:")) {
+        else if (line.startsWith("+CMTI:")) {
           int commaPos = line.lastIndexOf(',');
           if (commaPos != -1) {
             String indexStr = line.substring(commaPos + 1);
@@ -2222,37 +2272,89 @@ void handleNewSMSNotification(int smsIndex) {
 
 void handleKeyboardV26() {
   Wire.requestFrom(KEYBOARD_ADDR, 1);
-  
+
   if (Wire.available()) {
     uint8_t keyData = Wire.read();
-    
+
     if (keyData != 0) {
       String keyName = getKeyName(keyData);
       char printableChar = (keyData >= 32 && keyData <= 126) ? (char)keyData : '?';
       Serial.println("[KEYBOARD] Key pressed: 0x" + String(keyData, HEX) + " (" + keyName + ") char: '" + String(printableChar) + "'");
-      
+
       // Tab key switches between panes
       if (keyData == 0x09) { // TAB
         switchPane();
       }
-      // Up/Down arrows - behavior depends on active pane
+      // v36: UP arrow - adjust speaker volume UP or scroll
       else if (keyData == 0xB5) { // UP arrow
-        if (currentPane == PANE_THREADS) {
-          scrollThreadSelection(-1);
+        if (speakerVolume < SPEAKER_VOLUME_MAX) {
+          speakerVolume++;
+          cellular.setVolume(speakerVolume);
+          char volMsg[32];
+          snprintf(volMsg, sizeof(volMsg), "Speaker Vol: %d/%d", speakerVolume, SPEAKER_VOLUME_MAX);
+          updateStatus(volMsg, ST77XX_CYAN);
+          Serial.print("[VOLUME] Speaker volume set to ");
+          Serial.println(speakerVolume);
         } else {
-          scrollConversation(-1);
+          updateStatus("Speaker Vol: MAX", ST77XX_YELLOW);
         }
       }
+      // v36: DOWN arrow - adjust speaker volume DOWN or scroll
       else if (keyData == 0xB6) { // DOWN arrow
-        if (currentPane == PANE_THREADS) {
-          scrollThreadSelection(1);
+        if (speakerVolume > SPEAKER_VOLUME_MIN) {
+          speakerVolume--;
+          cellular.setVolume(speakerVolume);
+          char volMsg[32];
+          snprintf(volMsg, sizeof(volMsg), "Speaker Vol: %d/%d", speakerVolume, SPEAKER_VOLUME_MAX);
+          updateStatus(volMsg, ST77XX_CYAN);
+          Serial.print("[VOLUME] Speaker volume set to ");
+          Serial.println(speakerVolume);
         } else {
-          scrollConversation(1);
+          updateStatus("Speaker Vol: MIN", ST77XX_YELLOW);
         }
       }
-      // Enter key - different actions per pane
+      // v36: LEFT arrow - adjust mic gain DOWN
+      else if (keyData == 0xB4) { // LEFT arrow
+        if (micGain > MIC_GAIN_MIN) {
+          micGain--;
+          cellular.setMicGain(micGain);
+          char micMsg[32];
+          snprintf(micMsg, sizeof(micMsg), "Mic Gain: %d/%d", micGain, MIC_GAIN_MAX);
+          updateStatus(micMsg, ST77XX_CYAN);
+          Serial.print("[VOLUME] Mic gain set to ");
+          Serial.println(micGain);
+        } else {
+          updateStatus("Mic Gain: MIN", ST77XX_YELLOW);
+        }
+      }
+      // v36: RIGHT arrow - adjust mic gain UP
+      else if (keyData == 0xB7) { // RIGHT arrow
+        if (micGain < MIC_GAIN_MAX) {
+          micGain++;
+          cellular.setMicGain(micGain);
+          char micMsg[32];
+          snprintf(micMsg, sizeof(micMsg), "Mic Gain: %d/%d", micGain, MIC_GAIN_MAX);
+          updateStatus(micMsg, ST77XX_CYAN);
+          Serial.print("[VOLUME] Mic gain set to ");
+          Serial.println(micGain);
+        } else {
+          updateStatus("Mic Gain: MAX", ST77XX_YELLOW);
+        }
+      }
+      // v36: Enter key - answer incoming call, or normal pane actions
       else if (keyData == 0x0D) { // ENTER
-        if (currentPane == PANE_THREADS) {
+        if (incomingCallActive) {
+          // Answer the incoming call
+          Serial.println("[CALL] Answering incoming call...");
+          if (cellular.answerCall()) {
+            updateStatus("Call connected", ST77XX_GREEN);
+            Serial.println("[CALL] Call answered successfully");
+          } else {
+            updateStatus("Answer failed", ST77XX_RED);
+            Serial.println("[CALL] Failed to answer call");
+          }
+          incomingCallActive = false;  // No longer ringing
+        } else if (currentPane == PANE_THREADS) {
           // Select thread and open conversation
           selectThread();
         } else {

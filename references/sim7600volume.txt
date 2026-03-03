@@ -1,0 +1,21 @@
+# set the loudspeaker volument
+
+AT+CLVL=<level>
+
+where level ranges from 0 to 5, 4 is the default factory value.
+
+e.g. 
+
+AT+CLVL=4
+OK
+
+# set the mic gain
+
+AT+CMICGAIN=<value>
+
+where value = 0 to 8
+
+e.g.
+
+AT+CMICGAIN=1
+OK

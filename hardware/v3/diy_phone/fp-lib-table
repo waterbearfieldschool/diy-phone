@@ -1,0 +1,6 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "wio-sx1262")(type "KiCad")(uri "${KIPRJMOD}/footprints/wio-sx1262.pretty")(options "")(descr ""))
+  (lib (name "footprints")(type "KiCad")(uri "${KIPRJMOD}/footprints")(options "")(descr ""))
+  (lib (name "eg1206")(type "KiCad")(uri "/home/dwblair/gitwork/rook/hardware/v0.4/rook/eg1206")(options "")(descr "")(disabled))
+)

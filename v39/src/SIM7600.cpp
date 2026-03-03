@@ -429,9 +429,9 @@ bool SIM7600::storeSMSToSD(const SMSMessage& sms) {
     
     Serial.print("💾 Creating new file on SD card: ");
     Serial.println(filename);
-    
-    // Create and write the file
-    FsFile file = sd.open(filenameChar, O_WRITE | O_CREAT);
+
+    // Create and write the file (use O_RDWR for compatibility with SdFat)
+    FsFile file = sd.open(filenameChar, O_RDWR | O_CREAT | O_TRUNC);
     if (file) {
         file.print("From: ");
         file.println(sms.sender);
