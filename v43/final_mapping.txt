@@ -1,0 +1,126 @@
+================================================================================
+DIY Phone v35 - ProMicro nRF52840 Complete Pin Mapping
+================================================================================
+
+This document contains all pin assignments needed to design a PCB for the
+DIY Phone project using the ProMicro nRF52840 board.
+
+================================================================================
+ACTIVE CONNECTIONS (directly used by firmware)
+================================================================================
+
+TFT DISPLAY (ST7789, SPI on SPIM2)
+--------------------------------------------------------------------------------
+Signal      Arduino Pin     nRF52840 GPIO     Notes
+--------    -----------     -------------     --------------------------------
+MOSI        2               P0.17             Data to display
+SCK         9               P1.06             SPI clock
+CS          11              P0.10             Chip select (active low)
+DC          10              P0.09             Data/Command select
+RST         5               P0.24             Reset (active low)
+MISO        6               P1.00             Not used by display (placeholder)
+
+SD CARD (SPI on SPIM3)
+--------------------------------------------------------------------------------
+Signal      Arduino Pin     nRF52840 GPIO     Notes
+--------    -----------     -------------     --------------------------------
+MOSI        14              P1.15             Data to SD card
+SCK         12              P1.11             SPI clock
+MISO        15              P0.02             Data from SD card
+CS          13              P1.13             Chip select (active low)
+
+SIM7600 CELLULAR MODULE (UART on Serial1)
+--------------------------------------------------------------------------------
+Signal      Arduino Pin     nRF52840 GPIO     Notes
+--------    -----------     -------------     --------------------------------
+RX (MCU)    4               P0.22             MCU receives from SIM7600 TX
+TX (MCU)    3               P0.20             MCU transmits to SIM7600 RX
+
+I2C KEYBOARD (Wire interface)
+--------------------------------------------------------------------------------
+Signal      Arduino Pin     nRF52840 GPIO     Notes
+--------    -----------     -------------     --------------------------------
+SDA         8               P1.04             I2C data
+SCL         7               P0.11             I2C clock
+                                              Keyboard address: 0x5F
+
+================================================================================
+AUXILIARY PINS (defined in variant.h)
+================================================================================
+
+Built-in LED
+--------------------------------------------------------------------------------
+Signal      Arduino Pin     nRF52840 GPIO     Notes
+--------    -----------     -------------     --------------------------------
+LED         22              P0.15             LED_BUILTIN, active high
+
+Button
+--------------------------------------------------------------------------------
+Signal      Arduino Pin     nRF52840 GPIO     Notes
+--------    -----------     -------------     --------------------------------
+BUTTON1     6               P1.00             Note: shared with TFT MISO placeholder
+
+================================================================================
+COMPLETE ARDUINO PIN TO nRF52840 GPIO MAPPING
+================================================================================
+
+Arduino Pin     nRF52840 GPIO     Current Usage
+-----------     -------------     ------------------------------------------
+0               P0.08             Available
+1               P0.06             Available
+2               P0.17             TFT MOSI
+3               P0.20             SIM7600 TX (from MCU)
+4               P0.22             SIM7600 RX (to MCU)
+5               P0.24             TFT RST
+6               P1.00             TFT MISO (placeholder, not actually used)
+7               P0.11             I2C SCL
+8               P1.04             I2C SDA
+9               P1.06             TFT SCK
+10              P0.09             TFT DC
+11              P0.10             TFT CS
+12              P1.11             SD SCK
+13              P1.13             SD CS
+14              P1.15             SD MOSI
+15              P0.02             SD MISO
+16              P0.29             Available
+17              P0.31             Available
+18              P1.01             Available
+19              P1.02             Available
+20              P1.05             Available
+21              P0.13             Available
+22              P0.15             LED_BUILTIN
+
+================================================================================
+ACTIVE PINS SUMMARY (directly used by firmware)
+================================================================================
+
+Used:  2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15
+Free:  0, 1, 6, 16, 17, 18, 19, 20, 21, 22
+
+================================================================================
+POWER CONNECTIONS
+================================================================================
+
+VCC         3.3V supply for display, SD card, keyboard
+GND         Common ground
+VBAT        Battery input (if applicable)
+
+================================================================================
+NOTES
+================================================================================
+
+1. TFT and SD card use SEPARATE SPI buses (SPIM2 and SPIM3) to avoid conflicts
+
+2. I2C keyboard uses address 0x5F - ensure no address conflicts if adding
+   other I2C devices
+
+3. SIM7600 runs at 115200 baud
+
+4. Display is ST7789, 240x320 pixels, rotated 270 degrees (rotation 3)
+
+5. SD card runs at 4MHz SPI clock speed
+
+6. All active-low signals (CS, RST) should have pull-up resistors if the
+   MCU doesn't enable internal pull-ups during boot
+
+================================================================================
