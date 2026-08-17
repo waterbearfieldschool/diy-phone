@@ -445,20 +445,27 @@ void drawRead() {
   clearBody();
   drawFooter("UP/DN D R:reply P:call ESC");
 
-  String from = displayName(openSms.sender);
-  if (from != openSms.sender) from += "  " + openSms.sender;
-  int row = bodyText(0, "From " + from, INK);
-  Timestamp::Stamp when;
-  if (Timestamp::parse(openSms.atTime, when)) {
-    row = bodyText(row, "at " + Timestamp::hhmmAt(when, localTzMin) + " local", INK);
-  }
-  display.drawFastHLine(0, BODY_Y + row * LINE_H + 2, SCREEN_W, INK);
-  row++;
+  // Name big (same size as the message), time|number small beneath it,
+  // then a rule, then the message.
+  display.setTextSize(2);
+  display.setTextColor(INK);
+  display.setCursor(2, BODY_Y);
+  display.print(displayName(openSms.sender).substring(0, 16));
+  display.setTextSize(1);
 
-  // Body, scrolled by whole rows.
-  // The message itself at text size 2 (12x16 cells, 16 columns) -- the
-  // header rows above stay at size 1.
-  const int y0 = BODY_Y + row * LINE_H + 4;
+  Timestamp::Stamp when;
+  String meta;
+  if (Timestamp::parse(openSms.atTime, when)) {
+    meta = Timestamp::hhmmAt(when, localTzMin) + "|";
+  }
+  meta += openSms.sender;
+  display.setCursor(2, BODY_Y + 18);
+  display.print(meta.substring(0, COLS));
+
+  display.drawFastHLine(0, BODY_Y + 30, SCREEN_W, INK);
+
+  // The message at text size 2 (12x16 cells, 16 columns).
+  const int y0 = BODY_Y + 34;
   constexpr int RCOLS = 16;
   constexpr int RLINE = 16;
   display.setTextSize(2);
