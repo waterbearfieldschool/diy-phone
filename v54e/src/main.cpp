@@ -79,13 +79,21 @@ constexpr uint16_t PAPER = GxEPD_WHITE;
 // refreshes are quick and quiet, but they accumulate ghosting, so every
 // couple dozen the panel gets a full (blinking) refresh instead.
 int partialsSinceFull = 0;
+bool dirtySinceFull = false;  // any partial refresh since the last full one
+uint32_t lastPartialAt = 0;
+
 void flush(bool full = false) {
   if (full || partialsSinceFull >= 8) {
+    LOGI("epd", "FULL refresh");
     display.display(false);
     partialsSinceFull = 0;
+    dirtySinceFull = false;
   } else {
+    LOGI("epd", "partial refresh");
     display.display(true);
     partialsSinceFull++;
+    dirtySinceFull = true;
+    lastPartialAt = millis();
   }
 }
 // The next flush() becomes a full refresh -- call after clearing the whole
@@ -101,7 +109,12 @@ void flushBar() { flush(); }
 // For small in-place changes (typing, caret moves, key echo): a partial
 // refresh that doesn't advance the full-refresh countdown, so composing a
 // message doesn't blink every third keystroke.
-void flushQuiet() { display.display(true); }
+void flushQuiet() {
+  LOGI("epd", "quiet partial");
+  display.display(true);
+  dirtySinceFull = true;
+  lastPartialAt = millis();
+}
 
 // Body content renders in the big font; every chrome drawer switches back.
 // Bold shares FreeMono's 11px cell, so mixing weights keeps the grid.
@@ -836,6 +849,8 @@ void refreshVitals() {
   const int bars = signalBucket();
   if (bars != shownBars || smsUsed != shownUsed || smsTotal != shownTotal ||
       unreadCount != shownUnread || missedNew != shownMissed) {
+    LOGI("epd", "vitals changed: bars %d->%d sms %d/%d unread %d missed %d",
+         shownBars, bars, smsUsed, smsTotal, unreadCount, missedNew);
     shownBars = bars; shownUsed = smsUsed; shownTotal = smsTotal;
     shownUnread = unreadCount; shownMissed = missedNew;
     if (millis() >= toastUntil) { drawStatusBar(); flushBar(); }
@@ -1323,6 +1338,16 @@ void loop() {
       millis() - lastCallTick >= 10000) {
     lastCallTick = millis();
     drawCall();  // updates the MM:SS readout
+  }
+
+  // This panel visibly fades undriven pixels on every partial refresh
+  // (confirmed: V2 board, correct driver -- it is just how this panel is).
+  // So partials stay quiet while you interact, and once input pauses the
+  // frame is re-pushed with one full refresh to settle back to full
+  // contrast.
+  if (dirtySinceFull && millis() - lastPartialAt >= 2500) {
+    LOGI("epd", "settle");
+    flush(true);
   }
 
   const uint8_t k = readKey();
