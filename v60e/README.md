@@ -1,103 +1,97 @@
-# DIY Phone v56e
+# DIY Phone v60e — current version
 
-The v44 phone ported to a 1.54" black-and-white e-ink panel (Waveshare
-200x200, SSD1681, GxEPD2 driver). Same screens, keys, address book, and
-serial console as v44.
+A pocketable GSM phone: SMS inbox, composing, voice calls with ring tone,
+an address book, and an interactive serial console — on an e-ink screen
+whose refresh strategy was tuned, empirically, to this exact panel.
 
-E-ink specifics: drawing goes into a RAM buffer and flush() pushes it --
-quick partial refreshes normally, a full (blinking) refresh every ~24
-updates to clear ghosting. The status bar repaints only when a number on it
-changes. Color collapses to ink-on-paper: the selection bar inverts, unread
-is a `*`, alerts are `!`, and toasts are an inverted strip.
+## Hardware
 
-## Wiring (e-ink module)
-
-| Module wire | Pro Micro pin | nRF GPIO |
+| Part | Model | Bus |
 | --- | --- | --- |
-| DIN (MOSI) | 2 | P0.17 |
-| CLK | 9 | P1.06 |
-| CS | 11 | P0.10 |
-| DC | 10 | P0.09 |
-| RST | 5 | P0.24 |
-| BUSY | 16 | P0.29 |
-| VCC | 3.3V | |
-| GND | GND | |
+| MCU | ProMicro nRF52840 (Nologo) | — |
+| Display | Waveshare 1.54" e-Paper Module rev2.1 (200x200, SSD1681) | SPI (SPIM2) |
+| Cellular | DFRobot Gravity SIM7600G (TEL0161) | UART @115200 |
+| Keyboard | I2C keyboard @ 0x5F (CardKB-style) | I2C |
+| Speaker | 8 ohm ~1W on the SIM7600 board's PH2.0 jack | — |
 
-Same pins as the TFT, plus BUSY. The panel class is `GxEPD2_154_D67` (the
-V2 module); a V1 panel needs `GxEPD2_154` in main.cpp instead. Boot runs a visible checklist
-(keyboard, modem, SIM, network) and then drops straight into the inbox. Debug
-output goes only to USB serial; the screen is all phone.
+Wiring (display): DIN=2/P0.17, CLK=9/P1.06, CS=11/P0.10, DC=10/P0.09,
+RST=5/P0.24, BUSY=16/P0.29. Modem: MCU TX=3/P0.20 -> SIM7600 RX,
+MCU RX=4/P0.22 <- SIM7600 TX. Keyboard: SDA=8/P1.04, SCL=7/P0.11.
+All 3.3V; the SIM7600 needs its own supply (~2A peaks), grounds common.
+Full pin map: `final_mapping.txt`.
 
-Carried over: `Config.h` (pins), `Log`, `Modem` from v42, `Timestamp` from
-v41 (for sorting the inbox newest-first).
+## The display design approach: equilibrium mode
+
+This panel (like many SSD1681 units) has three empirically-established
+behaviors that shaped everything:
+
+1. **Full refresh is perfect but blinks.** True black, no artifacts.
+2. **Full-frame partial refresh is quiet but settles the panel into a
+   slightly gray "equilibrium"** — uniform and pleasant, but the drop is
+   jarring *if you just saw a crisp full refresh*. Partial-after-partial
+   shows no further change.
+3. **Window-limited refresh (`displayWindow`) visibly grays everything
+   outside the window** and desyncs later partials. It is never used.
+
+The conclusion, after trying crisp-at-rest designs (settle refreshes,
+event-driven fulls — see v54e/v59e): **don't mix the two states while
+anyone is watching.** In v60e the screen simply lives at the partial
+equilibrium during use — every interaction, message arrival, send, and
+call transition is a quiet partial — and full refreshes are exiled to
+moments nobody sees: boot, and a ghost-cleanup pass after two minutes of
+keyboard idle (plus a 200-partial backstop). Uniformity beats peak
+contrast; change is what the eye notices.
+
+Supporting choices with the same motive: the selection indicator is a
+small left-gutter dot and unread is a right-edge rectangle (tiny partial
+diffs, no big inverted regions); new messages appear as just a new row
+with its rectangle — no banner; scrolling page-jumps so most presses move
+only the dot on a stable layout. Every panel refresh is logged to serial
+as `[epd] ...` so refresh behavior stays observable.
+
+## Keys
+
+| Where | Key | Action |
+| --- | --- | --- |
+| Inbox | `UP`/`DOWN` | move selection (page-jumps at screen edges) |
+| Inbox | `ENTER` | read (body shown at 2x text size) |
+| Inbox | `M` | compose; resumes a saved draft if one exists |
+| Inbox | `C` | call picker (contacts or typed number) |
+| Inbox | `P` | call the selected message's sender |
+| Inbox | `0-9` | free-form dial pad |
+| Inbox | `D` / `R` | delete / reload |
+| Inbox | `ESC` | jump back to newest message |
+| Inbox | `TAB` | status screen (device info, missed calls, key test) |
+| Read | `UP`/`DOWN`, `D`, `R`, `P`, `ESC` | scroll, delete, reply, call, back |
+| Compose | `ENTER` | next field / send; `ESC` saves the draft |
+| Call | `ENTER`/`ESC` | answer / reject; in-call: `UP/DN` volume, `L/R` mic, `ESC`/`H` hang up |
+
+Incoming calls ring through the speaker (AT+CPTONE fallback, probed once)
+and take over the screen; unanswered calls land in the missed list with a
+`!N` badge. Contacts are baked into `CONTACTS[]` in `main.cpp`; known
+numbers display as names everywhere. Bare 10-digit numbers get `+1`.
+
+## Serial console (USB, 115200)
+
+Local echo, backspace editing. Commands: `AT...` (raw modem passthrough),
+`status`, `debug` (raw AT TX/RX tracing), `ram`, `help`. All display
+refreshes and events are logged.
+
+## Build
 
 ```
 pio run                # build
-./build_and_copy.sh    # build + produce bin/uf2conv/new_firmware.uf2
+./build_and_copy.sh    # build + bin/uf2conv/new_firmware.uf2
 ```
 
-## Chrome (every screen)
+Flash: double-tap reset, copy `new_firmware.uf2` to the UF2 drive (the
+build script auto-deploys if the drive is already mounted).
 
-- **Status bar** (top): signal bars, `*N` unread count in cyan, `!N` missed
-  calls in red, screen title, and SIM storage `used/total` -- dim normally, orange at 80% full, red with
-  `!` when full (a full SIM silently rejects incoming texts).
-- **Footer** (bottom): the keys that work on the current screen.
-- **Toasts**: the status bar becomes a green banner for ~4s when a message
-  arrives ("New message from +1617..."), when a send completes, or red when
-  a call rings in.
+## Lineage
 
-## Screens
-
-| Screen | Keys |
-| --- | --- |
-| Inbox (home) | `UP`/`DOWN` select, `ENTER` read, `C` compose, `D` delete, `R` reload, `TAB` status |
-| Read | `UP`/`DOWN` scroll, `D` delete, `R` reply, `ESC` back |
-| Compose (To) | type a name to filter contacts or a number; `TAB`/`UP`/`DOWN` pick a contact; `ENTER` next; `ESC` cancels |
-| Compose (body) | type body (`n/160` counter), `ENTER` sends, `BACKSPACE` edits, `ESC` cancels |
-| Status | device/network info, missed-call list, keyboard echo test; `ESC` back |
-
-Inbox rows: `* 14:22 +16175551234  preview...` -- unread messages are bright
-with a cyan `*`, read ones dim. Newest first. Opening a message marks it read
-(AT+CMGR does that on the SIM itself). A text arriving mid-compose doesn't
-interrupt typing; the inbox refreshes when you leave compose.
-
-Boot notes: the keyboard is required (the UI is unusable without it), so boot
-waits for it, reprobing every second. The modem gets 30 seconds, then the UI
-starts anyway and keeps retrying in the background -- "modem online" toasts
-when it appears.
-
-## Address book
-
-Contacts are baked into `main.cpp` (`CONTACTS[]`): emilie and liz. Anywhere a
-known number appears -- inbox, read view, toasts, missed calls -- the name is
-shown instead. The compose To screen lists contacts under the input field;
-typing letters filters by name, typing digits means a manual number. A bare
-10-digit manual number is assumed US and gets `+1`.
-
-## Missed calls
-
-The SIM7600 announces an unanswered call with a `MISSED_CALL: <time> <number>`
-notification. v44 records the last 8 in RAM (they aren't stored on the SIM, so
-they reset on reboot), shows a red toast when one happens, keeps a red `!N`
-badge in the status bar, and lists them on the Status screen -- new ones in
-orange, already-seen ones dim. Opening the Status screen marks them seen and
-clears the badge.
-
-## Calls (ported from v53e/v54e)
-
-`C` opens the call picker (same contact list as compose; ENTER dials), `P`
-dials the highlighted sender, typing a digit opens the dial pad. `M` opens
-compose, resuming a half-typed draft if one exists. Incoming calls take
-over the screen with a ring tone through the speaker (AT+CPTONE fallback):
-`ENTER` answers, `ESC` rejects. In a call: `UP`/`DOWN` speaker volume,
-`LEFT`/`RIGHT` mic gain, `ESC`/`H` hangs up.
-
-## Serial commands (115200 baud)
-
-| Command | Action |
-| --- | --- |
-| `AT...` | Send any AT command to the modem, print the reply |
-| `status` | Modem health check (ATI, CPIN, CREG) |
-| `debug` | Toggle raw AT TX/RX tracing |
-| `ram` | Show free RAM |
-| `help` | List commands |
+v41 (TFT phone, refactored) -> v44 (missed calls, address book, timezone)
+-> v45e (e-ink port, small font) -> v46e..v54e (big-font line: layout
+experiments and the refresh-artifact hunt) -> v55e_45e..v59e (return to
+the small-font base + calls, dial pad, drafts) -> **v60e (equilibrium
+refresh)**. The big-font line remains in the repo; its layout ideas are
+portable, but its refresh lessons are already folded in here.
