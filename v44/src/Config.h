@@ -31,6 +31,11 @@ namespace Pins {
 
 constexpr uint8_t  KEYBOARD_I2C_ADDR = 0x5F;
 constexpr uint32_t MODEM_BAUD        = 115200;
+
+// Used for displaying message times until the network reports the real local
+// offset (AT+CCLK?). Minutes east of UTC: US Eastern is -240 in summer (EDT),
+// -300 in winter (EST). Once network time sync works this only covers boot.
+constexpr int16_t DEFAULT_TZ_MIN = -4 * 60;
 constexpr uint32_t CONSOLE_BAUD      = 115200;
 
 // ---------------------------------------------------------------- capacities

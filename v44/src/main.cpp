@@ -89,6 +89,12 @@ int composeCursor = 0;          // caret position within composeBody
 int csq = -1;            // cached signal, refreshed every 5s
 int smsUsed = 0, smsTotal = 0;
 
+// The phone's timezone, learned from the network clock (NITZ) so message
+// times show as local wall time no matter what zone the sender was in.
+int16_t localTzMin = DEFAULT_TZ_MIN;
+bool tzKnown = false;
+uint32_t lastTzSync = 0;
+
 uint32_t toastUntil = 0; // status bar shows a toast until this time
 String statusEcho;       // last key echoed on the Status screen
 
@@ -334,7 +340,7 @@ void drawInbox() {
     tft.setTextColor(m.unread ? ST77XX_CYAN : DIM);
     tft.print(m.unread ? "*" : " ");
 
-    const String hm = Timestamp::hhmm(m.when);
+    const String hm = Timestamp::hhmmAt(m.when, localTzMin);
     String row40 = (hm.length() > 0 ? hm : String("--:--")) + " ";
     row40 += displayName(m.sender).substring(0, 13);
     while (row40.length() < 20) row40 += ' ';
@@ -375,7 +381,7 @@ void drawRead() {
   int row = bodyText(0, "From " + from, ST77XX_MAGENTA);
   Timestamp::Stamp when;
   if (Timestamp::parse(openSms.atTime, when)) {
-    row = bodyText(row, "at " + Timestamp::hhmm(when) + "  (" + openSms.atTime + ")", DIM);
+    row = bodyText(row, "at " + Timestamp::hhmmAt(when, localTzMin) + " local", DIM);
   }
   tft.drawFastHLine(0, BODY_Y + row * LINE_H + 2, SCREEN_W, BAR_BG);
   row++;
@@ -499,11 +505,24 @@ void drawStatusScreen() {
 }
 
 // ------------------------------------------------------------------- modem
+// AT+CCLK? returns the carrier's idea of local time, offset included. Sync
+// until it works, then hourly (to ride through DST changes).
+void syncTimezone() {
+  Timestamp::Stamp now;
+  if (Timestamp::parse(modem.networkTime(), now)) {
+    if (now.tzMin != localTzMin) LOGI("time", "tz offset now %d min", now.tzMin);
+    localTzMin = now.tzMin;
+    tzKnown = true;
+    lastTzSync = millis();
+  }
+}
+
 void refreshVitals() {
   if (!modemUp) return;
   csq = modem.signalQuality();
   int u, t;
   if (modem.smsSlots(u, t)) { smsUsed = u; smsTotal = t; }
+  if (!tzKnown || millis() - lastTzSync >= 3600000UL) syncTimezone();
   drawStatusBar();
 }
 
