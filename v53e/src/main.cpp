@@ -1301,7 +1301,13 @@ void loop() {
 
   // When a toast expires, put the status bar back.
   const bool toasting = millis() < toastUntil;
-  if (wasToasting && !toasting) { drawStatusBar(); flushBar(); }
+  if (wasToasting && !toasting) {
+    // Restoring the bar with a partial refresh leaves the body dimmed (the
+    // sweep relaxes every undriven pixel), so end each toast with a full
+    // refresh -- the whole screen comes back sharp.
+    drawStatusBar();
+    flush(true);
+  }
   wasToasting = toasting;
 
   static uint32_t lastCallTick = 0;
