@@ -13,8 +13,8 @@ a 240x240 TFT.
 The defining design idea of the current line: **e-ink equilibrium mode**.
 Rather than chasing maximum contrast, the screen stays in its uniform
 partial-refresh state for the whole session — no blinking, no visible
-fading transitions — and full refreshes run only at boot and after the
-keyboard has been idle for two minutes. The reasoning and the panel
+fading transitions — and the only routine full refresh is the page-turn
+moment of opening a message to read it. The reasoning and the panel
 measurements behind it are in the v60e README.
 
 Waypoints in the history: `v41` (the TFT firmware, restructured into

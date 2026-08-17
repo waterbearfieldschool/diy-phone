@@ -27,7 +27,14 @@
 // Serial (115200) still carries logs and accepts commands -- AT passthrough,
 // status, debug, ram, help -- but the screen shows no debug output.
 
+// Deliberate hack: GxEPD2_BW keeps its frame buffer private, but the
+// all-driven-partial technique below needs to hand that buffer (inverted)
+// back to the controller. Promoting private members for this one header is
+// ugly but contained; a clean alternative is a GFXcanvas1 + raw driver
+// refactor, worth doing only if this technique proves itself.
+#define private public
 #include <GxEPD2_BW.h>
+#undef private
 #include <SPI.h>
 #include <Wire.h>
 
@@ -60,22 +67,43 @@ constexpr uint16_t PAPER = GxEPD_WHITE;
 // Drawing goes into the buffer; flush() pushes it to the panel. Partial
 // refreshes are quick and quiet, but they accumulate ghosting, so every
 // couple dozen the panel gets a full (blinking) refresh instead.
-// Equilibrium mode: the panel lives at its partial-refresh gray, which is
-// uniform and easy on the eye. Full refreshes are exiled to moments you
-// are not looking: boot, and after two minutes of idle (to clear ghosting
-// accumulated by partials). Mid-use hygiene fulls proved worse than
-// useless -- a blink, then an extra-hard fade on the next press. The 200
-// cap is a ghosting backstop for marathon sessions only.
+// Equilibrium mode. The rule: changing PAGE completely (inbox <-> read,
+// into/out of compose, call, dial, status) gets a full refresh -- a
+// page-turn blink that feels natural, masks the post-full fade behind
+// all-new content, and clears ghosting as a side effect. WITHIN a page,
+// only ever partial refreshes, so the display sits at its uniform gray
+// with no visible fading. (Timed hygiene fulls were tried and cut: they
+// fire while you're reading.) The 200 cap is a backstop only.
 int partialsSinceFull = 0;
 
+// The next flush() becomes a full refresh.
+void requestFullRefresh() { partialsSinceFull = 1000; }
+
+// The all-driven-partial technique. The controller drives only pixels
+// that differ from its stored "previous image"; undriven black pixels are
+// what fades to gray on this panel. So each partial: write the new frame,
+// then store its INVERSE as the "previous image", then refresh -- every
+// pixel compares as changed and gets driven: black pushed fully black,
+// white actively held white. (Priming AFTER the refresh with the inverse
+// of the old frame was close but backwards: it skipped exactly the pixels
+// that really changed -- hence the faded moving dot.) Crisp always, no
+// blink, and ghosting cannot accumulate because nothing is ever undriven.
 void flush(bool full = false) {
   if (full || partialsSinceFull >= 200) {
     LOGI("epd", "FULL refresh");
     display.display(false);
     partialsSinceFull = 0;
   } else {
-    LOGI("epd", "partial refresh");
-    display.display(true);
+    LOGI("epd", "partial refresh (all-driven)");
+    // Plane-exact writes: current plane (0x24) gets the frame, previous
+    // plane (0x26) gets its INVERSE, so the refresh drives every pixel.
+    // (writeImageAgain can't be used here: it writes BOTH planes, which
+    // clobbers the current frame with the inverse -- the gray-mush bug.)
+    display.epd2._writeImage(0x24, display._buffer, 0, 0, GxEPD2_154_D67::WIDTH,
+                             GxEPD2_154_D67::HEIGHT, false, false, false);
+    display.epd2._writeImage(0x26, display._buffer, 0, 0, GxEPD2_154_D67::WIDTH,
+                             GxEPD2_154_D67::HEIGHT, true, false, false);
+    display.epd2.refresh(true);
     partialsSinceFull++;
   }
 }
@@ -420,6 +448,7 @@ void drawInbox() {
 void enterInbox() {
   screen = Screen::Inbox;
   if (inboxStale) loadInbox();
+  requestFullRefresh();  // page change -> page-turn
   drawInbox();
 }
 
@@ -588,14 +617,14 @@ void enterCall(CallState state, const String &peer) {
   callState = state;
   callPeer = peer;
   screen = Screen::Call;
+  requestFullRefresh();  // page change -> page-turn
   drawCall();
 }
 
 void endCall(const char *why) {
   stopRingTone();
   callState = CallState::None;
-  screen = Screen::Inbox;
-  drawInbox();
+  enterInbox();  // full refresh: page change
   toast(why);
 }
 
@@ -757,8 +786,7 @@ void onNotification(const String &line) {
     stopRingTone();
     callState = CallState::None;
     if (screen == Screen::Call) {
-      screen = Screen::Inbox;
-      drawInbox();
+      enterInbox();
     } else if (screen == Screen::Status) {
       drawStatusScreen();
     }
@@ -778,6 +806,7 @@ void deleteAndReload(int slot) {
   LOGI("sms", "delete slot %d: %s", slot, ok ? "ok" : "FAILED");
   loadInbox();
   refreshVitals();
+  if (screen != Screen::Inbox) requestFullRefresh();  // read -> inbox
   screen = Screen::Inbox;
   drawInbox();
 }
@@ -794,12 +823,14 @@ void handleKey(uint8_t k) {
         if (loadMessage(inbox[selected].slot)) {
           if (inbox[selected].unread) { inbox[selected].unread = false; unreadCount--; }
           screen = Screen::Read;
+          requestFullRefresh();  // the page-turn: the one routine full refresh
           drawRead();
         }
       }
       else if ((k == 'd' || k == 'D') && inboxCount > 0) deleteAndReload(inbox[selected].slot);
       else if (k == 'm' || k == 'M') {
         pickerForCall = false;
+        requestFullRefresh();  // page change -> page-turn
         // Resume a half-typed draft (left by ESC or an incoming call);
         // start fresh only when there is none.
         if (composeBody.length() > 0 && composeTo.length() > 0) {
@@ -820,17 +851,24 @@ void handleKey(uint8_t k) {
         // Call picker: the same contact list / typed number, ENTER dials.
         pickerForCall = true;
         composeInput = ""; composeSel = -1;
-        screen = Screen::ComposeTo; drawCompose();
+        screen = Screen::ComposeTo;
+        requestFullRefresh();
+        drawCompose();
       }
       else if ((k == 'p' || k == 'P') && inboxCount > 0) dialNumber(inbox[selected].sender);
       else if (k >= '0' && k <= '9') {
         dialInput = String((char)k);
         screen = Screen::Dial;
+        requestFullRefresh();
         drawDial();
       }
       else if (k == 'r' || k == 'R') { loadInbox(); drawInbox(); }
       else if (k == Key::Esc && selected > 0) { selected = 0; drawInbox(); }
-      else if (k == Key::Tab) { screen = Screen::Status; drawStatusScreen(); }
+      else if (k == Key::Tab) {
+        screen = Screen::Status;
+        requestFullRefresh();
+        drawStatusScreen();
+      }
       break;
 
     case Screen::Read:
@@ -842,7 +880,9 @@ void handleKey(uint8_t k) {
         composeTo = openSms.sender; composeBody = ""; composeCursor = 0;
         const char *known = contactName(composeTo);
         composeName = known ? known : "";
-        screen = Screen::ComposeBody; drawCompose();
+        screen = Screen::ComposeBody;
+        requestFullRefresh();
+        drawCompose();
       }
       else if (k == Key::Esc || k == Key::Tab) enterInbox();
       break;
@@ -871,13 +911,17 @@ void handleKey(uint8_t k) {
           composeName = CONTACTS[idx[composeSel]].name;
           composeTo = CONTACTS[idx[composeSel]].number;
           composeCursor = 0;
-          screen = Screen::ComposeBody; drawCompose();
+          screen = Screen::ComposeBody;
+          requestFullRefresh();
+          drawCompose();
         } else if (composeInput.length() >= 3) {
           composeTo = normalizeNumber(composeInput);
           const char *known = contactName(composeTo);
           composeName = known ? known : "";
           composeCursor = 0;
-          screen = Screen::ComposeBody; drawCompose();
+          screen = Screen::ComposeBody;
+          requestFullRefresh();
+          drawCompose();
         }
       }
       else if (k == Key::Backspace && composeInput.length() > 0) {
@@ -1176,19 +1220,8 @@ void loop() {
     drawCall();  // updates the MM:SS readout
   }
 
-  // Ghost-cleanup full refresh, only after two minutes without a keypress
-  // -- the blink lands while nobody is watching.
-  static uint32_t lastKeyAt = 0;
-  if (partialsSinceFull > 0 && millis() - lastKeyAt >= 120000) {
-    LOGI("epd", "idle hygiene refresh");
-    flush(true);
-  }
-
   const uint8_t k = readKey();
-  if (k != 0) {
-    lastKeyAt = millis();
-    handleKey(k);
-  }
+  if (k != 0) handleKey(k);
 
   modem.poll();
   pollSerial();

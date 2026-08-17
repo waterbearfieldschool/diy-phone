@@ -37,10 +37,13 @@ The conclusion, after trying crisp-at-rest designs (settle refreshes,
 event-driven fulls — see v54e/v59e): **don't mix the two states while
 anyone is watching.** In v60e the screen simply lives at the partial
 equilibrium during use — every interaction, message arrival, send, and
-call transition is a quiet partial — and full refreshes are exiled to
-moments nobody sees: boot, and a ghost-cleanup pass after two minutes of
-keyboard idle (plus a 200-partial backstop). Uniformity beats peak
-contrast; change is what the eye notices.
+call transition is a quiet partial. The ONE routine full refresh is
+opening a message to read it: a page-turn moment where the blink feels
+natural, the all-new content masks the subsequent fade, and ghosting gets
+cleared as a side effect. (Timed hygiene fulls were tried and cut — they
+fire while you're reading.) Boot and a 200-partial backstop are the only
+other fulls. Uniformity beats peak contrast; change is what the eye
+notices.
 
 Supporting choices with the same motive: the selection indicator is a
 small left-gutter dot and unread is a right-edge rectangle (tiny partial
