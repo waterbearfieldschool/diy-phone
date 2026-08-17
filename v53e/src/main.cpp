@@ -685,6 +685,34 @@ void drawCall() {
   flush();
 }
 
+// Ring through the speaker: the SIM7600 synthesizes a tone burst on its
+// audio output (AT+SIMTONE=mode,freq,on_ms,off_ms,total_ms). One burst per
+// incoming RING line gives the classic cadence; answering or rejecting
+// cuts it immediately.
+// AT+SIMTONE (arbitrary frequency) is missing from some SIM7600 firmware
+// builds; AT+CPTONE's preset tones (8 = ringing tone) are the fallback.
+// Probe once on the first ring and remember which one this modem speaks.
+int8_t toneMethod = -1;  // -1 unprobed, 0 none, 1 SIMTONE, 2 CPTONE
+
+void playRingBurst() {
+  modem.setAudioRoute(3);
+  modem.setSpeakerVolume(speakerVolume);
+  if (toneMethod == -1) {
+    if (modem.command("AT+SIMTONE=1,850,300,200,1800", nullptr, 1000)) toneMethod = 1;
+    else if (modem.command("AT+CPTONE=8", nullptr, 1000)) toneMethod = 2;
+    else { toneMethod = 0; LOGE("call", "no local ring tone support"); }
+  } else if (toneMethod == 1) {
+    modem.command("AT+SIMTONE=1,850,300,200,1800", nullptr, 1000);
+  } else if (toneMethod == 2) {
+    modem.command("AT+CPTONE=8", nullptr, 1000);  // replays/refreshes the ring
+  }
+}
+
+void stopRingTone() {
+  if (toneMethod == 1) modem.command("AT+SIMTONE=0", nullptr, 1000);
+  else if (toneMethod == 2) modem.command("AT+CPTONE=0", nullptr, 1000);
+}
+
 void enterCall(CallState state, const String &peer) {
   callState = state;
   callPeer = peer;
@@ -694,6 +722,7 @@ void enterCall(CallState state, const String &peer) {
 }
 
 void endCall(const char *why) {
+  stopRingTone();
   callState = CallState::None;
   screen = Screen::Inbox;
   requestFullRefresh();
@@ -826,6 +855,7 @@ void onNotification(const String &line) {
     }  // refresh unread badge once the toast fades
   } else if (line.startsWith("RING")) {
     if (callState == CallState::None) enterCall(CallState::Ringing, "");
+    if (callState == CallState::Ringing) playRingBurst();
   } else if (line.startsWith("+CLIP:")) {
     const int q = line.indexOf('"');
     const int q2 = (q >= 0) ? line.indexOf('"', q + 1) : -1;
@@ -855,6 +885,7 @@ void onNotification(const String &line) {
     missedNew++;
 
     toast("Missed call: " + displayName(missedCalls[0].number), INK);
+    stopRingTone();
     callState = CallState::None;
     if (screen == Screen::Call) {
       screen = Screen::Inbox;
@@ -1054,6 +1085,7 @@ void handleKey(uint8_t k) {
     case Screen::Call:
       if (callState == CallState::Ringing) {
         if (k == Key::Enter) {
+          stopRingTone();
           modem.setAudioRoute(3);  // loudspeaker output, see Modem::call
           if (modem.answer()) {
             callState = CallState::Active;
@@ -1063,6 +1095,7 @@ void handleKey(uint8_t k) {
             drawCall();
           }
         } else if (k == Key::Esc || k == 'h' || k == 'H') {
+          stopRingTone();
           modem.hangUp();
           endCall("call rejected");
         }
@@ -1137,9 +1170,14 @@ void pollSerial() {
   while (Serial.available()) {
     const char c = Serial.read();
     if (c == '\r' || c == '\n') {
+      Serial.println();  // finish the echoed line
       handleSerialLine(pending);
       pending = "";
+    } else if ((c == 0x08 || c == 0x7F) && pending.length() > 0) {
+      Serial.print("\b \b");  // rub out the echoed character
+      pending.remove(pending.length() - 1);
     } else if (pending.length() < 200) {
+      Serial.print(c);  // local echo, so typing is visible in the monitor
       pending += c;
     }
   }
